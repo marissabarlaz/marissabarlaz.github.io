@@ -3,10 +3,10 @@ title: "R Modeling Workshop"
 author: "Marissa Barlaz"
 date: "February 26, 2018"
 image: "img/portfolio/linear.png"
-showonlyimage: false
+showonlyimage: true
 weight: 3
 draft: false
-description: 'The aim of this workshop is to teach you the basics of statistical models in R.'
+description: "The aim of this workshop is to teach you the basics of statistical models in R."
 # output:
 #   blogdown::html_page:
 #     toc: true

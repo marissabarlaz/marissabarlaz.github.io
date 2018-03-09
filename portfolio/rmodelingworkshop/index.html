@@ -500,21 +500,21 @@ summary(lme1) </code></pre>
 ##    Data: ubdb
 ## 
 ##      AIC      BIC   logLik deviance df.resid 
-##  13990.9  14005.8  -6992.4  13984.9     1070 
+##  13989.8  14004.7  -6991.9  13983.8     1070 
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -2.1223 -0.8932 -0.0415  0.7840  5.1570 
+## -2.0473 -0.8830 -0.0714  0.7769  5.1842 
 ## 
 ## Random effects:
 ##  Groups   Name        Variance Std.Dev.
-##  speaker  (Intercept)    22.65   4.759 
-##  Residual             26762.95 163.594 
+##  speaker  (Intercept)   111.6   10.56  
+##  Residual             26677.6  163.33  
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error t value
-## (Intercept)  437.321      5.431   80.53</code></pre>
+## (Intercept)  437.216      6.872   63.63</code></pre>
 <p>The variance in random factor tells you how much variability there is between individuals across all vowels, not the level of variance between individuals within each vowel category.</p>
 <p>Now let’s see if we can model f1 based on tongue position and speaker.</p>
 <pre class="r"><code>lme2= lmer(f1~t1y+(1|speaker), data = ubdb, REML = FALSE)</code></pre>
@@ -535,28 +535,28 @@ summary(lme1) </code></pre>
 ##    Data: ubdb
 ## 
 ##      AIC      BIC   logLik deviance df.resid 
-##  13702.7  13722.6  -6847.4  13694.7     1069 
+##  13702.9  13722.8  -6847.5  13694.9     1069 
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -2.2300 -0.7902  0.0042  0.7099  6.2664 
+## -2.2112 -0.7867  0.0060  0.7148  6.2799 
 ## 
 ## Random effects:
 ##  Groups   Name        Variance Std.Dev.
-##  speaker  (Intercept)    40.46   6.361 
-##  Residual             20404.24 142.843 
+##  speaker  (Intercept)    28.82   5.369 
+##  Residual             20416.57 142.887 
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##               Estimate Std. Error         df t value Pr(&gt;|t|)    
-## (Intercept)  4.339e+02  5.213e+00  5.100e+00   83.23    3e-09 ***
-## t1y         -1.558e-02  8.532e-04  1.071e+03  -18.26   &lt;2e-16 ***
+## (Intercept)  4.340e+02  4.984e+00  4.500e+00   87.07 1.98e-08 ***
+## t1y         -1.555e-02  8.533e-04  1.073e+03  -18.22  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Correlation of Fixed Effects:
 ##     (Intr)
-## t1y 0.035 
+## t1y 0.037 
 ## fit warnings:
 ## Some predictor variables are on very different scales: consider rescaling</code></pre>
 <pre class="r"><code>ubdb$t1y.z = scale(ubdb$t1y,center = TRUE, scale = TRUE)
@@ -568,28 +568,28 @@ summary(lme3) </code></pre>
 ##    Data: ubdb
 ## 
 ##      AIC      BIC   logLik deviance df.resid 
-##  13702.7  13722.6  -6847.4  13694.7     1069 
+##  13702.9  13722.8  -6847.5  13694.9     1069 
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -2.2300 -0.7902  0.0042  0.7099  6.2664 
+## -2.2112 -0.7867  0.0060  0.7148  6.2799 
 ## 
 ## Random effects:
 ##  Groups   Name        Variance Std.Dev.
-##  speaker  (Intercept)    40.46   6.361 
-##  Residual             20404.24 142.843 
+##  speaker  (Intercept)    28.82   5.369 
+##  Residual             20416.57 142.887 
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error       df t value Pr(&gt;|t|)    
-## (Intercept)  437.267      5.209    5.100   83.94    3e-09 ***
-## t1y.z        -79.686      4.365 1071.400  -18.26   &lt;2e-16 ***
+## (Intercept)  437.361      4.980    4.500   87.82 1.99e-08 ***
+## t1y.z        -79.547      4.366 1073.100  -18.22  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Correlation of Fixed Effects:
 ##       (Intr)
-## t1y.z -0.001</code></pre>
+## t1y.z 0.000</code></pre>
 <pre class="r"><code>lme5= lmer(f1~t1y.z+v+(1|speaker), data = ubdb, REML = FALSE)
 summary(lme5) </code></pre>
 <pre><code>## Linear mixed model fit by maximum likelihood t-tests use Satterthwaite
@@ -598,93 +598,101 @@ summary(lme5) </code></pre>
 ##    Data: ubdb
 ## 
 ##      AIC      BIC   logLik deviance df.resid 
-##  13335.5  13395.2  -6655.8  13311.5     1061 
+##  13334.3  13394.1  -6655.2  13310.3     1061 
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -3.2685 -0.6003  0.0203  0.5899  7.6046 
+## -3.2769 -0.5836  0.0155  0.5977  7.5707 
 ## 
 ## Random effects:
-##  Groups   Name        Variance  Std.Dev. 
-##  speaker  (Intercept) 1.875e-14 1.369e-07
-##  Residual             1.430e+04 1.196e+02
+##  Groups   Name        Variance Std.Dev.
+##  speaker  (Intercept)    61.23   7.825 
+##  Residual             14240.71 119.334 
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error       df t value Pr(&gt;|t|)    
-## (Intercept)  591.608     13.967 1071.700  42.358  &lt; 2e-16 ***
-## t1y.z        -53.010      4.084 1071.700 -12.981  &lt; 2e-16 ***
-## vAE          -61.230     17.501 1071.700  -3.499 0.000487 ***
-## vAH         -146.953     17.202 1071.700  -8.543  &lt; 2e-16 ***
-## vAO          -70.465     17.940 1071.700  -3.928 9.12e-05 ***
-## vEH         -113.316     18.281 1071.700  -6.198 8.12e-10 ***
-## vIH         -181.115     16.644 1071.700 -10.882  &lt; 2e-16 ***
-## vIY         -235.341     16.741 1071.700 -14.058  &lt; 2e-16 ***
-## vUW         -216.232     36.066 1071.700  -5.995 2.77e-09 ***
-## vUX         -291.066     18.109 1071.700 -16.073  &lt; 2e-16 ***
+## (Intercept)  591.693     14.382  243.900  41.140  &lt; 2e-16 ***
+## t1y.z        -52.735      4.079 1070.000 -12.928  &lt; 2e-16 ***
+## vAE          -62.271     17.478 1069.400  -3.563 0.000383 ***
+## vAH         -146.616     17.168 1066.800  -8.540  &lt; 2e-16 ***
+## vAO          -70.584     17.911 1068.300  -3.941 8.65e-05 ***
+## vEH         -112.468     18.256 1069.400  -6.160 1.03e-09 ***
+## vIH         -181.387     16.640 1071.700 -10.900  &lt; 2e-16 ***
+## vIY         -236.120     16.724 1070.300 -14.119  &lt; 2e-16 ***
+## vUW         -215.224     36.012 1068.800  -5.976 3.10e-09 ***
+## vUX         -291.240     18.078 1067.900 -16.110  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Correlation of Fixed Effects:
 ##       (Intr) t1y.z  vAE    vAH    vAO    vEH    vIH    vIY    vUW   
-## t1y.z  0.150                                                        
-## vAE   -0.785 -0.031                                                 
-## vAH   -0.791  0.017  0.633                                          
-## vAO   -0.761 -0.001  0.607  0.618                                   
-## vEH   -0.765 -0.119  0.600  0.604  0.581                            
-## vIH   -0.857 -0.247  0.662  0.662  0.639  0.656                     
-## vIY   -0.852 -0.246  0.658  0.658  0.635  0.652  0.745              
-## vUW   -0.392 -0.088  0.305  0.306  0.295  0.300  0.339  0.338       
-## vUX   -0.776 -0.149  0.606  0.610  0.587  0.594  0.669  0.666  0.305</code></pre>
+## t1y.z  0.146                                                        
+## vAE   -0.761 -0.033                                                 
+## vAH   -0.767  0.017  0.632                                          
+## vAO   -0.738  0.000  0.607  0.618                                   
+## vEH   -0.742 -0.118  0.599  0.604  0.581                            
+## vIH   -0.832 -0.248  0.662  0.661  0.638  0.656                     
+## vIY   -0.827 -0.247  0.659  0.657  0.635  0.652  0.745              
+## vUW   -0.381 -0.088  0.305  0.306  0.295  0.300  0.340  0.338       
+## vUX   -0.753 -0.149  0.606  0.609  0.587  0.594  0.670  0.666  0.305</code></pre>
 <p>In this sets of models, each contains a random intercept shared by individuals that have the same value for speaker - each speaker’s regression line is shifted up/down by a random amount with mean 0. This implies that each speaker shows the same relationship (i.e., slope) between <em>t1y</em> and <em>f1</em>, but at a different “starting” point.</p>
 <p>What if we want to include a random slope, meaning that speaker’s F1 differs at different rates based on t1y. Then we would run the following code:</p>
-<pre class="r"><code>lme6= lmer(f1~t1y.z+v+(1+t1y.z|speaker), data = ubdb, REML = FALSE)
-summary(lme6) </code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood t-tests use Satterthwaite
-##   approximations to degrees of freedom [lmerMod]
+<pre class="r"><code>lme6= lmer(f1~t1y.z+v+(1+t1y.z|speaker), data = ubdb, REML = FALSE)</code></pre>
+<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control
+## $checkConv, : unable to evaluate scaled gradient</code></pre>
+<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control
+## $checkConv, : Model failed to converge: degenerate Hessian with 1 negative
+## eigenvalues</code></pre>
+<pre class="r"><code>summary(lme6) </code></pre>
+<pre><code>## Error in calculation of the Satterthwaite&#39;s approximation. The output of lme4 package is returned</code></pre>
+<pre><code>## summary from lme4 is returned
+## some computational error has occurred in lmerTest</code></pre>
+<pre><code>## Linear mixed model fit by maximum likelihood  [&#39;lmerMod&#39;]
 ## Formula: f1 ~ t1y.z + v + (1 + t1y.z | speaker)
 ##    Data: ubdb
 ## 
 ##      AIC      BIC   logLik deviance df.resid 
-##  13339.5  13409.2  -6655.8  13311.5     1059 
+##  13339.1  13408.8  -6655.6  13311.1     1059 
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -3.2685 -0.6003  0.0203  0.5899  7.6046 
+## -3.2409 -0.6001  0.0163  0.5877  7.5876 
 ## 
 ## Random effects:
-##  Groups   Name        Variance  Std.Dev.  Corr
-##  speaker  (Intercept) 0.000e+00 0.000e+00     
-##           t1y.z       1.351e-15 3.676e-08  NaN
-##  Residual             1.430e+04 1.196e+02     
+##  Groups   Name        Variance Std.Dev. Corr
+##  speaker  (Intercept)     0.00   0.000      
+##           t1y.z          29.65   5.445   NaN
+##  Residual             14270.15 119.458      
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
-##             Estimate Std. Error       df t value Pr(&gt;|t|)    
-## (Intercept)  591.608     13.967 1071.700  42.358  &lt; 2e-16 ***
-## t1y.z        -53.010      4.084 1071.700 -12.981  &lt; 2e-16 ***
-## vAE          -61.230     17.501 1071.700  -3.499 0.000487 ***
-## vAH         -146.953     17.202 1071.700  -8.543  &lt; 2e-16 ***
-## vAO          -70.465     17.940 1071.700  -3.928 9.12e-05 ***
-## vEH         -113.316     18.281 1071.700  -6.198 8.12e-10 ***
-## vIH         -181.115     16.644 1071.700 -10.882  &lt; 2e-16 ***
-## vIY         -235.341     16.741 1071.700 -14.058  &lt; 2e-16 ***
-## vUW         -216.232     36.066 1071.700  -5.995 2.77e-09 ***
-## vUX         -291.066     18.109 1071.700 -16.073  &lt; 2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+##             Estimate Std. Error t value
+## (Intercept)  591.872     13.960   42.40
+## t1y.z        -53.130      4.763  -11.15
+## vAE          -62.496     17.518   -3.57
+## vAH         -147.026     17.188   -8.55
+## vAO          -70.240     17.924   -3.92
+## vEH         -113.406     18.275   -6.21
+## vIH         -180.800     16.641  -10.86
+## vIY         -235.782     16.732  -14.09
+## vUW         -215.874     36.044   -5.99
+## vUX         -291.812     18.107  -16.12
 ## 
 ## Correlation of Fixed Effects:
 ##       (Intr) t1y.z  vAE    vAH    vAO    vEH    vIH    vIY    vUW   
-## t1y.z  0.150                                                        
-## vAE   -0.785 -0.031                                                 
-## vAH   -0.791  0.017  0.633                                          
-## vAO   -0.761 -0.001  0.607  0.618                                   
-## vEH   -0.765 -0.119  0.600  0.604  0.581                            
-## vIH   -0.857 -0.247  0.662  0.662  0.639  0.656                     
-## vIY   -0.852 -0.246  0.658  0.658  0.635  0.652  0.745              
-## vUW   -0.392 -0.088  0.305  0.306  0.295  0.300  0.339  0.338       
-## vUX   -0.776 -0.149  0.606  0.610  0.587  0.594  0.669  0.666  0.305</code></pre>
+## t1y.z  0.130                                                        
+## vAE   -0.784 -0.028                                                 
+## vAH   -0.791  0.013  0.632                                          
+## vAO   -0.761 -0.001  0.606  0.618                                   
+## vEH   -0.765 -0.104  0.599  0.604  0.581                            
+## vIH   -0.857 -0.214  0.661  0.662  0.638  0.656                     
+## vIY   -0.853 -0.212  0.658  0.658  0.635  0.652  0.745              
+## vUW   -0.392 -0.077  0.304  0.306  0.295  0.300  0.340  0.338       
+## vUX   -0.776 -0.129  0.607  0.610  0.586  0.594  0.669  0.666  0.305
+## convergence code: 0
+## unable to evaluate scaled gradient
+## Model failed to converge: degenerate  Hessian with 1 negative eigenvalues</code></pre>
 <p>This model, in addition to a random intercept, also contains a random slope for t1y. This means that the rate of <em>f1</em> change based on <em>t1y</em> is different from person to person. If an individual has a positive random effect, then their <em>f1</em> increases more quickly with practice than the average, while a negative random effect indicates their <em>f1</em> increases less quickly with practice than the average.</p>
 <p>To constrain the model so that the random slope and random intercept are uncorrelated (and therefore independent, since they are normally distributed), you’d fit the model:</p>
 <pre class="r"><code>lme6= lmer(f1~t1y.z+v+(1|speaker)+(t1y.z-1|speaker), data = ubdb, REML = FALSE)
@@ -695,45 +703,45 @@ summary(lme6) </code></pre>
 ##    Data: ubdb
 ## 
 ##      AIC      BIC   logLik deviance df.resid 
-##  13337.5  13402.2  -6655.8  13311.5     1060 
+##  13335.9  13400.6  -6654.9  13309.9     1060 
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -3.2685 -0.6003  0.0203  0.5899  7.6046 
+## -3.2486 -0.5860  0.0115  0.5935  7.5512 
 ## 
 ## Random effects:
 ##  Groups    Name        Variance Std.Dev.
-##  speaker   (Intercept)     0      0.0   
-##  speaker.1 t1y.z           0      0.0   
-##  Residual              14300    119.6   
+##  speaker   (Intercept)    63.17   7.948 
+##  speaker.1 t1y.z          32.12   5.668 
+##  Residual              14207.58 119.196 
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error       df t value Pr(&gt;|t|)    
-## (Intercept)  591.608     13.967 1071.700  42.358  &lt; 2e-16 ***
-## t1y.z        -53.010      4.084 1071.700 -12.981  &lt; 2e-16 ***
-## vAE          -61.230     17.501 1071.700  -3.499 0.000487 ***
-## vAH         -146.953     17.202 1071.700  -8.543  &lt; 2e-16 ***
-## vAO          -70.465     17.940 1071.700  -3.928 9.12e-05 ***
-## vEH         -113.316     18.281 1071.700  -6.198 8.12e-10 ***
-## vIH         -181.115     16.644 1071.700 -10.882  &lt; 2e-16 ***
-## vIY         -235.341     16.741 1071.700 -14.058  &lt; 2e-16 ***
-## vUW         -216.232     36.066 1071.700  -5.995 2.77e-09 ***
-## vUX         -291.066     18.109 1071.700 -16.073  &lt; 2e-16 ***
+## (Intercept)  592.005     14.388  238.900  41.145  &lt; 2e-16 ***
+## t1y.z        -52.837      4.811    6.800 -10.982 1.46e-05 ***
+## vAE          -63.689     17.495 1067.000  -3.640 0.000285 ***
+## vAH         -146.702     17.152 1065.000  -8.553  &lt; 2e-16 ***
+## vAO          -70.366     17.893 1065.500  -3.933 8.94e-05 ***
+## vEH         -112.594     18.249 1070.000  -6.170 9.67e-10 ***
+## vIH         -181.092     16.637 1072.900 -10.885  &lt; 2e-16 ***
+## vIY         -236.648     16.714 1070.400 -14.159  &lt; 2e-16 ***
+## vUW         -214.863     35.987 1068.200  -5.971 3.21e-09 ***
+## vUX         -292.077     18.075 1069.200 -16.159  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Correlation of Fixed Effects:
 ##       (Intr) t1y.z  vAE    vAH    vAO    vEH    vIH    vIY    vUW   
-## t1y.z  0.150                                                        
-## vAE   -0.785 -0.031                                                 
-## vAH   -0.791  0.017  0.633                                          
-## vAO   -0.761 -0.001  0.607  0.618                                   
-## vEH   -0.765 -0.119  0.600  0.604  0.581                            
-## vIH   -0.857 -0.247  0.662  0.662  0.639  0.656                     
-## vIY   -0.852 -0.246  0.658  0.658  0.635  0.652  0.745              
-## vUW   -0.392 -0.088  0.305  0.306  0.295  0.300  0.339  0.338       
-## vUX   -0.776 -0.149  0.606  0.610  0.587  0.594  0.669  0.666  0.305</code></pre>
+## t1y.z  0.125                                                        
+## vAE   -0.760 -0.029                                                 
+## vAH   -0.766  0.013  0.631                                          
+## vAO   -0.737 -0.001  0.605  0.617                                   
+## vEH   -0.741 -0.103  0.599  0.604  0.581                            
+## vIH   -0.831 -0.213  0.661  0.661  0.637  0.656                     
+## vIY   -0.826 -0.210  0.659  0.657  0.635  0.652  0.745              
+## vUW   -0.381 -0.076  0.304  0.306  0.295  0.301  0.341  0.338       
+## vUX   -0.752 -0.128  0.607  0.609  0.586  0.594  0.669  0.666  0.306</code></pre>
 </div>
 
          

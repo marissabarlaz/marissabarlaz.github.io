@@ -25,6 +25,8 @@ ubdb$speaker = factor(sample(myspeakers, dim(ubdb)[1], replace = TRUE))
 The aim of this workshop is to teach you the ins and outs of using the *ggplot2* package in R.
 
 
+The materials for this workshop can be found [here](https://github.com/marissabarlaz/Workshops/tree/master/Graphing).
+
 
 A lot of the information in this workshop is based on workshops given at Harvard:
 [https://dss.iq.harvard.edu/workshop-materials](https://dss.iq.harvard.edu/workshop-materials)

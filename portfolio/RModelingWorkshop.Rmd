@@ -24,6 +24,8 @@ library(emmeans)
 library(ggplot2)
 ```
 
+The materials for this workshop can be found [here](https://github.com/marissabarlaz/Workshops/tree/master/Modeling).
+
 ## What is the point?
 When looking at data, we want to determine if there is a relationship between our independent and dependent variables. A traditional method of analysis in Linguistics and associated fields is regression analysis, which helps understand how a particular variable (the dependent variable) changes when other variables (independent variables, or predictors) are varied.
 

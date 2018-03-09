@@ -500,21 +500,21 @@ summary(lme1) </code></pre>
 ##    Data: ubdb
 ## 
 ##      AIC      BIC   logLik deviance df.resid 
-##  13991.0  14005.9  -6992.5  13985.0     1070 
+##  13990.9  14005.8  -6992.4  13984.9     1070 
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -2.1271 -0.8934 -0.0448  0.7746  5.1757 
+## -2.1223 -0.8932 -0.0415  0.7840  5.1570 
 ## 
 ## Random effects:
 ##  Groups   Name        Variance Std.Dev.
-##  speaker  (Intercept)     0      0.0   
-##  Residual             26786    163.7   
+##  speaker  (Intercept)    22.65   4.759 
+##  Residual             26762.95 163.594 
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error t value
-## (Intercept)  437.433      4.996   87.55</code></pre>
+## (Intercept)  437.321      5.431   80.53</code></pre>
 <p>The variance in random factor tells you how much variability there is between individuals across all vowels, not the level of variance between individuals within each vowel category.</p>
 <p>Now let’s see if we can model f1 based on tongue position and speaker.</p>
 <pre class="r"><code>lme2= lmer(f1~t1y+(1|speaker), data = ubdb, REML = FALSE)</code></pre>
@@ -535,28 +535,28 @@ summary(lme1) </code></pre>
 ##    Data: ubdb
 ## 
 ##      AIC      BIC   logLik deviance df.resid 
-##  13703.1  13723.0  -6847.5  13695.1     1069 
+##  13702.7  13722.6  -6847.4  13694.7     1069 
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -2.2438 -0.7848  0.0085  0.7143  6.2958 
+## -2.2300 -0.7902  0.0042  0.7099  6.2664 
 ## 
 ## Random effects:
 ##  Groups   Name        Variance Std.Dev.
-##  speaker  (Intercept)     0      0     
-##  Residual             20445    143     
+##  speaker  (Intercept)    40.46   6.361 
+##  Residual             20404.24 142.843 
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##               Estimate Std. Error         df t value Pr(&gt;|t|)    
-## (Intercept)  4.340e+02  4.369e+00  1.076e+03   99.34   &lt;2e-16 ***
-## t1y         -1.557e-02  8.536e-04  1.076e+03  -18.24   &lt;2e-16 ***
+## (Intercept)  4.339e+02  5.213e+00  5.100e+00   83.23    3e-09 ***
+## t1y         -1.558e-02  8.532e-04  1.071e+03  -18.26   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Correlation of Fixed Effects:
 ##     (Intr)
-## t1y 0.043 
+## t1y 0.035 
 ## fit warnings:
 ## Some predictor variables are on very different scales: consider rescaling</code></pre>
 <pre class="r"><code>ubdb$t1y.z = scale(ubdb$t1y,center = TRUE, scale = TRUE)
@@ -568,28 +568,28 @@ summary(lme3) </code></pre>
 ##    Data: ubdb
 ## 
 ##      AIC      BIC   logLik deviance df.resid 
-##  13703.1  13723.0  -6847.5  13695.1     1069 
+##  13702.7  13722.6  -6847.4  13694.7     1069 
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -2.2438 -0.7848  0.0085  0.7143  6.2958 
+## -2.2300 -0.7902  0.0042  0.7099  6.2664 
 ## 
 ## Random effects:
 ##  Groups   Name        Variance Std.Dev.
-##  speaker  (Intercept)     0      0     
-##  Residual             20445    143     
+##  speaker  (Intercept)    40.46   6.361 
+##  Residual             20404.24 142.843 
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error       df t value Pr(&gt;|t|)    
-## (Intercept)  437.433      4.365 1075.700  100.21   &lt;2e-16 ***
-## t1y.z        -79.667      4.367 1075.700  -18.24   &lt;2e-16 ***
+## (Intercept)  437.267      5.209    5.100   83.94    3e-09 ***
+## t1y.z        -79.686      4.365 1071.400  -18.26   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Correlation of Fixed Effects:
 ##       (Intr)
-## t1y.z 0.000</code></pre>
+## t1y.z -0.001</code></pre>
 <pre class="r"><code>lme5= lmer(f1~t1y.z+v+(1|speaker), data = ubdb, REML = FALSE)
 summary(lme5) </code></pre>
 <pre><code>## Linear mixed model fit by maximum likelihood t-tests use Satterthwaite
@@ -605,9 +605,9 @@ summary(lme5) </code></pre>
 ## -3.2685 -0.6003  0.0203  0.5899  7.6046 
 ## 
 ## Random effects:
-##  Groups   Name        Variance Std.Dev.
-##  speaker  (Intercept)     0      0.0   
-##  Residual             14300    119.6   
+##  Groups   Name        Variance  Std.Dev. 
+##  speaker  (Intercept) 1.875e-14 1.369e-07
+##  Residual             1.430e+04 1.196e+02
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
@@ -655,7 +655,7 @@ summary(lme6) </code></pre>
 ## Random effects:
 ##  Groups   Name        Variance  Std.Dev.  Corr
 ##  speaker  (Intercept) 0.000e+00 0.000e+00     
-##           t1y.z       6.661e-14 2.581e-07  NaN
+##           t1y.z       1.351e-15 3.676e-08  NaN
 ##  Residual             1.430e+04 1.196e+02     
 ## Number of obs: 1073, groups:  speaker, 5
 ## 

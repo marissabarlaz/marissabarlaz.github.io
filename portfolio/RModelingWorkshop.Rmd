@@ -3,7 +3,7 @@ title: "R Modeling Workshop"
 author: "Marissa Barlaz"
 date: "February 26, 2018"
 image: "img/portfolio/linear.png"
-showonlyimage: true
+showonlyimage: false
 weight: 3
 draft: false
 description: 'The aim of this workshop is to teach you the basics of statistical models in R.'

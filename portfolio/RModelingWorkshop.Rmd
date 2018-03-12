@@ -7,10 +7,10 @@ showonlyimage: false
 weight: 3
 draft: false
 description: "The aim of this workshop is to teach you the basics of statistical models in R."
-# output:
-#   blogdown::html_page:
-#     toc: true
-#     fig_width: 6
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
 ---
 
 The aim of this workshop is to teach you the basics of statistical models in R.

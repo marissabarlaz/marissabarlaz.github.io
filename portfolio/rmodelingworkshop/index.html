@@ -104,7 +104,23 @@
     <div class="col-lg-8">
       <div class="content-column-content">
          <h1>R Modeling Workshop</h1>
-         <p>The aim of this workshop is to teach you the basics of statistical models in R.</p>
+         <div id="TOC">
+<ul>
+<li><a href="#what-is-the-point">What is the point?</a></li>
+<li><a href="#data">Data</a></li>
+<li><a href="#simple-linear-regression">Simple linear regression</a></li>
+<li><a href="#moving-beyond-simple-linear-regression">Moving beyond simple linear regression</a><ul>
+<li><a href="#interactions">Interactions</a></li>
+<li><a href="#categorical-predictors">Categorical Predictors</a></li>
+<li><a href="#predicting-values">Predicting Values</a></li>
+<li><a href="#binary-outcomes">Binary Outcomes</a></li>
+</ul></li>
+<li><a href="#polynomial-regression">Polynomial Regression</a></li>
+<li><a href="#mixed-effects-models">Mixed Effects Models</a></li>
+</ul>
+</div>
+
+<p>The aim of this workshop is to teach you the basics of statistical models in R.</p>
 <p>The materials for this workshop can be found <a href="https://github.com/marissabarlaz/Workshops/tree/master/Modeling">here</a>.</p>
 <div id="what-is-the-point" class="section level2">
 <h2>What is the point?</h2>
@@ -208,7 +224,7 @@ head(ubdb)</code></pre>
 <h2>Simple linear regression</h2>
 <p>Let’s say we want to determine if there is a predictable relationship between articulation and acoustics. Let’s see if there is a relationship between tongue height and the first formant. The first thing we want to do is examine the data.</p>
 <pre class="r"><code>plot(ubdb$t1y, ubdb$f1)</code></pre>
-<p><img src="/portfolio/RModelingWorkshop_files/figure-html/lm1-1.png" width="672" /></p>
+<p><img src="/portfolio/RModelingWorkshop_files/figure-html/lm1-1.png" width="576" /></p>
 <p>It looks like the relationship is linear (specifically, of the form y=mx+b+e) based on a first glance at the data. We can model the relationship between these two variables using the <em>lm()</em> function.</p>
 <pre class="r"><code>lm1 = lm(f1~t1y, data = ubdb)
 summary(lm1)</code></pre>
@@ -242,7 +258,7 @@ summary(lm1)</code></pre>
 ## BP = 0.28531, df = 1, p-value = 0.5932</code></pre>
 <pre class="r"><code>par(mar = c(4, 4, 2, 2), mfrow = c(2, 2)) 
 plot(lm1)</code></pre>
-<p><img src="/portfolio/RModelingWorkshop_files/figure-html/lm3-1.png" width="672" /></p>
+<p><img src="/portfolio/RModelingWorkshop_files/figure-html/lm3-1.png" width="576" /></p>
 <pre class="r"><code>lmtest::bptest(lm1)</code></pre>
 <pre><code>## 
 ##  studentized Breusch-Pagan test
@@ -606,9 +622,9 @@ summary(lme5) </code></pre>
 ## -3.2685 -0.6003  0.0203  0.5899  7.6046 
 ## 
 ## Random effects:
-##  Groups   Name        Variance Std.Dev.
-##  speaker  (Intercept)     0      0.0   
-##  Residual             14300    119.6   
+##  Groups   Name        Variance  Std.Dev. 
+##  speaker  (Intercept) 9.813e-17 9.906e-09
+##  Residual             1.430e+04 1.196e+02
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
@@ -654,24 +670,24 @@ summary(lme6) </code></pre>
 ## -3.2685 -0.6003  0.0203  0.5899  7.6046 
 ## 
 ## Random effects:
-##  Groups   Name        Variance  Std.Dev.  Corr 
-##  speaker  (Intercept) 4.020e-12 2.005e-06      
-##           t1y.z       6.494e-14 2.548e-07 -1.00
-##  Residual             1.430e+04 1.196e+02      
+##  Groups   Name        Variance  Std.Dev.  Corr
+##  speaker  (Intercept) 0.000e+00 0.000e+00     
+##           t1y.z       1.746e-18 1.321e-09  NaN
+##  Residual             1.430e+04 1.196e+02     
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error       df t value Pr(&gt;|t|)    
-## (Intercept)  591.608     13.967 1073.000  42.358  &lt; 2e-16 ***
-## t1y.z        -53.010      4.084 1073.000 -12.981  &lt; 2e-16 ***
-## vAE          -61.230     17.501 1073.000  -3.499 0.000487 ***
-## vAH         -146.953     17.202 1073.000  -8.543  &lt; 2e-16 ***
-## vAO          -70.465     17.940 1073.000  -3.928 9.12e-05 ***
-## vEH         -113.316     18.281 1073.000  -6.198 8.12e-10 ***
-## vIH         -181.115     16.644 1073.000 -10.882  &lt; 2e-16 ***
-## vIY         -235.341     16.741 1073.000 -14.058  &lt; 2e-16 ***
-## vUW         -216.232     36.066 1073.000  -5.995 2.77e-09 ***
-## vUX         -291.066     18.109 1073.000 -16.073  &lt; 2e-16 ***
+## (Intercept)  591.608     13.967 1071.700  42.358  &lt; 2e-16 ***
+## t1y.z        -53.010      4.084 1071.700 -12.981  &lt; 2e-16 ***
+## vAE          -61.230     17.501 1071.700  -3.499 0.000487 ***
+## vAH         -146.953     17.202 1071.700  -8.543  &lt; 2e-16 ***
+## vAO          -70.465     17.940 1071.700  -3.928 9.12e-05 ***
+## vEH         -113.316     18.281 1071.700  -6.198 8.12e-10 ***
+## vIH         -181.115     16.644 1071.700 -10.882  &lt; 2e-16 ***
+## vIY         -235.341     16.741 1071.700 -14.058  &lt; 2e-16 ***
+## vUW         -216.232     36.066 1071.700  -5.995 2.77e-09 ***
+## vUX         -291.066     18.109 1071.700 -16.073  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 

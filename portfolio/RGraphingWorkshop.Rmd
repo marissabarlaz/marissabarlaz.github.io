@@ -6,10 +6,10 @@ image: "img/portfolio/ggplot33-2.png"
 showonlyimage: false
 weight: 2
 
-  # output:
-#   blogdown::html_page:
-#     toc: true
-#     fig_width: 6
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
 description: "The aim of this workshop is to teach you the basics of using ggplot2."
 ---
 

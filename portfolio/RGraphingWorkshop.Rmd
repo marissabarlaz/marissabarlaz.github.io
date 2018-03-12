@@ -3,7 +3,7 @@ date: "March 12, 2018"
 title: "R Graphing Workshop"
 author: "Marissa Barlaz"
 image: "img/portfolio/ggplot33-2.png"
-showonlyimage: true
+showonlyimage: false
 weight: 2
 
   # output:

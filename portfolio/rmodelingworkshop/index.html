@@ -510,9 +510,8 @@ pl &lt;- ggplot(ubdb) + geom_point(aes(x=t1y, y=f1), size=2, colour=&quot;#99339
 ubdb$speaker = factor(sample(myspeakers, dim(ubdb)[1], replace = TRUE))
 lme1= lmer(f1~1+(1|speaker), data = ubdb, REML = FALSE)
 summary(lme1) </code></pre>
-<pre><code>## summary from lme4 is returned
-## some computational error has occurred in lmerTest</code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood  [&#39;lmerMod&#39;]
+<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use
+##   Satterthwaite&#39;s method [lmerModLmerTest]
 ## Formula: f1 ~ 1 + (1 | speaker)
 ##    Data: ubdb
 ## 
@@ -524,30 +523,27 @@ summary(lme1) </code></pre>
 ## -2.1271 -0.8934 -0.0448  0.7746  5.1757 
 ## 
 ## Random effects:
-##  Groups   Name        Variance Std.Dev.
-##  speaker  (Intercept)     0      0.0   
-##  Residual             26786    163.7   
+##  Groups   Name        Variance  Std.Dev. 
+##  speaker  (Intercept) 1.925e-11 4.388e-06
+##  Residual             2.679e+04 1.637e+02
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
-##             Estimate Std. Error t value
-## (Intercept)  437.433      4.996   87.55</code></pre>
+##             Estimate Std. Error       df t value Pr(&gt;|t|)    
+## (Intercept)  437.433      4.996 1073.000   87.55   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>The variance in random factor tells you how much variability there is between individuals across all vowels, not the level of variance between individuals within each vowel category.</p>
 <p>Now let’s see if we can model f1 based on tongue position and speaker.</p>
 <pre class="r"><code>lme2= lmer(f1~t1y+(1|speaker), data = ubdb, REML = FALSE)</code></pre>
 <pre><code>## Warning: Some predictor variables are on very different scales: consider
+## rescaling
+
+## Warning: Some predictor variables are on very different scales: consider
 ## rescaling</code></pre>
 <pre class="r"><code>summary(lme2) </code></pre>
-<pre><code>## Warning: Some predictor variables are on very different scales: consider
-## rescaling
-
-## Warning: Some predictor variables are on very different scales: consider
-## rescaling
-
-## Warning: Some predictor variables are on very different scales: consider
-## rescaling</code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood t-tests use Satterthwaite
-##   approximations to degrees of freedom [lmerMod]
+<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use
+##   Satterthwaite&#39;s method [lmerModLmerTest]
 ## Formula: f1 ~ t1y + (1 | speaker)
 ##    Data: ubdb
 ## 
@@ -559,15 +555,15 @@ summary(lme1) </code></pre>
 ## -2.2438 -0.7848  0.0085  0.7143  6.2958 
 ## 
 ## Random effects:
-##  Groups   Name        Variance Std.Dev.
-##  speaker  (Intercept)     0      0     
-##  Residual             20445    143     
+##  Groups   Name        Variance  Std.Dev. 
+##  speaker  (Intercept) 6.402e-13 8.001e-07
+##  Residual             2.044e+04 1.430e+02
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##               Estimate Std. Error         df t value Pr(&gt;|t|)    
-## (Intercept)  4.340e+02  4.369e+00  1.076e+03   99.34   &lt;2e-16 ***
-## t1y         -1.557e-02  8.536e-04  1.076e+03  -18.24   &lt;2e-16 ***
+## (Intercept)  4.340e+02  4.369e+00  1.073e+03   99.34   &lt;2e-16 ***
+## t1y         -1.557e-02  8.536e-04  1.073e+03  -18.24   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -579,8 +575,8 @@ summary(lme1) </code></pre>
 <pre class="r"><code>ubdb$t1y.z = scale(ubdb$t1y,center = TRUE, scale = TRUE)
 lme3= lmer(f1~t1y.z+(1|speaker), data = ubdb, REML = FALSE)
 summary(lme3) </code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood t-tests use Satterthwaite
-##   approximations to degrees of freedom [lmerMod]
+<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use
+##   Satterthwaite&#39;s method [lmerModLmerTest]
 ## Formula: f1 ~ t1y.z + (1 | speaker)
 ##    Data: ubdb
 ## 
@@ -592,15 +588,15 @@ summary(lme3) </code></pre>
 ## -2.2438 -0.7848  0.0085  0.7143  6.2958 
 ## 
 ## Random effects:
-##  Groups   Name        Variance Std.Dev.
-##  speaker  (Intercept)     0      0     
-##  Residual             20445    143     
+##  Groups   Name        Variance  Std.Dev. 
+##  speaker  (Intercept) 6.402e-13 8.001e-07
+##  Residual             2.044e+04 1.430e+02
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error       df t value Pr(&gt;|t|)    
-## (Intercept)  437.433      4.365 1075.700  100.21   &lt;2e-16 ***
-## t1y.z        -79.667      4.367 1075.700  -18.24   &lt;2e-16 ***
+## (Intercept)  437.433      4.365 1073.000  100.21   &lt;2e-16 ***
+## t1y.z        -79.667      4.367 1073.000  -18.24   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -609,8 +605,8 @@ summary(lme3) </code></pre>
 ## t1y.z 0.000</code></pre>
 <pre class="r"><code>lme5= lmer(f1~t1y.z+v+(1|speaker), data = ubdb, REML = FALSE)
 summary(lme5) </code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood t-tests use Satterthwaite
-##   approximations to degrees of freedom [lmerMod]
+<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use
+##   Satterthwaite&#39;s method [lmerModLmerTest]
 ## Formula: f1 ~ t1y.z + v + (1 | speaker)
 ##    Data: ubdb
 ## 
@@ -623,22 +619,22 @@ summary(lme5) </code></pre>
 ## 
 ## Random effects:
 ##  Groups   Name        Variance  Std.Dev. 
-##  speaker  (Intercept) 9.813e-17 9.906e-09
+##  speaker  (Intercept) 3.666e-14 1.915e-07
 ##  Residual             1.430e+04 1.196e+02
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error       df t value Pr(&gt;|t|)    
-## (Intercept)  591.608     13.967 1071.700  42.358  &lt; 2e-16 ***
-## t1y.z        -53.010      4.084 1071.700 -12.981  &lt; 2e-16 ***
-## vAE          -61.230     17.501 1071.700  -3.499 0.000487 ***
-## vAH         -146.953     17.202 1071.700  -8.543  &lt; 2e-16 ***
-## vAO          -70.465     17.940 1071.700  -3.928 9.12e-05 ***
-## vEH         -113.316     18.281 1071.700  -6.198 8.12e-10 ***
-## vIH         -181.115     16.644 1071.700 -10.882  &lt; 2e-16 ***
-## vIY         -235.341     16.741 1071.700 -14.058  &lt; 2e-16 ***
-## vUW         -216.232     36.066 1071.700  -5.995 2.77e-09 ***
-## vUX         -291.066     18.109 1071.700 -16.073  &lt; 2e-16 ***
+## (Intercept)  591.608     13.967 1073.000  42.358  &lt; 2e-16 ***
+## t1y.z        -53.010      4.084 1073.000 -12.981  &lt; 2e-16 ***
+## vAE          -61.230     17.501 1073.000  -3.499 0.000487 ***
+## vAH         -146.953     17.202 1073.000  -8.543  &lt; 2e-16 ***
+## vAO          -70.465     17.940 1073.000  -3.928 9.12e-05 ***
+## vEH         -113.316     18.281 1073.000  -6.198 8.12e-10 ***
+## vIH         -181.115     16.644 1073.000 -10.882  &lt; 2e-16 ***
+## vIY         -235.341     16.741 1073.000 -14.058  &lt; 2e-16 ***
+## vUW         -216.232     36.066 1073.000  -5.995 2.77e-09 ***
+## vUX         -291.066     18.109 1073.000 -16.073  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -657,8 +653,8 @@ summary(lme5) </code></pre>
 <p>What if we want to include a random slope, meaning that speaker’s F1 differs at different rates based on t1y. Then we would run the following code:</p>
 <pre class="r"><code>lme6= lmer(f1~t1y.z+v+(1+t1y.z|speaker), data = ubdb, REML = FALSE)
 summary(lme6) </code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood t-tests use Satterthwaite
-##   approximations to degrees of freedom [lmerMod]
+<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use
+##   Satterthwaite&#39;s method [lmerModLmerTest]
 ## Formula: f1 ~ t1y.z + v + (1 + t1y.z | speaker)
 ##    Data: ubdb
 ## 
@@ -672,22 +668,22 @@ summary(lme6) </code></pre>
 ## Random effects:
 ##  Groups   Name        Variance  Std.Dev.  Corr
 ##  speaker  (Intercept) 0.000e+00 0.000e+00     
-##           t1y.z       1.746e-18 1.321e-09  NaN
+##           t1y.z       1.404e-10 1.185e-05  NaN
 ##  Residual             1.430e+04 1.196e+02     
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error       df t value Pr(&gt;|t|)    
-## (Intercept)  591.608     13.967 1071.700  42.358  &lt; 2e-16 ***
-## t1y.z        -53.010      4.084 1071.700 -12.981  &lt; 2e-16 ***
-## vAE          -61.230     17.501 1071.700  -3.499 0.000487 ***
-## vAH         -146.953     17.202 1071.700  -8.543  &lt; 2e-16 ***
-## vAO          -70.465     17.940 1071.700  -3.928 9.12e-05 ***
-## vEH         -113.316     18.281 1071.700  -6.198 8.12e-10 ***
-## vIH         -181.115     16.644 1071.700 -10.882  &lt; 2e-16 ***
-## vIY         -235.341     16.741 1071.700 -14.058  &lt; 2e-16 ***
-## vUW         -216.232     36.066 1071.700  -5.995 2.77e-09 ***
-## vUX         -291.066     18.109 1071.700 -16.073  &lt; 2e-16 ***
+## (Intercept)  591.608     13.967 1073.000  42.358  &lt; 2e-16 ***
+## t1y.z        -53.010      4.084 1073.000 -12.981  &lt; 2e-16 ***
+## vAE          -61.230     17.501 1073.000  -3.499 0.000487 ***
+## vAH         -146.953     17.202 1073.000  -8.543  &lt; 2e-16 ***
+## vAO          -70.465     17.940 1073.000  -3.928 9.12e-05 ***
+## vEH         -113.316     18.281 1073.000  -6.198 8.12e-10 ***
+## vIH         -181.115     16.644 1073.000 -10.882  &lt; 2e-16 ***
+## vIY         -235.341     16.741 1073.000 -14.058  &lt; 2e-16 ***
+## vUW         -216.232     36.066 1073.000  -5.995 2.77e-09 ***
+## vUX         -291.066     18.109 1073.000 -16.073  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -706,8 +702,8 @@ summary(lme6) </code></pre>
 <p>To constrain the model so that the random slope and random intercept are uncorrelated (and therefore independent, since they are normally distributed), you’d fit the model:</p>
 <pre class="r"><code>lme6= lmer(f1~t1y.z+v+(1|speaker)+(t1y.z-1|speaker), data = ubdb, REML = FALSE)
 summary(lme6) </code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood t-tests use Satterthwaite
-##   approximations to degrees of freedom [lmerMod]
+<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use
+##   Satterthwaite&#39;s method [lmerModLmerTest]
 ## Formula: f1 ~ t1y.z + v + (1 | speaker) + (t1y.z - 1 | speaker)
 ##    Data: ubdb
 ## 
@@ -727,16 +723,16 @@ summary(lme6) </code></pre>
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error       df t value Pr(&gt;|t|)    
-## (Intercept)  591.608     13.967 1071.700  42.358  &lt; 2e-16 ***
-## t1y.z        -53.010      4.084 1071.700 -12.981  &lt; 2e-16 ***
-## vAE          -61.230     17.501 1071.700  -3.499 0.000487 ***
-## vAH         -146.953     17.202 1071.700  -8.543  &lt; 2e-16 ***
-## vAO          -70.465     17.940 1071.700  -3.928 9.12e-05 ***
-## vEH         -113.316     18.281 1071.700  -6.198 8.12e-10 ***
-## vIH         -181.115     16.644 1071.700 -10.882  &lt; 2e-16 ***
-## vIY         -235.341     16.741 1071.700 -14.058  &lt; 2e-16 ***
-## vUW         -216.232     36.066 1071.700  -5.995 2.77e-09 ***
-## vUX         -291.066     18.109 1071.700 -16.073  &lt; 2e-16 ***
+## (Intercept)  591.608     13.967 1073.000  42.358  &lt; 2e-16 ***
+## t1y.z        -53.010      4.084 1073.000 -12.981  &lt; 2e-16 ***
+## vAE          -61.230     17.501 1073.000  -3.499 0.000487 ***
+## vAH         -146.953     17.202 1073.000  -8.543  &lt; 2e-16 ***
+## vAO          -70.465     17.940 1073.000  -3.928 9.12e-05 ***
+## vEH         -113.316     18.281 1073.000  -6.198 8.12e-10 ***
+## vIH         -181.115     16.644 1073.000 -10.882  &lt; 2e-16 ***
+## vIY         -235.341     16.741 1073.000 -14.058  &lt; 2e-16 ***
+## vUW         -216.232     36.066 1073.000  -5.995 2.77e-09 ***
+## vUX         -291.066     18.109 1073.000 -16.073  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 

@@ -144,8 +144,8 @@
 <pre class="r"><code>plot(ubdb$t1y, ubdb$f1)</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/basegraph-2.png" width="576" /></p>
 <pre class="r"><code>boxplot(f1~v, notch = TRUE, data = ubdb)</code></pre>
-<pre><code>## Warning in bxp(structure(list(stats = structure(c(419.198, 574.662,
-## 611.469, : some notches went outside hinges (&#39;box&#39;): maybe set notch=FALSE</code></pre>
+<pre><code>## Warning in bxp(list(stats = structure(c(419.198, 574.662, 611.469,
+## 698.7815, : some notches went outside hinges (&#39;box&#39;): maybe set notch=FALSE</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/basegraph-3.png" width="576" /></p>
 <p>However, each of these functions have slightly different syntactic forms, and the code is more complex to create plots. The <em>ggplot()</em> function, on the other hand, has a consistent coding structure, and creates much prettier plots. Once you understand the basic functions in ggplot, pretty and informative graphics are only a few steps away!</p>
 <p>The basic idea is similar to that of Photoshop. You independently specify building blocks of your plot, and combine them to create a graphical display. We add these building blocks (i.e., layers) to the graph using the “+” sign. Building blocks include:</p>

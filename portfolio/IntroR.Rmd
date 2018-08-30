@@ -24,7 +24,7 @@ To install R, go to [www.r-project.org](www.r-project.org) and choose a mirror s
 
 While R is great, it is not very user friendly. Luckily, RStudio exists to help with this problem. To download, go to [www.rstudio.org](www.rstudio.org). This is what RStudio looks like. It has four subwindows: the console, the code/variable viewer, the environment and history viewer, and the "other" viewer.
 
-![This is RStudio!](Rstudio.png)
+![This is RStudio!](/img/Rstudio.png)
 
 Rstudio allows you to split your work into various contexts. Each context has its own working directory, workspace, and history. Going forward, I recommend you create a project for each distinct task you plan to complete (e.g., different courses, qualifying exams, dissertation analyses). This way, if you accidentally call datasets for different courses by the same name, you won’t erase one because they are in different projects.
 
@@ -274,7 +274,7 @@ As you may have noted, this tutorial is formatted in HTML. The formatting was do
 
 To create a new RMarkdown file, go to File > New File > RMarkdown. Your window will look like this:
 
-![This is RMarkdown!](RMarkdown.png)
+![This is RMarkdown!](/img/RMarkdown.png)
 
 
 You can save an RMarkdown file to be rendered as Word, PDF or HTML. Note you can always switch, or even just use the knit button to render it as another format just once!
@@ -282,7 +282,7 @@ Note, you can also save just your R code with comments (as a .R file), but RMark
 
 RMarkdown has a bunch of stuff included. The top of the document is the header. It gives information such as the title, author, default output (HTML, PDF, etc.), and any other global information. Then, there is text, which goes in the white space. (This is text, actually!) Finally, there are code chunks. Code chunks can be names or not.
 
-![Markdown example](markdownexample.png)
+![Markdown example](/img/markdownexample.png)
 
 There are different options you can add in each chunk: 
 

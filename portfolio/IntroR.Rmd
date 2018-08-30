@@ -6,7 +6,7 @@ image: "img/portfolio/RStudio-Ball.png"
 showonlyimage: false
 weight: 3
 draft: false
-description: "The aim of this workshop is to teach you the basics of statistical models in R."
+description: "The aim of this workshop is to teach you the basics of how to use R and RMarkdown."
 output:
   blogdown::html_page:
     toc: true

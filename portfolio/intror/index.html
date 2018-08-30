@@ -1,0 +1,1951 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Introduction to R and RMarkdown</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/owl.carousel.css">
+<link rel="stylesheet" href="/css/owl.theme.css">
+
+
+  <link href="/css/style.default.css" rel="stylesheet" id="theme-stylesheet">
+
+ 
+
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+
+<link href="/css/custom.css" rel="stylesheet">
+<link rel="shortcut icon" href="/img/favicon.png">
+
+
+</head>
+<body>
+  <div id="all">
+      <div class="container-fluid">
+          <div class="row row-offcanvas row-offcanvas-left">
+              <div id="sidebar" class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+  <div class="sidebar-content">
+    <h1 class="sidebar-heading"><a href="/">Dr. Marissa Barlaz</a></h1>
+    
+      <p class="sidebar-p">I the Linguistic Data Analytics Manager in the School of Literatures, Cultures, and Linguistics at the University of Illinois at Urbana-Champaign.</p>
+    
+    <ul class="sidebar-menu">
+      
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/about/">About</a></li>
+      
+        <li><a href="/contact/">Get in touch</a></li>
+      
+    </ul>
+    <p class="social">
+  
+  <a href="https://www.facebook.com/marissa.goldrich" data-animate-hover="pulse" class="external facebook">
+    <i class="fa fa-facebook"></i>
+  </a>
+  
+  
+  
+  
+  <a href="https://www.instagram.com/salem_samoyed/" title="" class="external instagram">
+    <i class="fa fa-instagram"></i>
+  </a>
+  
+  
+  <a href="mailto:marissa.barlaz@gmail.com" data-animate-hover="pulse" class="email">
+    <i class="fa fa-envelope"></i>
+  </a>
+  
+  
+  <a href="https://www.linkedin.com/in/marissa-barlaz-52801830/" data-animate-hover="pulse">
+    <i class="fa fa-linkedin"></i>
+  </a>
+  
+  
+  
+</p>
+
+
+    <div class="copyright">
+      <p class="credit">
+        
+          &copy;2018 Marissa Barlaz
+        
+        | Template by <a href="https://bootstrapious.com/free-templates" class="external">Bootstrapious.com</a>
+
+&amp; ported to Hugo by <a href="https://github.com/kishaningithub">Kishan B</a>
+
+      </p>
+    </div>
+  </div>
+</div>
+
+              
+<div class="col-xs-12 col-sm-8 col-md-9 content-column white-background">
+  <div class="small-navbar visible-xs">
+  <button type="button" data-toggle="offcanvas" class="btn btn-ghost pull-left"> <i class="fa fa-align-left"> </i>Menu</button>
+  <h1 class="small-navbar-heading"><a href="/">Dr. Marissa Barlaz</a></h1>
+</div>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="content-column-content">
+         <h1>Introduction to R and RMarkdown</h1>
+         <div id="TOC">
+<ul>
+<li><a href="#welcome-to-r">Welcome to R!</a></li>
+<li><a href="#what-can-we-do-with-r">What can we do with R?</a><ul>
+<li><a href="#r-as-a-calculator">R as a calculator</a></li>
+<li><a href="#variables">Variables</a></li>
+<li><a href="#functions">Functions</a></li>
+<li><a href="#packages">Packages</a></li>
+</ul></li>
+<li><a href="#types-of-data">Types of data</a><ul>
+<li><a href="#data-frames">Data Frames</a></li>
+<li><a href="#subsetting">Subsetting</a></li>
+<li><a href="#loading-data">Loading data</a></li>
+</ul></li>
+<li><a href="#rmarkdown">RMarkdown</a></li>
+<li><a href="#rmarkdown-formatting">RMarkdown Formatting</a><ul>
+<li><a href="#bullet-points">Bullet Points</a></li>
+<li><a href="#images">Images</a></li>
+<li><a href="#hyperlinks">Hyperlinks</a></li>
+<li><a href="#tables">Tables</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="welcome-to-r" class="section level1">
+<h1>Welcome to R!</h1>
+<p>You might be asking, why should I use R instead of another type of software? In addition to being able to do statistics (like in Minitab, SPSS, Stata, etc.), you can do high-level scripting, statistical programming, and exploratory data analysis in R. It is free and open-source, meaning there is a large community of contributors and users. R and Rmarkdown allow reproducibility and transparency in analyses, which is becoming increasingly important in social sciences research.</p>
+<p>To install R, go to <a href="www.r-project.org" class="uri">www.r-project.org</a> and choose a mirror site near here. (There is one at WashU in St. Louis that works.)</p>
+<p>While R is great, it is not very user friendly. Luckily, RStudio exists to help with this problem. To download, go to <a href="www.rstudio.org" class="uri">www.rstudio.org</a>. This is what RStudio looks like. It has four subwindows: the console, the code/variable viewer, the environment and history viewer, and the “other” viewer.</p>
+<div class="figure">
+<img src="Rstudio.png" alt="This is RStudio!" />
+<p class="caption">This is RStudio!</p>
+</div>
+<p>Rstudio allows you to split your work into various contexts. Each context has its own working directory, workspace, and history. Going forward, I recommend you create a project for each distinct task you plan to complete (e.g., different courses, qualifying exams, dissertation analyses). This way, if you accidentally call datasets for different courses by the same name, you won’t erase one because they are in different projects.</p>
+<p>To create a new project, go to the top right corner of RStudio, where it says ‘Project: (None)’, and click on New Project. Choose a folder that will remain static on your computer to put all of your data and code, and create the new project in a new directory.</p>
+</div>
+<div id="what-can-we-do-with-r" class="section level1">
+<h1>What can we do with R?</h1>
+<div id="r-as-a-calculator" class="section level2">
+<h2>R as a calculator</h2>
+<p>First of all, R can be used as a calculator! R follows the standard order of operations. Please excuse my dear Aunt Sally!</p>
+<pre class="r"><code>1 + 3</code></pre>
+<pre><code>## [1] 4</code></pre>
+<pre class="r"><code>4 - 2</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="r"><code>5 * 5</code></pre>
+<pre><code>## [1] 25</code></pre>
+<pre class="r"><code>8 / 2</code></pre>
+<pre><code>## [1] 4</code></pre>
+<pre class="r"><code>77 %% 4</code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>132 %/% 8</code></pre>
+<pre><code>## [1] 16</code></pre>
+<pre class="r"><code>9 ^ 7</code></pre>
+<pre><code>## [1] 4782969</code></pre>
+</div>
+<div id="variables" class="section level2">
+<h2>Variables</h2>
+<p>You will likely want to use any output as input into future calculations. To save the information, assign it to a variable. There are many styles of naming variables. Choose names that are concise, yet informative. I highly recommend against using the name data!</p>
+<p>You can use either “&lt;-” or “=” for variable assignment.</p>
+<pre class="r"><code>z = 10 + 20
+myvariable = 33 %/% 4</code></pre>
+</div>
+<div id="functions" class="section level2">
+<h2>Functions</h2>
+<p>Functions contain expressions (or, code) that perform a specific task. Inputs are called arguments, output is the return value. When you use the function, you are calling the function. R will evaluate the call and return the output. You can save the output as a variable. Functions can have multiple inputs, or arguments. Some are required. Others have default values, so you don’t have to specify them unless you are deviating from the default. You can find out the argument structure for a function using the args() function.</p>
+<pre class="r"><code>args(sd)</code></pre>
+<pre><code>## function (x, na.rm = FALSE) 
+## NULL</code></pre>
+<pre class="r"><code>x = c(1,5,7,3,8,4,8,5,2,21,8,0,4,2,1,5)
+
+sd(x)</code></pre>
+<pre><code>## [1] 4.946379</code></pre>
+<pre class="r"><code>mysd = sd(x)
+
+is.numeric(x)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>as.factor(x)</code></pre>
+<pre><code>##  [1] 1  5  7  3  8  4  8  5  2  21 8  0  4  2  1  5 
+## Levels: 0 1 2 3 4 5 7 8 21</code></pre>
+<pre class="r"><code>as.character(x)</code></pre>
+<pre><code>##  [1] &quot;1&quot;  &quot;5&quot;  &quot;7&quot;  &quot;3&quot;  &quot;8&quot;  &quot;4&quot;  &quot;8&quot;  &quot;5&quot;  &quot;2&quot;  &quot;21&quot; &quot;8&quot;  &quot;0&quot;  &quot;4&quot;  &quot;2&quot; 
+## [15] &quot;1&quot;  &quot;5&quot;</code></pre>
+<pre class="r"><code>length(x)</code></pre>
+<pre><code>## [1] 16</code></pre>
+<pre class="r"><code>head(x)</code></pre>
+<pre><code>## [1] 1 5 7 3 8 4</code></pre>
+</div>
+<div id="packages" class="section level2">
+<h2>Packages</h2>
+<p>R has a lot of built-in functions. However, many functions you will be using are not built in. Rather, R users have written packages, or a series of functions, that can be used for a specific purpose. For example, lm() is built in to R, so we can run linear models, but if you want to run a mixed effects model, we have to use lmer() from the lme4 package. Most packages are available to install from the R repository. To install the package, use install.packages(). Note: this requires an internet connection. R will also install any packages that lme4 requires in order to run. You can also download the package onto your computer and install it manually using the code:</p>
+<pre><code>install.packages(pkgs = file.choose(), repos = NULL, type = &quot;source&quot;)</code></pre>
+<p>Once a package is installed on your computer, it is there until you uninstall it. You do not need to install the package every time you open R.However, whenever you want to use a function from a package, you have to make sure that package is loaded. This needs to be done every time you open R or change projects. This can be done one of two ways:</p>
+<pre><code>library(lme4)
+require(lme4)</code></pre>
+<p>Sometimes, multiple packages will have functions with the same name. In this case, calling the function by name will use the function from the package loaded most recently. If you want to make sure you are using the right package, specify the package before double colons, then call the function:</p>
+<pre><code>dplyr::select(...)</code></pre>
+</div>
+</div>
+<div id="types-of-data" class="section level1">
+<h1>Types of data</h1>
+<p>R has three basic, built-in types of data: character, numeric, and logical. Another important type of data is a factor, or category. You can check the type of data using the class() function.</p>
+<p>Data in R all comes in vectors. There is no such thing as a scalar in R. Rather, it is just a vector of length 1. A vector is an ordered container, with all elements being of the same type. To create a vector, you can use c(), which combines individual elements. When calling character data, put your variable in quotation marks.</p>
+<p>You can find out if a vector is of a certain type by using the is.X() function family:</p>
+<pre><code>is.logical(X)
+is.factor(X)
+is.numeric(X)</code></pre>
+<p>If you need to coerce a vector to be another type, you can use the as.X() function family:</p>
+<pre><code>as.logical(X)
+as.factor(X)
+as.numeric(X)</code></pre>
+<p>Some important functions regarding vectors:</p>
+<pre><code>length() retrieves the number of elements in a vector.
+head() shows the first 6 elements of a vector.
+names() shows names of vector elements.
+is.na() shows whether any data is missing</code></pre>
+<div id="data-frames" class="section level2">
+<h2>Data Frames</h2>
+<p>It’s great to have a lot of information in vector form, but we will need to keep data about experimental work all in one object, which will keep all information about an experiment. A data frame is similar to an Excel spreadsheet. Data frames are ordered containers of vectors. Each vector can be of a different type, but all must be of the same length. When we load information into R from Excel, a .csv, or a .txt file, it generally will take the form of a data frame. You can also combine various variables into a data frame:</p>
+<pre><code>X = data.frame(colname1 = variable1, colname2 = variable2, ...)</code></pre>
+<p>Some other important parts of data frames:</p>
+<pre><code>length(dataframe) will tell you how many variables are in your data frame.
+dim(dataframe) will show you the number of rows and colums in your dataframe.</code></pre>
+<p>To call a particular variable, you use the $:</p>
+<pre><code>dataframe$speaker
+dataframe$reactiontime</code></pre>
+<p>You can also “attach” your data using attach(), which tells R to consider your data frame native to the R search path, meaning you do not have to specify the data frame when calling a variable. Be careful when you do this – if you update your data frame in any way, or have different data frames, you might run the risk of calling the wrong variable!</p>
+<p>```</p>
+<pre class="r"><code>library(Rling)
+data(&quot;ELP&quot;)
+
+head(ELP)</code></pre>
+<pre><code>##         Word Length SUBTLWF POS Mean_RT
+## 1    rackets      7    0.96  NN  790.87
+## 2 stepmother     10    4.24  NN  692.55
+## 3 delineated     10    0.04  VB  960.45
+## 4   swimmers      8    1.49  NN  771.13
+## 5     umpire      6    1.06  NN  882.50
+## 6      cobra      5    3.33  NN  645.85</code></pre>
+<pre class="r"><code>length(ELP)</code></pre>
+<pre><code>## [1] 5</code></pre>
+<pre class="r"><code>dim(ELP)</code></pre>
+<pre><code>## [1] 880   5</code></pre>
+<pre class="r"><code>str(ELP)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    880 obs. of  5 variables:
+##  $ Word   : Factor w/ 880 levels &quot;abbreviation&quot;,..: 631 747 200 773 821 134 845 140 94 354 ...
+##  $ Length : int  7 10 10 8 6 5 5 8 8 6 ...
+##  $ SUBTLWF: num  0.96 4.24 0.04 1.49 1.06 3.33 0.1 0.06 0.43 5.41 ...
+##  $ POS    : Factor w/ 3 levels &quot;JJ&quot;,&quot;NN&quot;,&quot;VB&quot;: 2 2 3 2 2 2 3 2 2 2 ...
+##  $ Mean_RT: num  791 693 960 771 882 ...</code></pre>
+<pre class="r"><code>summary(ELP)</code></pre>
+<pre><code>##            Word         Length         SUBTLWF         POS     
+##  abbreviation:  1   Min.   : 3.00   Min.   :   0.020   JJ:159  
+##  abortions   :  1   1st Qu.: 7.00   1st Qu.:   0.180   NN:532  
+##  abrupt      :  1   Median : 8.00   Median :   0.570   VB:189  
+##  absentee    :  1   Mean   : 8.22   Mean   :   8.603           
+##  abutment    :  1   3rd Qu.:10.00   3rd Qu.:   2.105           
+##  accomplice  :  1   Max.   :20.00   Max.   :2556.730           
+##  (Other)     :874                                              
+##     Mean_RT      
+##  Min.   : 517.5  
+##  1st Qu.: 695.7  
+##  Median : 764.5  
+##  Mean   : 786.8  
+##  3rd Qu.: 853.0  
+##  Max.   :1324.6  
+## </code></pre>
+</div>
+<div id="subsetting" class="section level2">
+<h2>Subsetting</h2>
+<p>You can subset your data in various ways. One way is by position, in which you give the indices of the element(s) you want.</p>
+<pre class="r"><code>ELP[1:10,5]</code></pre>
+<pre><code>##  [1] 790.87 692.55 960.45 771.13 882.50 645.85 760.29 682.26 921.25 695.53</code></pre>
+<p>Another way is by exclusion, in which you give the indices of the element(s) you want.</p>
+<pre class="r"><code>head(ELP[-c(5,2),2:4])</code></pre>
+<pre><code>##   Length SUBTLWF POS
+## 1      7    0.96  NN
+## 3     10    0.04  VB
+## 4      8    1.49  NN
+## 6      5    3.33  NN
+## 7      5    0.10  VB
+## 8      8    0.06  NN</code></pre>
+<p>If you index by name, you call the name of he variable in the dataframe.</p>
+<pre class="r"><code>ELP[1:10, &quot;SUBTLWF&quot;]</code></pre>
+<pre><code>##  [1] 0.96 4.24 0.04 1.49 1.06 3.33 0.10 0.06 0.43 5.41</code></pre>
+<pre class="r"><code>ELP[1:10, c(&quot;SUBTLWF&quot;, &quot;Word&quot;)]</code></pre>
+<pre><code>##    SUBTLWF       Word
+## 1     0.96    rackets
+## 2     4.24 stepmother
+## 3     0.04 delineated
+## 4     1.49   swimmers
+## 5     1.06     umpire
+## 6     3.33      cobra
+## 7     0.10      vexes
+## 8     0.06   colonist
+## 9     0.43   bursitis
+## 10    5.41     hatred</code></pre>
+<p>Indexing by all takes all elements of one dimension of your data frame.</p>
+<pre class="r"><code>ELP[,1:3]</code></pre>
+<pre><code>##                     Word Length SUBTLWF
+## 1                rackets      7    0.96
+## 2             stepmother     10    4.24
+## 3             delineated     10    0.04
+## 4               swimmers      8    1.49
+## 5                 umpire      6    1.06
+## 6                  cobra      5    3.33
+## 7                  vexes      5    0.10
+## 8               colonist      8    0.06
+## 9               bursitis      8    0.43
+## 10                hatred      6    5.41
+## 11              commends      8    0.10
+## 12          cheerleaders     12    2.86
+## 13              decrepit      8    0.49
+## 14                tenets      6    0.24
+## 15               Niagara      7    3.08
+## 16                   see      3 2556.73
+## 17                   err      3    1.51
+## 18            inducement     10    0.25
+## 19             vicarious      9    0.25
+## 20                  balk      4    0.06
+## 21            recognizes     10    2.00
+## 22                 jowls      5    0.31
+## 23              evasions      8    0.14
+## 24            culminates     10    0.14
+## 25               Bermuda      7    3.47
+## 26               Audubon      7    0.24
+## 27              gracious      8    7.16
+## 28         radioactivity     13    0.80
+## 29                  gown      4    6.55
+## 30             particles      9    3.02
+## 31            ordinances     10    0.16
+## 32                 ovary      5    0.51
+## 33                reared      6    0.41
+## 34                nudist      6    0.65
+## 35           exportation     11    0.02
+## 36                unhurt      6    0.10
+## 37               jackpot      7    3.71
+## 38              medieval      8    2.96
+## 39              hangover      8    3.90
+## 40               quintet      7    0.51
+## 41             guesswork      9    0.43
+## 42             vocalists      9    0.04
+## 43            coincident     10    0.20
+## 44             harassing      9    2.67
+## 45               burners      7    0.55
+## 46               discard      7    1.08
+## 47                sliver      6    0.45
+## 48            contradict     10    1.35
+## 49                 seedy      5    0.73
+## 50             statewide      9    0.29
+## 51             leisurely      9    0.57
+## 52            shoestring     10    0.25
+## 53               quilted      7    0.08
+## 54           punctuality     11    0.65
+## 55               ketchup      7    6.08
+## 56               anomaly      7    1.24
+## 57           outnumbered     11    2.12
+## 58                 elude      5    0.41
+## 59               revelry      7    0.18
+## 60           administers     11    0.12
+## 61                 onion      5    4.24
+## 62             weariness      9    0.10
+## 63                 riser      5    0.35
+## 64               acquire      7    2.65
+## 65             repairing      9    0.82
+## 66           discovering     11    2.10
+## 67             notorious      9    3.71
+## 68            suborbital     10    0.02
+## 69              assisted      8    1.71
+## 70               pistols      7    1.88
+## 71               bygones      7    3.41
+## 72              grunting      8    5.08
+## 73               citadel      7    0.45
+## 74              Florence      8    5.37
+## 75                  oboe      4    0.35
+## 76          glockenspiel     12    0.18
+## 77           commentator     11    2.73
+## 78            acquiesced     10    0.10
+## 79              greenish      8    0.16
+## 80                Connie      6   15.80
+## 81               papoose      7    0.22
+## 82           unrevealing     11    0.02
+## 83            tabernacle     10    0.71
+## 84                 flora      5    2.24
+## 85                 Morse      5    2.76
+## 86         physiological     13    0.63
+## 87                 unwed      5    0.53
+## 88             crabapple      9    0.37
+## 89           sympathized     11    0.04
+## 90              baritone      8    0.41
+## 91               rookies      7    1.18
+## 92               juniper      7    0.47
+## 93               Jehovah      7    0.78
+## 94             lazybones      9    0.16
+## 95             disgusted      9    1.76
+## 96             anthology      9    0.27
+## 97               brother      7  283.94
+## 98                 FALSE      5   21.14
+## 99            alienation     10    0.43
+## 100           omnipotent     10    0.37
+## 101               plucky      6    0.39
+## 102            orangutan      9    0.57
+## 103                 knew      4  368.96
+## 104            judgeship      9    0.20
+## 105            regretted      9    1.39
+## 106             absentee      8    0.35
+## 107         accumulating     12    0.35
+## 108        fortification     13    0.10
+## 109             premiere      8    3.71
+## 110          predicament     11    1.96
+## 111             seaborne      8    0.14
+## 112           fungicides     10    0.02
+## 113           organizers     10    0.39
+## 114                puppy      5   11.45
+## 115            reopening      9    0.67
+## 116                hiked      5    0.37
+## 117            gyrations      9    0.06
+## 118             receives      8    1.55
+## 119             receipts      8    3.45
+## 120                 vice      4   18.63
+## 121               leaden      6    0.10
+## 122                Clair      5    0.92
+## 123                flunk      5    1.80
+## 124           yesteryear     10    0.18
+## 125              torpedo      7    6.39
+## 126               played      6   56.27
+## 127      desensitization     15    0.06
+## 128             mornings      8    3.29
+## 129          outstanding     11    7.45
+## 130            penniless      9    1.24
+## 131                 disk      4    6.63
+## 132               wooded      6    0.33
+## 133            gunpowder      9    1.67
+## 134               chalky      6    0.12
+## 135             effected      8    0.35
+## 136            graceless      9    0.12
+## 137             legacies      8    0.12
+## 138                  rug      3   10.41
+## 139              inhaler      7    1.18
+## 140            packhorse      9    0.02
+## 141             noontime      8    0.16
+## 142               grated      6    0.16
+## 143             rehearse      8    4.51
+## 144         corroborated     12    0.31
+## 145          viciousness     11    0.12
+## 146          inheritance     11    3.18
+## 147               copied      6    2.51
+## 148                 tons      4    9.41
+## 149           nutritious     10    0.88
+## 150              flapped      7    0.12
+## 151            grassland      9    0.10
+## 152             acrobats      8    0.37
+## 153              coerced      7    0.84
+## 154            soundness      9    0.04
+## 155               jargon      6    0.61
+## 156             Gertrude      8    2.76
+## 157          unimpressed     11    0.31
+## 158               leaded      6    0.45
+## 159             weekends      8    7.39
+## 160                 lacy      4    0.63
+## 161                zooms      5    0.06
+## 162                vigil      5    0.86
+## 163            imitators      9    0.24
+## 164              crawled      7    3.96
+## 165             preceded      8    0.59
+## 166            flatulent      9    0.22
+## 167       specifications     14    0.82
+## 168              lyrical      7    0.51
+## 169            hospitals      9    6.18
+## 170             freights      8    0.06
+## 171          celebration     11    9.88
+## 172            Yorkshire      9    1.00
+## 173           overexpose     10    0.02
+## 174            pinstripe      9    0.20
+## 175             felicity      8   16.80
+## 176             finished      8   83.71
+## 177            sophomore      9    2.86
+## 178            pugnacity      9    0.02
+## 179               Martha      6   28.65
+## 180          desegregate     11    0.02
+## 181          herringbone     11    0.08
+## 182          anniversary     11   18.41
+## 183             supplier      8    1.94
+## 184       interpolations     14    0.02
+## 185              sighted      7    2.12
+## 186             gardenia      8    0.22
+## 187          commiserate     11    0.18
+## 188        predilections     13    0.14
+## 189          supplements     11    0.45
+## 190             persuade      8    6.39
+## 191              ethical      7    2.73
+## 192        choreographer     13    1.04
+## 193                lemur      5    0.18
+## 194              baroque      7    0.31
+## 195                waned      5    0.12
+## 196            meteorite      9    0.80
+## 197            catharsis      9    0.33
+## 198             dominion      8    1.14
+## 199             revivals      8    0.10
+## 200             princess      8   39.59
+## 201          fertilizers     11    0.20
+## 202        malformations     13    0.02
+## 203               server      6    3.92
+## 204            outbreaks      9    0.14
+## 205          ignominious     11    0.14
+## 206            backboard      9    0.47
+## 207 institutionalization     20    0.02
+## 208              cubicle      7    2.57
+## 209            crossover      9    0.39
+## 210             prepares      8    0.88
+## 211           Oldsmobile     10    0.31
+## 212             smelling      8    4.96
+## 213             children      8  175.10
+## 214                lusty      5    0.61
+## 215              liberty      7   16.65
+## 216            raindrops      9    0.75
+## 217                robin      5   24.94
+## 218            removable      9    0.12
+## 219            predicate      9    0.02
+## 220              illicit      7    0.71
+## 221      maneuverability     15    0.12
+## 222             analysed      8    0.45
+## 223              demeans      7    0.12
+## 224              hurtful      7    1.14
+## 225             pillaged      8    0.20
+## 226             casebook      8    0.04
+## 227            mausoleum      9    0.84
+## 228            lifeguard      9    1.67
+## 229            invasions      9    0.18
+## 230               teller      6    2.57
+## 231         childishness     12    0.16
+## 232             revenues      8    0.47
+## 233              Webster      7    6.31
+## 234                waver      5    0.43
+## 235              princes      7    2.06
+## 236             teletype      8    0.65
+## 237             embedded      8    1.73
+## 238             barrette      8    0.16
+## 239               silica      6    0.20
+## 240       discrimination     14    2.18
+## 241               suitor      6    1.35
+## 242              leaping      7    1.57
+## 243              cholera      7    1.10
+## 244           chandelier     10    1.41
+## 245          evaluations     11    0.67
+## 246                lover      5   26.63
+## 247            footprint      9    1.08
+## 248            craftsmen      9    0.43
+## 249           widespread     10    0.92
+## 250             boneless      8    0.29
+## 251            abortions      9    0.69
+## 252              stringy      7    0.41
+## 253            yachtsmen      9    0.04
+## 254               basket      6   13.18
+## 255            doctorate      9    0.90
+## 256            erudition      9    0.06
+## 257              country      7  161.84
+## 258           convention     10   12.33
+## 259              dolphin      7    2.76
+## 260            privilege      9   10.63
+## 261             protects      8    2.82
+## 262              tourist      7    4.65
+## 263               infuse      6    0.18
+## 264             buttocks      8    1.82
+## 265              playboy      7    4.24
+## 266                stave      5    0.33
+## 267            womankind      9    0.18
+## 268           regularity     10    0.31
+## 269               wheezy      6    0.27
+## 270          incarcerate     11    0.20
+## 271            voracious      9    0.33
+## 272             quotable      8    0.10
+## 273                snout      5    0.84
+## 274             detoured      8    0.06
+## 275              wistful      7    0.18
+## 276             overfill      8    0.02
+## 277           accomplice     10    4.24
+## 278             Mongolia      8    0.55
+## 279            Argonauts      9    0.18
+## 280          telephoning     11    0.43
+## 281                 pare      4    0.12
+## 282          Christopher     11   18.16
+## 283               braves      6    0.63
+## 284                  ask      3  483.14
+## 285             sneezing      8    1.10
+## 286               jurors      6    2.49
+## 287           unsuitable     10    0.47
+## 288           dissipated     10    0.35
+## 289                coals      5    0.94
+## 290          supernormal     11    0.02
+## 291          pterodactyl     11    0.39
+## 292         grandparents     12    4.20
+## 293        chronological     13    0.33
+## 294            duplicity      9    0.22
+## 295             chipmunk      8    0.82
+## 296            tortoises      9    0.18
+## 297            rigmarole      9    0.12
+## 298               dagger      6    4.92
+## 299            retracted      9    0.27
+## 300                shots      5   28.37
+## 301               astral      6    0.96
+## 302             infidels      8    0.43
+## 303            cablegram      9    0.20
+## 304               oracle      6    2.24
+## 305             feathers      8    5.71
+## 306             Guinness      8    1.12
+## 307              wishing      7    6.65
+## 308           behavioral     10    1.55
+## 309          appreciates     11    3.12
+## 310         scrutinizing     12    0.10
+## 311          housebroken     11    0.57
+## 312              dissent      7    0.59
+## 313                gator      5    3.61
+## 314      underprivileged     15    0.73
+## 315              banging      7    8.55
+## 316             outsider      8    2.37
+## 317            synthesis      9    0.29
+## 318           fraternity     10    3.35
+## 319                Norma      5    4.04
+## 320               piglet      6    2.12
+## 321          negotiation     11    2.29
+## 322                 drab      4    0.80
+## 323             confided      8    0.84
+## 324                 Rosa      4    5.06
+## 325           dissension     10    0.27
+## 326               rodeos      6    0.22
+## 327                moody      5    2.25
+## 328              scanned      7    1.55
+## 329          meritorious     11    0.25
+## 330           invincible     10    3.02
+## 331    interdepartmental     17    0.04
+## 332      transplantation     15    0.16
+## 333          confiscated     11    2.06
+## 334         biographical     12    0.24
+## 335            additives      9    0.20
+## 336              seducer      7    0.39
+## 337               lugged      6    0.18
+## 338            recruited      9    2.73
+## 339               oilcan      6    0.12
+## 340        supercritical     13    0.04
+## 341               glider      6    0.69
+## 342          grandfather     11   24.33
+## 343      concessionaires     15    0.02
+## 344               misuse      6    0.55
+## 345                 Dave      4   43.12
+## 346           distortion     10    1.18
+## 347           narrowness     10    0.02
+## 348           proclivity     10    0.24
+## 349           premarital     10    0.65
+## 350               catnip      6    0.41
+## 351           pesticides     10    0.57
+## 352            felonious      9    0.27
+## 353               hearer      6    0.04
+## 354            brasserie      9    0.10
+## 355             banished      8    1.96
+## 356           flirtation     10    0.71
+## 357           prognostic     10    0.02
+## 358                tacky      5    2.63
+## 359          untouchable     11    0.86
+## 360              depress      7    0.71
+## 361             mutinous      8    0.14
+## 362              teacher      7   55.73
+## 363          subtraction     11    0.20
+## 364      differentiating     15    0.10
+## 365              witches      7   10.45
+## 366             spittoon      8    0.41
+## 367          procurement     11    0.25
+## 368                write      5  126.80
+## 369            gristmill      9    0.04
+## 370                 spud      4    0.92
+## 371        environmental     13    3.27
+## 372             claiming      8    4.16
+## 373            motioning      9    0.04
+## 374            locksmith      9    1.02
+## 375              pennant      7    0.75
+## 376             replaced      8    8.25
+## 377            inclement      9    0.16
+## 378             infusion      8    0.35
+## 379             reopened      8    0.88
+## 380              boulder      7    2.08
+## 381             engraved      8    1.67
+## 382            slipcover      9    0.04
+## 383               deltas      6    0.12
+## 384            bratwurst      9    0.47
+## 385             compiler      8    0.14
+## 386                dotty      5    1.12
+## 387               lotion      6    3.25
+## 388            latitudes      9    0.12
+## 389               meteor      6    3.53
+## 390           recommends     10    0.55
+## 391             overdone      8    0.63
+## 392         propagandist     12    0.08
+## 393              expires      7    1.10
+## 394              begonia      7    0.08
+## 395            groceries      9    5.90
+## 396             soreness      8    0.10
+## 397                shown      5   14.18
+## 398         postponement     12    0.51
+## 399              affects      7    4.78
+## 400         obstetrician     12    0.25
+## 401            oblivious      9    1.06
+## 402             continue      8   49.55
+## 403                 slay      4    2.14
+## 404              taunted      7    0.24
+## 405            concurred      9    0.14
+## 406           assignment     10   17.88
+## 407                 errs      4    0.06
+## 408              reached      7   24.73
+## 409               hunted      6    3.88
+## 410             fragrant      8    0.71
+## 411            archenemy      9    0.25
+## 412             humanity      8    9.71
+## 413            scripture      9    1.35
+## 414        ventriloquist     13    0.96
+## 415            preserver      9    0.27
+## 416         civilization     12    8.33
+## 417               evolve      6    1.63
+## 418              ailment      7    0.51
+## 419                 moth      4    2.27
+## 420        boardinghouse     13    0.12
+## 421             enrolled      8    1.12
+## 422              playful      7    1.16
+## 423            Knoxville      9    0.55
+## 424               strait      6    0.18
+## 425             solarium      8    0.43
+## 426         semiprecious     12    0.06
+## 427              hatband      7    0.02
+## 428         redefinition     12    0.04
+## 429               shrubs      6    0.31
+## 430             amenable      8    0.18
+## 431            lightness      9    0.39
+## 432               cynics      6    0.24
+## 433                ample      5    1.82
+## 434                duped      5    0.78
+## 435             wrappers      8    0.57
+## 436             corduroy      8    0.67
+## 437              evasion      7    1.16
+## 438               guises      6    0.06
+## 439        inviolability     13    0.04
+## 440               taught      6   43.84
+## 441            sentinels      9    0.31
+## 442                wound      5   26.53
+## 443              elitist      7    0.45
+## 444               braver      6    1.14
+## 445             overheat      8    0.35
+## 446               mother      6  479.92
+## 447          streamlined     11    0.37
+## 448            deflation      9    0.06
+## 449          furthermost     11    0.04
+## 450             crackpot      8    0.96
+## 451             capacity      8    8.10
+## 452          interfering     11    3.06
+## 453          uselessness     11    0.10
+## 454           imposition     10    0.76
+## 455        unappreciated     13    0.47
+## 456              Britain      7    4.55
+## 457             unfolded      8    0.29
+## 458            pluralism      9    0.02
+## 459             desolate      8    0.98
+## 460           loneliness     10    5.00
+## 461               damsel      6    0.88
+## 462          proletarian     11    0.16
+## 463               mapped      6    0.90
+## 464           relocation     10    0.76
+## 465               malady      6    0.43
+## 466          distrustful     11    0.10
+## 467             Monterey      8    1.00
+## 468             rightful      8    2.33
+## 469       specialization     14    0.06
+## 470              knuckle      7    1.29
+## 471             Colombia      8    1.96
+## 472             coercive      8    0.14
+## 473            overcrowd      9    0.02
+## 474                 oafs      4    0.08
+## 475         productivity     12    0.57
+## 476             midpoint      8    0.04
+## 477                thorn      5    5.10
+## 478              cutlets      7    0.39
+## 479          remembrance     11    0.73
+## 480               finder      6    1.67
+## 481            evolution      9    5.33
+## 482          consciences     11    0.24
+## 483            throbbing      9    1.18
+## 484               copier      6    0.63
+## 485           Antarctica     10    1.04
+## 486             Salvador      8    2.02
+## 487             sardines      8    3.18
+## 488              heroism      7    1.10
+## 489           explosives     10    6.49
+## 490              opossum      7    0.08
+## 491              swirled      7    0.10
+## 492            traveling      9   14.20
+## 493            telescope      9    2.94
+## 494         psychologist     12    3.59
+## 495            protester      9    0.20
+## 496              kitchen      7   58.31
+## 497                arena      5    3.63
+## 498              whippet      7    0.10
+## 499                 Carl      4   27.27
+## 500                amaze      5    1.61
+## 501                  pod      3    8.00
+## 502                 hunk      4    5.16
+## 503               debark      6    0.06
+## 504             auspices      8    0.12
+## 505          legitimized     11    0.06
+## 506             entombed      8    0.27
+## 507             grumbled      8    0.04
+## 508        discretionary     13    0.41
+## 509          transcended     11    0.18
+## 510             receiver      8    2.96
+## 511           departures     10    0.31
+## 512           radicalize     10    0.02
+## 513             unabated      8    0.18
+## 514             speakers      8    1.96
+## 515             survived      8   12.94
+## 516              Matthew      7   15.49
+## 517               barbed      6    1.31
+## 518          criminology     11    0.29
+## 519               manger      6    1.00
+## 520             Manitoba      8    0.06
+## 521         discouraging     12    0.80
+## 522           governance     10    0.10
+## 523               basset      6    0.25
+## 524            whimsical      9    0.78
+## 525          shirtsleeve     11    0.02
+## 526            vacancies      9    0.75
+## 527              escapee      7    0.22
+## 528            surfboard      9    0.92
+## 529            recessive      9    0.08
+## 530               tamper      6    0.49
+## 531               indent      6    0.12
+## 532              sorghum      7    0.16
+## 533            symposium      9    0.69
+## 534             wreckage      8    2.08
+## 535             Coventry      8    0.61
+## 536          traditional     11    8.14
+## 537             haystack      8    1.37
+## 538             slipping      8    5.94
+## 539             ambiance      8    0.16
+## 540               nudity      6    1.75
+## 541              flaring      7    0.31
+## 542             clannish      8    0.10
+## 543         consummation     12    0.20
+## 544               higher      6   27.84
+## 545                 rely      4    7.18
+## 546           multiplies     10    0.22
+## 547           resembling     10    0.59
+## 548            countries      9   10.53
+## 549             irritate      8    0.94
+## 550         truthfulness     12    0.18
+## 551            dalliance      9    0.22
+## 552          industrious     11    0.33
+## 553             fineness      8    0.02
+## 554              grocers      7    0.14
+## 555            fanatical      9    0.53
+## 556             boatload      8    0.47
+## 557             eulogize      8    0.08
+## 558               purist      6    0.22
+## 559           taskmaster     10    0.16
+## 560          inscription     11    1.71
+## 561              protest      7    8.78
+## 562           strategist     10    0.41
+## 563                Marie      5   26.43
+## 564            chaplains      9    0.18
+## 565              exports      7    0.51
+## 566               payoff      6    2.22
+## 567                 toga      4    0.92
+## 568             headroom      8    0.06
+## 569              conduct      7   11.10
+## 570           invocation     10    0.06
+## 571               mailed      6    2.08
+## 572           toothbrush     10    5.00
+## 573             moralize      8    0.02
+## 574          recondition     11    0.02
+## 575          remorseless     11    0.10
+## 576            homegrown      9    0.14
+## 577             swindled      8    0.61
+## 578             steeples      8    0.10
+## 579               spooky      6    4.73
+## 580                idols      5    0.47
+## 581               pallid      6    0.16
+## 582               Dodger      6    1.27
+## 583          procreation     11    0.41
+## 584               debris      6    3.12
+## 585        reverberation     13    0.08
+## 586            referring      9    6.73
+## 587            parochial      9    0.33
+## 588             watchers      8    0.98
+## 589              biscuit      7    3.75
+## 590            ancestral      9    0.57
+## 591                arose      5    0.82
+## 592          predictions     11    0.82
+## 593            bulldozer      9    1.29
+## 594              conduit      7    1.04
+## 595               slowed      6    2.27
+## 596            parakeets      9    0.12
+## 597             tailspin      8    0.22
+## 598             nihilism      8    0.08
+## 599                 fury      4    3.82
+## 600                waxen      5    0.12
+## 601            frigidity      9    0.06
+## 602              gobbler      7    0.31
+## 603            briefcase      9    8.59
+## 604              culvert      7    0.37
+## 605              esquire      7    0.98
+## 606               raider      6    0.65
+## 607         interminable     12    0.31
+## 608               bursar      6    0.16
+## 609           subscriber     10    0.41
+## 610            thumbtack      9    0.18
+## 611             idleness      8    0.16
+## 612             horsefly      8    0.10
+## 613               turkey      6   22.61
+## 614         sociological     12    0.27
+## 615              caustic      7    0.14
+## 616           appraisers     10    0.08
+## 617                posse      5    4.33
+## 618             declined      8    1.57
+## 619          inefficient     11    0.41
+## 620             abutment      8    0.12
+## 621                 gift      4   64.51
+## 622                 romp      4    0.53
+## 623               admire      6   14.16
+## 624             godchild      8    0.04
+## 625              closest      7    8.96
+## 626                align      5    0.67
+## 627               violin      6    4.75
+## 628               called      6  340.02
+## 629            apologies      9    8.80
+## 630           detonating     10    0.41
+## 631                 lamp      4   12.88
+## 632            preceding      9    0.67
+## 633            postcards      9    2.08
+## 634             fielders      8    0.06
+## 635         microseconds     12    0.04
+## 636              squelch      7    0.24
+## 637               acquit      6    0.47
+## 638             readings      8    2.76
+## 639            shakedown      9    0.90
+## 640                eagle      5   11.49
+## 641                drunk      5   76.55
+## 642               export      6    1.27
+## 643           isothermal     10    0.02
+## 644               surfer      6    1.63
+## 645               abrupt      6    1.14
+## 646              pillows      7    3.16
+## 647          underweight     11    0.22
+## 648               magnet      6    2.75
+## 649              nitrate      7    1.08
+## 650           adulterous     10    0.33
+## 651              hoisted      7    0.41
+## 652              lantern      7    2.02
+## 653               Norman      6   16.86
+## 654            religious      9   13.86
+## 655            Caucasian      9    2.75
+## 656               comely      6    0.37
+## 657              toehold      7    0.14
+## 658            astounded      9    0.24
+## 659            rainwater      9    0.22
+## 660         sacrilegious     12    0.39
+## 661            nutrition      9    0.94
+## 662           prosthesis     10    0.18
+## 663            footboard      9    0.02
+## 664           starvation     10    1.47
+## 665             giveaway      8    0.78
+## 666                Janet      5   17.90
+## 667                Tommy      5   48.22
+## 668            memorized      9    2.14
+## 669                 tofu      4    2.69
+## 670                myrrh      5    0.25
+## 671             hijacked      8    2.16
+## 672         totalitarian     12    0.16
+## 673          exemplified     11    0.18
+## 674         administered     12    1.49
+## 675             trashcan      8    0.37
+## 676           unreliable     10    1.67
+## 677              hooking      7    2.53
+## 678      communicational     15    0.02
+## 679                agent      5  102.65
+## 680           ricocheted     10    0.16
+## 681           stronghold     10    1.18
+## 682          indubitable     11    0.02
+## 683                aloof      5    0.65
+## 684           inductions     10    0.02
+## 685            capacious      9    0.06
+## 686          housemaster     11    0.08
+## 687               ghouls      6    0.92
+## 688            misshapen      9    0.29
+## 689            hirelings      9    0.02
+## 690         deliberation     12    0.39
+## 691           undergoing     10    0.69
+## 692           population     10    9.10
+## 693           regularize     10    0.02
+## 694            quickstep      9    0.14
+## 695            biologist      9    1.25
+## 696           discretion     10    3.67
+## 697              sapling      7    0.18
+## 698           licentious     10    0.04
+## 699          ideological     11    0.14
+## 700              Solomon      7    3.04
+## 701          malpractice     11    1.55
+## 702           bandmaster     10    0.02
+## 703                Edgar      5   12.67
+## 704               eyeing      6    0.80
+## 705            cellulose      9    0.12
+## 706            designers      9    1.06
+## 707              mileage      7    1.98
+## 708                trend      5    2.08
+## 709             girlhood      8    0.06
+## 710          frustration     11    2.98
+## 711           demoralize     10    0.06
+## 712            supersede      9    0.16
+## 713                 hoop      4    2.69
+## 714          neurologist     11    1.00
+## 715             totality      8    0.14
+## 716            woebegone      9    0.02
+## 717              jackets      7    3.43
+## 718                amino      5    0.61
+## 719        neuromuscular     13    0.06
+## 720             foxhound      8    0.04
+## 721               Dalton      6    3.76
+## 722            clarifies      9    0.02
+## 723            humankind      9    0.69
+## 724                canny      5    0.22
+## 725             backyard      8    7.24
+## 726           inexorable     10    0.12
+## 727            unstudied      9    0.02
+## 728                  cob      3    0.69
+## 729             nameless      8    1.41
+## 730               looker      6    1.04
+## 731             recovery      8    9.10
+## 732           Manchester     10    2.71
+## 733              furtive      7    0.31
+## 734               logger      6    0.12
+## 735                doled      5    0.08
+## 736             subspace      8    0.53
+## 737              osmosis      7    0.29
+## 738             meatball      8    2.59
+## 739            hazelnuts      9    0.04
+## 740          adjournment     11    0.22
+## 741               coerce      6    0.41
+## 742              itching      7    2.25
+## 743            mentality      9    2.12
+## 744              vaccine      7    1.92
+## 745              hearers      7    0.02
+## 746              bashful      7    1.24
+## 747              knavery      7    0.02
+## 748              couches      7    0.43
+## 749             ballroom      8    4.31
+## 750               Reuben      6    1.18
+## 751               cooler      6    7.06
+## 752              defence      7    8.02
+## 753          nonpartisan     11    0.02
+## 754               snooty      6    0.63
+## 755         governmental     12    0.55
+## 756               ledger      6    1.22
+## 757           solidifies     10    0.02
+## 758             tarragon      8    0.27
+## 759             taxation      8    0.29
+## 760          explanatory     11    0.04
+## 761                mills      5    4.45
+## 762                scene      5   74.65
+## 763          suffragette     11    0.16
+## 764               inning      6    2.51
+## 765             ignorant      8    6.25
+## 766             rhomboid      8    0.08
+## 767           rheumatism     10    0.69
+## 768            rotations      9    0.18
+## 769             lanterns      8    0.61
+## 770            tentative      9    0.49
+## 771             likeness      8    1.92
+## 772        unconquerable     13    0.06
+## 773          unblemished     11    0.22
+## 774              clocked      7    1.25
+## 775              purpose      7   35.08
+## 776             foretell      8    0.31
+## 777           fatherland     10    0.76
+## 778               jackal      6    1.59
+## 779           negotiated     10    1.31
+## 780              doubled      7    3.57
+## 781          synchronize     11    0.67
+## 782           virtuosity     10    0.18
+## 783              skilful      7    0.20
+## 784              brittle      7    1.39
+## 785               hissed      6    0.25
+## 786           controller     10    1.29
+## 787         misadventure     12    0.20
+## 788          delineation     11    0.02
+## 789                 mica      4    0.12
+## 790             writhing      8    0.41
+## 791            stoneware      9    0.04
+## 792           nonviolent     10    0.63
+## 793               recoil      6    0.43
+## 794           deportment     10    0.24
+## 795          aristocracy     11    0.63
+## 796               kicker      6    1.06
+## 797            ascertain      9    0.96
+## 798         disintegrate     12    0.51
+## 799              confuse      7    4.76
+## 800               pupate      6    0.06
+## 801             skydiver      8    0.08
+## 802             Bismarck      8    2.00
+## 803              encores      7    0.14
+## 804            intruding      9    1.84
+## 805         paradigmatic     12    0.02
+## 806             insanity      8    7.67
+## 807           admissions     10    2.18
+## 808               greets      6    0.43
+## 809          impassioned     11    0.37
+## 810           insatiable     10    0.98
+## 811           malcontent     10    0.20
+## 812               farces      6    0.02
+## 813                crepe      5    0.82
+## 814                 mere      4    7.86
+## 815      inevitabilities     15    0.02
+## 816             cupboard      8    2.49
+## 817                myths      5    1.24
+## 818          distributor     11    1.53
+## 819        professionals     13    4.53
+## 820                 boor      4    0.06
+## 821               yeasts      6    0.06
+## 822             creamery      8    0.12
+## 823           spirituals     10    0.08
+## 824                scone      5    0.49
+## 825             tortuous      8    0.12
+## 826               potion      6    7.45
+## 827                fours      5    2.06
+## 828             underbid      8    0.02
+## 829             roadways      8    0.10
+## 830           unattached     10    0.55
+## 831        discreditable     13    0.02
+## 832         abbreviation     12    0.24
+## 833           forefather     10    0.02
+## 834              unhorse      7    0.08
+## 835             sediment      8    0.41
+## 836              suspect      7   44.20
+## 837           antecedent     10    0.06
+## 838              peevish      7    0.16
+## 839             demoniac      8    0.02
+## 840                 sued      4    4.86
+## 841           effortless     10    0.41
+## 842           nonpayment     10    0.16
+## 843               buries      6    0.76
+## 844              erasure      7    0.06
+## 845            evergreen      9    0.20
+## 846           formations     10    0.65
+## 847               evaded      6    0.24
+## 848         capitulation     12    0.10
+## 849            lecturing      9    1.41
+## 850              sweeten      7    0.78
+## 851            ascending      9    0.69
+## 852            messenger      9    8.06
+## 853                snobs      5    0.51
+## 854           inoperable     10    0.65
+## 855               phobic      6    0.16
+## 856             gigantic      8    3.73
+## 857             survivor      8    4.33
+## 858          consequence     11    3.14
+## 859             follower      8    0.67
+## 860                dozed      5    0.80
+## 861              compile      7    0.53
+## 862               jotted      6    0.29
+## 863                kappa      5    1.04
+## 864                pubic      5    1.18
+## 865             trophies      8    2.29
+## 866            smothered      9    1.31
+## 867               lauder      6    0.24
+## 868       disinclination     14    0.04
+## 869                bower      5    0.25
+## 870          cartoonists     11    0.04
+## 871         computations     12    0.20
+## 872       sentimentality     14    0.47
+## 873              borrows      7    0.49
+## 874         subscription     12    1.33
+## 875                humus      5    0.06
+## 876        regimentation     13    0.10
+## 877              drapery      7    0.06
+## 878              cutlery      7    0.35
+## 879            classmate      9    1.53
+## 880              tracers      7    0.24</code></pre>
+<pre class="r"><code>ELP[1:13,]</code></pre>
+<pre><code>##            Word Length SUBTLWF POS Mean_RT
+## 1       rackets      7    0.96  NN  790.87
+## 2    stepmother     10    4.24  NN  692.55
+## 3    delineated     10    0.04  VB  960.45
+## 4      swimmers      8    1.49  NN  771.13
+## 5        umpire      6    1.06  NN  882.50
+## 6         cobra      5    3.33  NN  645.85
+## 7         vexes      5    0.10  VB  760.29
+## 8      colonist      8    0.06  NN  682.26
+## 9      bursitis      8    0.43  NN  921.25
+## 10       hatred      6    5.41  NN  695.53
+## 11     commends      8    0.10  VB  631.20
+## 12 cheerleaders     12    2.86  NN  627.06
+## 13     decrepit      8    0.49  JJ  801.39</code></pre>
+<p>Indexing by logical subsets based on whether an element meets particular requirement. In this case, it keeps the ones that are TRUE. Knowing the logical operators in R is important for subsetting, which will help you with data processing down the road. These logical operators will return the values TRUE or FALSE</p>
+<ul>
+<li>&gt;</li>
+<li>&lt;</li>
+<li>&gt;=</li>
+<li>&lt;=</li>
+<li>!=</li>
+<li>==</li>
+</ul>
+<p>You can combine logical operators:</p>
+<ul>
+<li>&amp; (and operator) requires two (or more) conditions to both be true in order to receive TRUE as a return.</li>
+<li>| (or operator) ) requires one of two (or more) conditions to be true in order to receive TRUE as a return.</li>
+</ul>
+<pre class="r"><code>#Why doesn&#39;t this work?
+#ELP[Mean_RT &lt; 800,]
+
+#This one does work!
+ELP[ELP$Mean_RT &lt; 800,]</code></pre>
+<pre><code>##               Word Length SUBTLWF POS Mean_RT
+## 1          rackets      7    0.96  NN  790.87
+## 2       stepmother     10    4.24  NN  692.55
+## 4         swimmers      8    1.49  NN  771.13
+## 6            cobra      5    3.33  NN  645.85
+## 7            vexes      5    0.10  VB  760.29
+## 8         colonist      8    0.06  NN  682.26
+## 10          hatred      6    5.41  NN  695.53
+## 11        commends      8    0.10  VB  631.20
+## 12    cheerleaders     12    2.86  NN  627.06
+## 15         Niagara      7    3.08  NN  763.32
+## 16             see      3 2556.73  VB  517.52
+## 17             err      3    1.51  VB  672.74
+## 20            balk      4    0.06  VB  667.38
+## 21      recognizes     10    2.00  VB  714.76
+## 22           jowls      5    0.31  NN  752.95
+## 23        evasions      8    0.14  NN  780.32
+## 24      culminates     10    0.14  VB  799.60
+## 25         Bermuda      7    3.47  NN  739.15
+## 27        gracious      8    7.16  JJ  721.09
+## 28   radioactivity     13    0.80  NN  786.68
+## 29            gown      4    6.55  NN  750.79
+## 30       particles      9    3.02  NN  754.91
+## 31      ordinances     10    0.16  NN  796.59
+## 32           ovary      5    0.51  NN  694.13
+## 33          reared      6    0.41  VB  736.19
+## 34          nudist      6    0.65  NN  752.58
+## 36          unhurt      6    0.10  JJ  759.00
+## 37         jackpot      7    3.71  NN  598.18
+## 38        medieval      8    2.96  JJ  752.97
+## 39        hangover      8    3.90  NN  616.55
+## 41       guesswork      9    0.43  NN  764.90
+## 42       vocalists      9    0.04  NN  712.38
+## 44       harassing      9    2.67  VB  759.78
+## 45         burners      7    0.55  NN  671.06
+## 46         discard      7    1.08  VB  647.24
+## 47          sliver      6    0.45  NN  747.71
+## 49           seedy      5    0.73  JJ  707.62
+## 50       statewide      9    0.29  JJ  695.09
+## 51       leisurely      9    0.57  JJ  776.75
+## 53         quilted      7    0.08  JJ  662.67
+## 55         ketchup      7    6.08  NN  796.15
+## 57     outnumbered     11    2.12  VB  711.10
+## 61           onion      5    4.24  NN  676.33
+## 62       weariness      9    0.10  NN  762.16
+## 63           riser      5    0.35  NN  756.28
+## 64         acquire      7    2.65  VB  673.94
+## 65       repairing      9    0.82  VB  730.28
+## 66     discovering     11    2.10  VB  705.94
+## 67       notorious      9    3.71  JJ  721.29
+## 70         pistols      7    1.88  NN  669.06
+## 72        grunting      8    5.08  VB  695.76
+## 73         citadel      7    0.45  NN  760.91
+## 74        Florence      8    5.37  NN  736.11
+## 79        greenish      8    0.16  JJ  701.84
+## 80          Connie      6   15.80  NN  665.58
+## 89     sympathized     11    0.04  VB  797.31
+## 91         rookies      7    1.18  NN  706.41
+## 92         juniper      7    0.47  NN  763.04
+## 93         Jehovah      7    0.78  NN  747.19
+## 94       lazybones      9    0.16  NN  788.94
+## 95       disgusted      9    1.76  VB  681.24
+## 97         brother      7  283.94  NN  614.06
+## 98           FALSE      5   21.14  JJ  718.06
+## 99      alienation     10    0.43  NN  784.06
+## 103           knew      4  368.96  VB  597.74
+## 105      regretted      9    1.39  VB  712.23
+## 107   accumulating     12    0.35  VB  776.41
+## 109       premiere      8    3.71  NN  712.23
+## 113     organizers     10    0.39  NN  669.19
+## 114          puppy      5   11.45  NN  600.48
+## 115      reopening      9    0.67  VB  716.11
+## 116          hiked      5    0.37  VB  598.06
+## 118       receives      8    1.55  VB  664.13
+## 119       receipts      8    3.45  NN  743.91
+## 120           vice      4   18.63  NN  673.66
+## 122          Clair      5    0.92  NN  740.46
+## 123          flunk      5    1.80  VB  674.87
+## 126         played      6   56.27  VB  580.85
+## 128       mornings      8    3.29  NN  666.67
+## 129    outstanding     11    7.45  JJ  653.09
+## 130      penniless      9    1.24  JJ  734.43
+## 131           disk      4    6.63  NN  577.24
+## 132         wooded      6    0.33  JJ  754.97
+## 134         chalky      6    0.12  JJ  774.29
+## 135       effected      8    0.35  VB  719.78
+## 136      graceless      9    0.12  JJ  754.52
+## 138            rug      3   10.41  NN  604.72
+## 139        inhaler      7    1.18  NN  780.48
+## 142         grated      6    0.16  VB  760.56
+## 143       rehearse      8    4.51  VB  751.71
+## 147         copied      6    2.51  VB  642.52
+## 148           tons      4    9.41  NN  645.06
+## 150        flapped      7    0.12  VB  646.86
+## 151      grassland      9    0.10  NN  700.06
+## 152       acrobats      8    0.37  NN  715.18
+## 154      soundness      9    0.04  NN  762.60
+## 155         jargon      6    0.61  NN  686.70
+## 158         leaded      6    0.45  JJ  628.70
+## 159       weekends      8    7.39  NN  658.94
+## 160           lacy      4    0.63  JJ  784.72
+## 161          zooms      5    0.06  VB  666.93
+## 162          vigil      5    0.86  NN  723.04
+## 164        crawled      7    3.96  VB  654.09
+## 165       preceded      8    0.59  VB  757.24
+## 168        lyrical      7    0.51  JJ  749.39
+## 169      hospitals      9    6.18  NN  657.75
+## 171    celebration     11    9.88  NN  713.91
+## 172      Yorkshire      9    1.00  NN  749.27
+## 175       felicity      8   16.80  NN  758.94
+## 176       finished      8   83.71  VB  639.76
+## 177      sophomore      9    2.86  NN  684.53
+## 179         Martha      6   28.65  NN  641.42
+## 183       supplier      8    1.94  NN  746.85
+## 185        sighted      7    2.12  VB  758.33
+## 186       gardenia      8    0.22  NN  764.46
+## 189    supplements     11    0.45  NN  686.21
+## 190       persuade      8    6.39  VB  658.44
+## 191        ethical      7    2.73  JJ  714.77
+## 193          lemur      5    0.18  NN  795.44
+## 194        baroque      7    0.31  JJ  785.84
+## 195          waned      5    0.12  VB  793.96
+## 198       dominion      8    1.14  NN  759.85
+## 200       princess      8   39.59  NN  674.94
+## 201    fertilizers     11    0.20  NN  721.78
+## 203         server      6    3.92  NN  679.19
+## 204      outbreaks      9    0.14  NN  659.00
+## 206      backboard      9    0.47  NN  766.47
+## 208        cubicle      7    2.57  NN  722.97
+## 209      crossover      9    0.39  NN  648.36
+## 210       prepares      8    0.88  VB  705.32
+## 211     Oldsmobile     10    0.31  NN  770.23
+## 212       smelling      8    4.96  VB  667.79
+## 213       children      8  175.10  NN  636.58
+## 214          lusty      5    0.61  JJ  616.16
+## 215        liberty      7   16.65  NN  625.03
+## 216      raindrops      9    0.75  NN  705.56
+## 217          robin      5   24.94  NN  630.27
+## 218      removable      9    0.12  JJ  682.73
+## 220        illicit      7    0.71  JJ  730.37
+## 222       analysed      8    0.45  VB  758.83
+## 224        hurtful      7    1.14  JJ  731.28
+## 226       casebook      8    0.04  NN  714.67
+## 228      lifeguard      9    1.67  NN  621.88
+## 229      invasions      9    0.18  NN  723.30
+## 230         teller      6    2.57  NN  617.79
+## 232       revenues      8    0.47  NN  775.03
+## 233        Webster      7    6.31  NN  678.56
+## 234          waver      5    0.43  VB  715.20
+## 235        princes      7    2.06  NN  730.93
+## 238       barrette      8    0.16  NN  705.65
+## 240 discrimination     14    2.18  NN  799.19
+## 241         suitor      6    1.35  NN  737.44
+## 242        leaping      7    1.57  VB  648.76
+## 243        cholera      7    1.10  NN  792.42
+## 246          lover      5   26.63  NN  592.35
+## 247      footprint      9    1.08  NN  630.67
+## 248      craftsmen      9    0.43  NN  729.63
+## 249     widespread     10    0.92  JJ  770.88
+## 250       boneless      8    0.29  JJ  671.91
+## 251      abortions      9    0.69  NN  774.63
+## 254         basket      6   13.18  NN  649.88
+## 257        country      7  161.84  NN  633.18
+## 258     convention     10   12.33  NN  678.52
+## 259        dolphin      7    2.76  NN  683.29
+## 260      privilege      9   10.63  NN  746.06
+## 261       protects      8    2.82  VB  629.16
+## 262        tourist      7    4.65  NN  612.16
+## 263         infuse      6    0.18  VB  715.03
+## 264       buttocks      8    1.82  NN  707.41
+## 265        playboy      7    4.24  NN  653.97
+## 268     regularity     10    0.31  NN  793.39
+## 269         wheezy      6    0.27  JJ  685.90
+## 273          snout      5    0.84  NN  701.56
+## 275        wistful      7    0.18  JJ  727.13
+## 276       overfill      8    0.02  VB  718.47
+## 277     accomplice     10    4.24  NN  784.33
+## 278       Mongolia      8    0.55  NN  700.68
+## 281           pare      4    0.12  VB  748.56
+## 282    Christopher     11   18.16  NN  669.94
+## 283         braves      6    0.63  NN  582.00
+## 284            ask      3  483.14  VB  552.00
+## 285       sneezing      8    1.10  VB  703.97
+## 286         jurors      6    2.49  NN  791.11
+## 287     unsuitable     10    0.47  JJ  743.06
+## 289          coals      5    0.94  NN  687.61
+## 292   grandparents     12    4.20  NN  724.97
+## 294      duplicity      9    0.22  NN  724.34
+## 295       chipmunk      8    0.82  NN  686.75
+## 296      tortoises      9    0.18  NN  764.25
+## 298         dagger      6    4.92  NN  651.67
+## 299      retracted      9    0.27  VB  780.41
+## 300          shots      5   28.37  NN  673.82
+## 301         astral      6    0.96  JJ  738.73
+## 305       feathers      8    5.71  NN  677.62
+## 307        wishing      7    6.65  VB  645.39
+## 308     behavioral     10    1.55  JJ  764.72
+## 311    housebroken     11    0.57  JJ  762.58
+## 312        dissent      7    0.59  NN  765.57
+## 313          gator      5    3.61  NN  640.19
+## 315        banging      7    8.55  VB  753.13
+## 316       outsider      8    2.37  NN  626.43
+## 317      synthesis      9    0.29  NN  755.57
+## 318     fraternity     10    3.35  NN  727.15
+## 319          Norma      5    4.04  NN  780.22
+## 320         piglet      6    2.12  NN  747.97
+## 322           drab      4    0.80  JJ  729.62
+## 323       confided      8    0.84  VB  776.33
+## 324           Rosa      4    5.06  NN  686.35
+## 326         rodeos      6    0.22  NN  759.63
+## 327          moody      5    2.25  JJ  590.65
+## 328        scanned      7    1.55  VB  698.59
+## 330     invincible     10    3.02  JJ  793.44
+## 334   biographical     12    0.24  JJ  733.56
+## 335      additives      9    0.20  NN  782.39
+## 336        seducer      7    0.39  NN  775.00
+## 337         lugged      6    0.18  VB  726.89
+## 338      recruited      9    2.73  VB  726.72
+## 342    grandfather     11   24.33  NN  710.97
+## 345           Dave      4   43.12  NN  564.09
+## 346     distortion     10    1.18  NN  757.52
+## 351     pesticides     10    0.57  NN  773.71
+## 352      felonious      9    0.27  JJ  786.33
+## 353         hearer      6    0.04  NN  749.59
+## 355       banished      8    1.96  VB  690.73
+## 358          tacky      5    2.63  JJ  674.09
+## 360        depress      7    0.71  VB  759.31
+## 362        teacher      7   55.73  NN  570.58
+## 365        witches      7   10.45  NN  609.56
+## 366       spittoon      8    0.41  NN  761.33
+## 368          write      5  126.80  VB  608.00
+## 369      gristmill      9    0.04  NN  791.29
+## 372       claiming      8    4.16  VB  670.97
+## 373      motioning      9    0.04  VB  780.45
+## 374      locksmith      9    1.02  NN  626.18
+## 375        pennant      7    0.75  NN  752.63
+## 376       replaced      8    8.25  VB  629.64
+## 377      inclement      9    0.16  JJ  740.25
+## 378       infusion      8    0.35  NN  695.48
+## 379       reopened      8    0.88  VB  768.94
+## 380        boulder      7    2.08  NN  710.79
+## 381       engraved      8    1.67  VB  683.56
+## 382      slipcover      9    0.04  NN  792.91
+## 386          dotty      5    1.12  JJ  754.13
+## 387         lotion      6    3.25  NN  633.34
+## 388      latitudes      9    0.12  NN  699.88
+## 389         meteor      6    3.53  NN  788.75
+## 391       overdone      8    0.63  VB  711.74
+## 393        expires      7    1.10  VB  687.27
+## 395      groceries      9    5.90  NN  735.76
+## 396       soreness      8    0.10  NN  741.94
+## 397          shown      5   14.18  VB  590.86
+## 399        affects      7    4.78  VB  656.67
+## 402       continue      8   49.55  VB  624.18
+## 403           slay      4    2.14  VB  684.43
+## 404        taunted      7    0.24  VB  650.37
+## 405      concurred      9    0.14  VB  797.82
+## 406     assignment     10   17.88  NN  679.90
+## 407           errs      4    0.06  VB  648.92
+## 408        reached      7   24.73  VB  574.48
+## 409         hunted      6    3.88  VB  696.53
+## 410       fragrant      8    0.71  JJ  681.94
+## 412       humanity      8    9.71  NN  657.94
+## 413      scripture      9    1.35  NN  705.48
+## 415      preserver      9    0.27  NN  776.16
+## 416   civilization     12    8.33  NN  688.39
+## 417         evolve      6    1.63  VB  712.78
+## 419           moth      4    2.27  NN  679.40
+## 421       enrolled      8    1.12  VB  645.82
+## 422        playful      7    1.16  JJ  630.22
+## 423      Knoxville      9    0.55  NN  768.47
+## 424         strait      6    0.18  NN  627.07
+## 429         shrubs      6    0.31  NN  724.38
+## 431      lightness      9    0.39  NN  678.56
+## 432         cynics      6    0.24  NN  741.92
+## 433          ample      5    1.82  JJ  695.28
+## 434          duped      5    0.78  VB  688.10
+## 435       wrappers      8    0.57  NN  677.67
+## 438         guises      6    0.06  NN  737.00
+## 440         taught      6   43.84  VB  627.81
+## 442          wound      5   26.53  VB  575.94
+## 444         braver      6    1.14  JJ  666.19
+## 445       overheat      8    0.35  VB  776.68
+## 446         mother      6  479.92  NN  566.21
+## 447    streamlined     11    0.37  JJ  780.97
+## 450       crackpot      8    0.96  NN  678.59
+## 451       capacity      8    8.10  NN  649.70
+## 456        Britain      7    4.55  NN  718.24
+## 457       unfolded      8    0.29  VB  685.55
+## 458      pluralism      9    0.02  NN  755.76
+## 460     loneliness     10    5.00  NN  679.41
+## 461         damsel      6    0.88  NN  771.25
+## 464     relocation     10    0.76  NN  730.65
+## 465         malady      6    0.43  NN  771.40
+## 466    distrustful     11    0.10  JJ  767.18
+## 468       rightful      8    2.33  JJ  761.24
+## 469 specialization     14    0.06  NN  771.61
+## 470        knuckle      7    1.29  NN  707.84
+## 471       Colombia      8    1.96  NN  734.11
+## 473      overcrowd      9    0.02  VB  782.52
+## 475   productivity     12    0.57  NN  728.42
+## 476       midpoint      8    0.04  NN  724.85
+## 477          thorn      5    5.10  NN  726.56
+## 480         finder      6    1.67  NN  652.19
+## 481      evolution      9    5.33  NN  708.88
+## 483      throbbing      9    1.18  VB  709.97
+## 484         copier      6    0.63  NN  638.03
+## 488        heroism      7    1.10  NN  755.82
+## 489     explosives     10    6.49  NN  777.63
+## 490        opossum      7    0.08  NN  785.10
+## 491        swirled      7    0.10  VB  702.16
+## 492      traveling      9   14.20  VB  646.03
+## 493      telescope      9    2.94  NN  707.35
+## 496        kitchen      7   58.31  NN  545.76
+## 497          arena      5    3.63  NN  721.41
+## 499           Carl      4   27.27  NN  575.09
+## 500          amaze      5    1.61  VB  596.32
+## 501            pod      3    8.00  NN  679.62
+## 502           hunk      4    5.16  NN  613.19
+## 507       grumbled      8    0.04  VB  672.42
+## 510       receiver      8    2.96  NN  742.73
+## 511     departures     10    0.31  NN  687.19
+## 514       speakers      8    1.96  NN  653.71
+## 515       survived      8   12.94  VB  674.97
+## 516        Matthew      7   15.49  NN  666.89
+## 519         manger      6    1.00  NN  799.69
+## 520       Manitoba      8    0.06  NN  758.59
+## 528      surfboard      9    0.92  NN  768.63
+## 529      recessive      9    0.08  JJ  661.29
+## 530         tamper      6    0.49  VB  701.79
+## 534       wreckage      8    2.08  NN  788.82
+## 536    traditional     11    8.14  JJ  663.79
+## 538       slipping      8    5.94  VB  662.15
+## 540         nudity      6    1.75  NN  755.81
+## 541        flaring      7    0.31  VB  749.21
+## 544         higher      6   27.84  JJ  598.48
+## 545           rely      4    7.18  VB  684.40
+## 548      countries      9   10.53  NN  760.44
+## 549       irritate      8    0.94  VB  752.39
+## 550   truthfulness     12    0.18  NN  795.79
+## 551      dalliance      9    0.22  NN  767.00
+## 554        grocers      7    0.14  NN  760.74
+## 558         purist      6    0.22  NN  759.77
+## 561        protest      7    8.78  NN  583.29
+## 563          Marie      5   26.43  NN  683.53
+## 565        exports      7    0.51  NN  681.50
+## 566         payoff      6    2.22  NN  738.14
+## 567           toga      4    0.92  NN  696.43
+## 569        conduct      7   11.10  VB  630.94
+## 571         mailed      6    2.08  VB  709.88
+## 572     toothbrush     10    5.00  NN  622.69
+## 573       moralize      8    0.02  VB  736.45
+## 576      homegrown      9    0.14  NN  752.44
+## 577       swindled      8    0.61  VB  752.09
+## 578       steeples      8    0.10  NN  743.43
+## 579         spooky      6    4.73  JJ  610.42
+## 582         Dodger      6    1.27  NN  756.41
+## 584         debris      6    3.12  NN  688.79
+## 586      referring      9    6.73  VB  704.57
+## 588       watchers      8    0.98  NN  641.31
+## 589        biscuit      7    3.75  NN  623.88
+## 591          arose      5    0.82  VB  635.91
+## 592    predictions     11    0.82  NN  764.56
+## 593      bulldozer      9    1.29  NN  672.94
+## 594        conduit      7    1.04  NN  757.64
+## 595         slowed      6    2.27  VB  653.13
+## 596      parakeets      9    0.12  NN  790.21
+## 598       nihilism      8    0.08  NN  763.50
+## 599           fury      4    3.82  NN  685.06
+## 600          waxen      5    0.12  JJ  690.35
+## 602        gobbler      7    0.31  NN  776.15
+## 603      briefcase      9    8.59  NN  646.61
+## 604        culvert      7    0.37  NN  760.18
+## 606         raider      6    0.65  NN  722.06
+## 608         bursar      6    0.16  NN  772.90
+## 609     subscriber     10    0.41  NN  767.35
+## 613         turkey      6   22.61  NN  583.62
+## 615        caustic      7    0.14  JJ  740.10
+## 616     appraisers     10    0.08  NN  788.31
+## 617          posse      5    4.33  NN  779.71
+## 618       declined      8    1.57  VB  666.06
+## 619    inefficient     11    0.41  JJ  767.67
+## 621           gift      4   64.51  NN  640.82
+## 622           romp      4    0.53  NN  774.36
+## 623         admire      6   14.16  VB  621.03
+## 626          align      5    0.67  VB  673.96
+## 627         violin      6    4.75  NN  706.90
+## 628         called      6  340.02  VB  555.76
+## 629      apologies      9    8.80  NN  761.41
+## 631           lamp      4   12.88  NN  587.85
+## 632      preceding      9    0.67  VB  729.97
+## 633      postcards      9    2.08  NN  600.00
+## 638       readings      8    2.76  NN  648.74
+## 639      shakedown      9    0.90  NN  754.97
+## 640          eagle      5   11.49  NN  630.79
+## 641          drunk      5   76.55  JJ  588.94
+## 642         export      6    1.27  NN  590.03
+## 644         surfer      6    1.63  NN  771.24
+## 645         abrupt      6    1.14  JJ  690.97
+## 646        pillows      7    3.16  NN  656.58
+## 647    underweight     11    0.22  JJ  762.36
+## 648         magnet      6    2.75  NN  638.82
+## 652        lantern      7    2.02  NN  726.50
+## 654      religious      9   13.86  JJ  717.03
+## 655      Caucasian      9    2.75  NN  762.60
+## 659      rainwater      9    0.22  NN  718.12
+## 661      nutrition      9    0.94  NN  723.75
+## 665       giveaway      8    0.78  NN  682.27
+## 666          Janet      5   17.90  NN  582.79
+## 667          Tommy      5   48.22  NN  645.76
+## 668      memorized      9    2.14  VB  686.09
+## 669           tofu      4    2.69  NN  722.38
+## 671       hijacked      8    2.16  VB  762.58
+## 674   administered     12    1.49  VB  772.19
+## 676     unreliable     10    1.67  JJ  759.34
+## 677        hooking      7    2.53  VB  654.49
+## 679          agent      5  102.65  NN  626.67
+## 681     stronghold     10    1.18  NN  760.57
+## 683          aloof      5    0.65  JJ  702.15
+## 689      hirelings      9    0.02  NN  693.22
+## 691     undergoing     10    0.69  VB  676.94
+## 692     population     10    9.10  NN  675.76
+## 694      quickstep      9    0.14  NN  761.06
+## 695      biologist      9    1.25  NN  759.59
+## 697        sapling      7    0.18  NN  753.60
+## 700        Solomon      7    3.04  NN  684.23
+## 703          Edgar      5   12.67  NN  712.52
+## 704         eyeing      6    0.80  VB  714.75
+## 706      designers      9    1.06  NN  725.59
+## 707        mileage      7    1.98  NN  745.73
+## 708          trend      5    2.08  NN  661.46
+## 709       girlhood      8    0.06  NN  782.97
+## 710    frustration     11    2.98  NN  720.90
+## 711     demoralize     10    0.06  VB  782.23
+## 713           hoop      4    2.69  NN  613.47
+## 714    neurologist     11    1.00  NN  750.21
+## 717        jackets      7    3.43  NN  668.38
+## 720       foxhound      8    0.04  NN  763.07
+## 721         Dalton      6    3.76  NN  719.54
+## 723      humankind      9    0.69  NN  731.48
+## 724          canny      5    0.22  JJ  758.83
+## 725       backyard      8    7.24  NN  647.58
+## 726     inexorable     10    0.12  JJ  789.33
+## 728            cob      3    0.69  NN  707.14
+## 729       nameless      8    1.41  JJ  682.32
+## 730         looker      6    1.04  NN  668.36
+## 731       recovery      8    9.10  NN  699.52
+## 732     Manchester     10    2.71  NN  733.85
+## 734         logger      6    0.12  NN  741.97
+## 737        osmosis      7    0.29  NN  744.13
+## 738       meatball      8    2.59  NN  638.28
+## 742        itching      7    2.25  VB  644.00
+## 744        vaccine      7    1.92  NN  784.81
+## 745        hearers      7    0.02  NN  793.67
+## 746        bashful      7    1.24  JJ  662.76
+## 748        couches      7    0.43  NN  712.26
+## 749       ballroom      8    4.31  NN  655.78
+## 750         Reuben      6    1.18  NN  798.04
+## 751         cooler      6    7.06  JJ  574.22
+## 754         snooty      6    0.63  JJ  793.90
+## 756         ledger      6    1.22  NN  704.87
+## 759       taxation      8    0.29  NN  761.66
+## 760    explanatory     11    0.04  JJ  786.94
+## 761          mills      5    4.45  NN  682.24
+## 762          scene      5   74.65  NN  570.00
+## 764         inning      6    2.51  NN  783.31
+## 765       ignorant      8    6.25  JJ  683.31
+## 768      rotations      9    0.18  NN  786.00
+## 769       lanterns      8    0.61  NN  769.29
+## 770      tentative      9    0.49  JJ  738.68
+## 771       likeness      8    1.92  NN  665.79
+## 774        clocked      7    1.25  VB  701.42
+## 775        purpose      7   35.08  NN  678.94
+## 777     fatherland     10    0.76  NN  785.52
+## 778         jackal      6    1.59  NN  747.14
+## 779     negotiated     10    1.31  VB  671.27
+## 780        doubled      7    3.57  VB  725.30
+## 781    synchronize     11    0.67  VB  772.12
+## 782     virtuosity     10    0.18  NN  752.52
+## 783        skilful      7    0.20  JJ  727.64
+## 784        brittle      7    1.39  JJ  691.10
+## 785         hissed      6    0.25  VB  683.43
+## 786     controller     10    1.29  NN  662.06
+## 790       writhing      8    0.41  VB  791.71
+## 791      stoneware      9    0.04  NN  750.55
+## 793         recoil      6    0.43  VB  722.53
+## 796         kicker      6    1.06  NN  635.53
+## 799        confuse      7    4.76  VB  703.80
+## 800         pupate      6    0.06  VB  761.40
+## 801       skydiver      8    0.08  NN  696.48
+## 803        encores      7    0.14  NN  795.92
+## 804      intruding      9    1.84  VB  752.17
+## 806       insanity      8    7.67  NN  792.63
+## 807     admissions     10    2.18  NN  685.88
+## 808         greets      6    0.43  VB  738.48
+## 814           mere      4    7.86  JJ  727.72
+## 816       cupboard      8    2.49  NN  757.73
+## 817          myths      5    1.24  NN  614.91
+## 820           boor      4    0.06  NN  720.33
+## 821         yeasts      6    0.06  NN  705.48
+## 823     spirituals     10    0.08  NN  750.21
+## 824          scone      5    0.49  NN  734.50
+## 826         potion      6    7.45  NN  785.22
+## 827          fours      5    2.06  NN  666.81
+## 829       roadways      8    0.10  NN  658.03
+## 832   abbreviation     12    0.24  NN  728.91
+## 833     forefather     10    0.02  NN  751.77
+## 835       sediment      8    0.41  NN  742.52
+## 836        suspect      7   44.20  NN  629.71
+## 838        peevish      7    0.16  JJ  692.18
+## 840           sued      4    4.86  VB  735.31
+## 841     effortless     10    0.41  JJ  724.42
+## 844        erasure      7    0.06  NN  729.33
+## 845      evergreen      9    0.20  NN  671.94
+## 846     formations     10    0.65  NN  750.71
+## 847         evaded      6    0.24  VB  764.55
+## 849      lecturing      9    1.41  VB  741.63
+## 851      ascending      9    0.69  VB  786.49
+## 852      messenger      9    8.06  NN  596.76
+## 853          snobs      5    0.51  NN  679.79
+## 855         phobic      6    0.16  JJ  727.10
+## 856       gigantic      8    3.73  JJ  694.85
+## 857       survivor      8    4.33  NN  604.88
+## 858    consequence     11    3.14  NN  688.97
+## 860          dozed      5    0.80  VB  711.44
+## 861        compile      7    0.53  VB  715.55
+## 862         jotted      6    0.29  VB  734.96
+## 864          pubic      5    1.18  JJ  788.45
+## 865       trophies      8    2.29  NN  685.83
+## 866      smothered      9    1.31  VB  720.97
+## 873        borrows      7    0.49  VB  688.16
+## 874   subscription     12    1.33  NN  768.16
+## 879      classmate      9    1.53  NN  679.56
+## 880        tracers      7    0.24  NN  713.21</code></pre>
+<pre class="r"><code>ELPJJ800 = ELP[(ELP$Mean_RT &lt; 800) &amp; (ELP$POS ==&quot;JJ&quot;), ]
+head(ELPJJ800)</code></pre>
+<pre><code>##         Word Length SUBTLWF POS Mean_RT
+## 27  gracious      8    7.16  JJ  721.09
+## 36    unhurt      6    0.10  JJ  759.00
+## 38  medieval      8    2.96  JJ  752.97
+## 49     seedy      5    0.73  JJ  707.62
+## 50 statewide      9    0.29  JJ  695.09
+## 51 leisurely      9    0.57  JJ  776.75</code></pre>
+</div>
+<div id="loading-data" class="section level2">
+<h2>Loading data</h2>
+<p>The most common types of data to import to R are .csv and .txt. If you can save your files as either of these (or, if the program you use to collect data returns these) you are good to go! To read in a file, you can use the read.table() function. Here, Header = TRUE says take the first line of the table to be variable names.</p>
+<pre><code>ERP_experiment_1 = read.table(“ERP_data1.txt”, header = TRUE)</code></pre>
+<p>This says ‘tab’ separates each element. There are various other separators out there, such as comma (denoted by sep = “,”, or by using read.csv).</p>
+<pre><code>ERP_experiment_1 = read.table(“ERP_data1.txt”, header = TRUE, sep = “\t”)
+ERP_experiment_1 = read.csv(“ERP_data1.csv”, header = TRUE)
+</code></pre>
+<p>If your data is in .xls or .xlsx form, you can either convert it to .csv, or use read_excel() from the readxl package (part of the tidyverse!).</p>
+<pre><code>require(readxl)
+ERP_experiment_1 = read_excel(“ERP_data1.xlsx”, col_names = TRUE, sheet = “Sheet1”)</code></pre>
+<p>Note, you can only give the name of the file only if it is in your working directory. To figure out what your working directory is, you can use the getwd() function. If the file is not in your working directory, you can access it in one of three ways:</p>
+<ul>
+<li>Move the file into your working directory</li>
+<li>Change the working directory, using the setwd() function.</li>
+<li>Use the absolute path to your file.</li>
+</ul>
+<p>If you are using a project in R, the easiest thing to do is to move all important files into your project folder. This will ensure they are in the working directory of your project.</p>
+<pre class="r"><code>getwd()
+
+
+#This doesn&#39;t work because the file is not in my current working directory.
+nasality = read.csv(&quot;Acoustic_Nasality_Data.csv&quot;,header = TRUE)
+
+#Giving the absolute path does work!
+nasality = read.csv(&quot;/Users/goldrch2/Desktop/Teaching/LING 490/Data/Acoustic Nasality Data/Acoustic_Nasality_Data.csv&quot;,header = TRUE)
+
+
+setwd(&quot;/Users/goldrch2/Desktop/Teaching/LING 490/Data/Acoustic Nasality Data/&quot;)
+nasality = read.csv(&quot;Acoustic_Nasality_Data.csv&quot;,header = TRUE)
+head(nasality)
+
+
+
+library(readxl)
+
+nasality = read_excel(&quot;/Users/goldrch2/Desktop/Teaching/LING 490/Data/Acoustic Nasality Data/Nasality formants.xlsx&quot;,col_names = TRUE, sheet = &quot;Sheet1&quot;)</code></pre>
+</div>
+</div>
+<div id="rmarkdown" class="section level1">
+<h1>RMarkdown</h1>
+<p>As you may have noted, this tutorial is formatted in HTML. The formatting was done in RMarkdown, which is an add-on package to R. You can consider RMarkdown to be a lab notebook of sorts. It allows you to nicely format your data and analysis, plus accompanying notes, into an HTML, PDF, LaTeX, or Word file.</p>
+<p>To create a new RMarkdown file, go to File &gt; New File &gt; RMarkdown. Your window will look like this:</p>
+<div class="figure">
+<img src="RMarkdown.png" alt="This is RMarkdown!" />
+<p class="caption">This is RMarkdown!</p>
+</div>
+<p>You can save an RMarkdown file to be rendered as Word, PDF or HTML. Note you can always switch, or even just use the knit button to render it as another format just once! Note, you can also save just your R code with comments (as a .R file), but RMarkdown is much nicer because of its rich formatting and rendering options.</p>
+<p>RMarkdown has a bunch of stuff</p>
+<p>There are different options you can add in each chunk:</p>
+<ul>
+<li>eval: whether or not to evaluate the code (though the code will be printed)
+<ul>
+<li>default is TRUE</li>
+</ul></li>
+<li>include: whether or not to include the code in the final document (though it will be evaluated)
+<ul>
+<li>default is TRUE</li>
+</ul></li>
+<li>echo: whether or not to include the code above its results in the final document
+<ul>
+<li>default is TRUE<br />
+</li>
+</ul></li>
+<li>collapse: whether or not to collapse all source and output blocks into a single block
+<ul>
+<li>default is FALSE</li>
+</ul></li>
+<li>results: how to display the results of the code
+<ul>
+<li>default is ‘markup’ - will show each result right after its associated code</li>
+<li>‘hide’ - does not show results in final document</li>
+<li>‘hold’ - will display all output at the end of the chunk</li>
+</ul></li>
+</ul>
+<pre class="r"><code>1 + 3
+
+4 - 2
+
+5 * 5
+
+8 / 2
+
+77 %% 4
+
+132 %/% 8
+
+9 ^ 7
+## [1] 4
+## [1] 2
+## [1] 25
+## [1] 4
+## [1] 1
+## [1] 16
+## [1] 4782969</code></pre>
+</div>
+<div id="rmarkdown-formatting" class="section level1">
+<h1>RMarkdown Formatting</h1>
+<p>As you can see, hash marks are used to denote headers - the more hash marks you add, the smaller the headers.</p>
+<div id="bullet-points" class="section level2">
+<h2>Bullet Points</h2>
+<p>You can add a few types of bullets:</p>
+<p>Simple bullet points:</p>
+<ul>
+<li>Point 1</li>
+<li>Point 2</li>
+<li>Point 3</li>
+</ul>
+<p>Enumerated points:</p>
+<ol style="list-style-type: decimal">
+<li>Number 1</li>
+<li>Number 2</li>
+<li>Number 3</li>
+</ol>
+<p>and nested dot points:</p>
+<ul>
+<li>A
+<ul>
+<li>A.1</li>
+<li>A.2</li>
+</ul></li>
+<li>B
+<ul>
+<li>B.1</li>
+<li>B.2</li>
+</ul></li>
+</ul>
+</div>
+<div id="images" class="section level2">
+<h2>Images</h2>
+<div class="figure">
+<img src="salem.jpg" alt="This is my dog!" />
+<p class="caption">This is my dog!</p>
+</div>
+<div class="figure">
+<img src="http://blog.mary.com/wp-content/uploads/2012/05/cute_animal_pictures_4.jpg?2c2c53" alt="This puffin came from the internet!" />
+<p class="caption">This puffin came from the internet!</p>
+</div>
+</div>
+<div id="hyperlinks" class="section level2">
+<h2>Hyperlinks</h2>
+<p><a href="http://r4ds.had.co.nz/">R4DS</a></p>
+</div>
+<div id="tables" class="section level2">
+<h2>Tables</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Column 1</th>
+<th>Column 2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>Cell 1</em></td>
+<td><strong>Cell 2</strong></td>
+</tr>
+<tr class="even">
+<td><del>Cell 3</del></td>
+<td><strong><em>Cell 4</em></strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+         
+      </div>
+    </div>
+  </div>
+</div>
+
+          </div>
+      </div>
+  </div>
+  <script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.cookie.js"> </script>
+<script src="/js/ekko-lightbox.js"></script>
+<script src="/js/jquery.scrollTo.min.js"></script>
+<script src="/js/masonry.pkgd.min.js"></script>
+<script src="/js/imagesloaded.pkgd.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/front.js"></script>
+
+</body>
+</html>

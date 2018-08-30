@@ -7,6 +7,10 @@
   </url>
   
   <url>
+    <loc>/portfolio/intror/</loc>
+  </url>
+  
+  <url>
     <loc>/portfolio/rmodelingworkshop/</loc>
   </url>
   
@@ -43,6 +47,10 @@
   <url>
     <loc>/tags/</loc>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/research/</loc>
   </url>
   
 </urlset>

@@ -280,8 +280,9 @@ To create a new RMarkdown file, go to File > New File > RMarkdown. Your window w
 You can save an RMarkdown file to be rendered as Word, PDF or HTML. Note you can always switch, or even just use the knit button to render it as another format just once!
 Note, you can also save just your R code with comments (as a .R file), but RMarkdown is much nicer because of its rich formatting and rendering options.
 
-RMarkdown has a bunch of stuff 
+RMarkdown has a bunch of stuff included. The top of the document is the header. It gives information such as the title, author, default output (HTML, PDF, etc.), and any other global information. Then, there is text, which goes in the white space. (This is text, actually!) Finally, there are code chunks. Code chunks can be names or not.
 
+![Markdown example](markdownexample.png)
 
 There are different options you can add in each chunk: 
 

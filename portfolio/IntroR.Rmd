@@ -1,7 +1,6 @@
 ---
 title: "Introduction to R and RMarkdown"
 author: "Marissa Barlaz"
-date: "February 26, 2018"
 image: "img/portfolio/RStudio-Ball.png"
 showonlyimage: false
 weight: 3

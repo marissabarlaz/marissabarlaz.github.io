@@ -1,0 +1,480 @@
+---
+title: "Data Processing with the Tidyverse"
+author: "Marissa Barlaz"
+image: "img/tidyverse.png"
+showonlyimage: false
+weight: 3
+draft: false
+description: "The aim of this workshop is to teach you the basics of how to use R for data processing."
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, max.print= 20)
+library(tidyverse)
+```
+
+#Why the tidyverse?
+
+There are a few reasons to use R and the Tidyverse for data processing. Excel is opaque – if you make a change to a cell/row/column, unless you write down exactly what you did, you have no way of knowing how you processed your data. Using R and documenting your work in Rmarkdown will allow you to understand exactly what you are doing, which is helpful in future iterations of using the data.
+
+Chances are, you are not going to get data from an experiment in a form that is ready to go for an analysis.Therefore, it is important to first figure out what shape you want your data to be in before you start processing. That way, you have a clear way forward towards tidy data. Tidying and transforming are called ‘wrangling’, a term you will see often in the field of data science.
+
+![ ](/img/lifecycle.png)
+
+##Tidy data
+There are three interrelated rules which make a dataset tidy:
+
+* Each variable must have its own column.
+* Each observation must have its own row.
+* Each value must have its own cell.
+
+Data doesn’t often come in this form. For example, sometimes we have data spread over various files (e.g., a file for each speaker/participant).
+Other untidy datasets have multiple variables over multiple columns. For example, variable name is in one column, and then the value is in a second column. Using the tidyverse, we can take this untidy data and make it tidy!
+
+##Components of the tidyverse
+require(tidyverse) installs the following packages (and some others):
+
+* ggplot2: creates graphics
+* dplyr: data manipulation
+* tidyr: tidies data
+* readr: allows you to read in rectangular data (fwf, csv, etc.)
+* tibble: allows you to make tibbles and convert to and from data frames
+* stringr: works with character strings
+
+Other packages that are part of the tidyverse that you have to require individually:
+* readxl: imports excel files
+* magrittr: helps with programming, including different pipes
+* broom: formats models into tidy data
+* modelr: Helper functions for modeling data
+
+##Importing data
+
+Importing data is essential – if you can’t import your data, you can’t analyze it! Make sure to include any code relating to importing in your Rmarkdown document, so if you make a mistake you don't have to go back to square one.
+
+Use the read.table(), read.csv(), or read_excel() functions to import your data. Remember to name your data something descriptive, and not too long. If you want to totally emerse yourself in the tidyverse, you can use readr::read_csv() or readr::read_table(), which will import your data as a tibble.
+
+##The pipe operator
+With base R, we run various data wrangling techniques on the dataset one at a time. In each of these cases, we would either overwrite the original dataset, or save the intermediate steps as new variables. This makes your workspace messy very quickly. The pipe operator (based in tidyverse package magrittr) allows multiple steps of data wrangling or analysis to occur in succession, without creating multiple intermediate dataframes. This works by dropping the input into the first argument space.
+
+
+```
+x %>% f is equivalent to f(x)
+x %>% f(y) is equivalent to f(x, y)
+x %>% f %>% g %>% h is equivalent to h(g(f(x)))
+```
+
+So, for example:
+
+```
+nasality %>% head() is equivalent to head(nasality)
+nasality %>% str() is equivalent to str(nasality)
+nasality %>% filter(freq_f3>2400) is equivalent to filter(nasality, freq_f3 > 2400)
+However, this doesn’t work: nasality %>% sd(freq_f1)
+
+```
+
+If you wanted to put the left-hand-side object into a subsequent argument slot using the pipe, use the placeholder . to denote the location where you want the left-hand-side argument to go:
+
+```
+2 %>% round(nasality$F1, digits = .)
+```
+This translates to round(nasality$F1, digits = 2)
+
+
+```{r datainsert, message=FALSE, warning = FALSE, echo = FALSE}
+normtimewd = "/Users/goldrch2/Desktop/Teaching/LING 490/Data/Clean Normtime formant"
+allfiles = dir(normtimewd, "*.normtime_formant")
+
+normtimedata <- data_frame(filename = allfiles) %>%
+  mutate(file_contents = map(filename, ~ read_tsv(file.path(normtimewd, .), skip = 1, col_names = c("label", "Time", "F1", "F2", "F3", "F2_3")))) %>% 
+  #skip = 1 because there's a problem with the column names
+        unnest() %>%
+  separate(filename, into = c("Type", "Speaker", "Position", "Word"), extra = "drop") %>%
+  mutate(NormTime = (1:length(Time) %%10)*0.1, 
+         label1 = label)%>%
+ separate(label1, into = c("Vowel", "Nasality"), 1) %>%
+  select(-c(Position))
+  
+  
+  
+
+normtimedata$NormTime[normtimedata$NormTime ==0.0] = 1
+normtimedata$NormTime = as.numeric(trimws(normtimedata$NormTime))
+
+normtimedata$Nasality = plyr::mapvalues(normtimedata$Nasality, from=c("~", "m", "n", "o", "s"), to=c("nasalized","nasal_final", "nasal", "oral", "nasalized"))
+
+normtimedata  = normtimedata %>%
+  group_by(Speaker, Word, NormTime) %>%
+  mutate(RepNo = seq(n())) %>%
+  ungroup() %>%
+  select(Speaker, Word, Vowel, Nasality, RepNo, NormTime, everything())
+
+
+#write_csv(normtimedata, paste(normtimewd, "normtimedata.csv", sep=""))
+
+
+### NASALITY DATA PROCESSING
+
+nasalitywd = "/Users/goldrch2/Desktop/Teaching/LING 490/Data/Acoustic Nasality Data"
+allnasalfiles = dir(nasalitywd, "*.txt")
+
+nasalitydata <- data_frame(filename = allnasalfiles) %>%
+  mutate(file_contents = map(filename, ~ read_tsv(file.path(nasalitywd, .), skip = 0))) %>% 
+ 
+        unnest() %>%
+  rename(label = vowel) %>%
+
+  separate(filename1, into = c("Speaker", "Position", "Word")) %>%
+
+  mutate(label1 = label,
+         NormTime = timepoint/5) %>%
+   separate(label1, into = c("Vowel", "Nasality"), 1) %>%
+  select(-c("filename", "word", "label", "timepoint", "point_time")) %>%
+  select(-c(Position, vwl_amp_rms:errorflag))
+
+nasalitydata$Nasality = plyr::mapvalues(nasalitydata$Nasality, from=c("~", "m", "n", "o", "s"), to=c("nasalized","nasal_final", "nasal", "oral", "nasalized"))
+
+
+nasalitydata  = nasalitydata %>%
+  group_by(Speaker, Word, NormTime) %>%
+  mutate(RepNo = seq(n())) %>%
+  ungroup() %>%
+  select(Speaker, Word, Vowel, Nasality, RepNo, NormTime, everything())
+  
+#write_csv(nasalitydata, paste(normtimewd, "nasalitydata_styler_all.csv", sep=""))
+
+```
+
+
+
+# Data Manipulation with dplyr
+
+What dataset are we using? This is my dissertation data. I have processed this a bit, without showing you the code. I will show you the code I used to process it at the end.
+
+The data is as follows: I have formant data (F1-3, and the difference between F2 and F3) at ten normalized time points, for various vowels. The vowel categories are /a/, /i/, and /u/, spoken by 12 Brazilian Portuguese speakers, in the following nasality conditions: oral, nasalized, and nasal (word-final and word-medial). Therefore, there are 12 (vowel*nasality) combinations for each speaker.
+
+
+Note that in this file you will only see 20 rows of each tibble. This is on purpose, in order to make the file size smaller. The actual size of the data is on the order of 64k rows.
+```{r}
+head(normtimedata)
+
+str(normtimedata)
+```
+There are five basic functions that come with dplyr for data manipulation:
+
+* Pick observations by their values (filter())
+* Reorder the rows (arrange())
+* Pick variables by their names (select())
+* Create new variables with functions of existing variables (mutate())
+* Collapse many values down to a single summary (summarise())
+
+
+## Filter
+Here, you can filter data based on a specific criteria. For example, if I wanted to look only at the midpoint of the vowel, or at specific vowel subsets.
+
+
+```{r}
+normtimedata %>% filter(F1<800)
+
+normtimedata %>% filter(NormTime == 0.5)
+
+normtimedata %>% filter(Vowel == "a", Nasality =="nasal")%>% head()
+
+meanF1 = mean(normtimedata$F1, na.rm = TRUE)
+normtimedata%>% filter(F1< meanF1)
+
+normtimedata_filtered = normtimedata %>% filter(
+  (F1-mean(F1, na.rm = TRUE)) < sd(F1, na.rm = TRUE),
+  (F2-mean(F2, na.rm = TRUE)) < sd(F2, na.rm = TRUE),
+  (F3-mean(F3, na.rm = TRUE)) < sd(F3, na.rm = TRUE)
+  )
+
+
+head(normtimedata_filtered)
+
+
+
+```
+
+
+## Arrange
+
+Arrange changes the order of rows based on a column or a set of columns. The default is ascending order. To use descending order, use desc().
+
+```{r}
+normtimedata %>% arrange(F1) 
+
+normtimedata %>% arrange(F1, desc(F2)) 
+
+normtimedata %>% arrange(Speaker, Vowel, desc(Nasality)) 
+
+
+
+```
+
+
+## Select
+Select allows you to choose one or more variable from your dataset. This is important because you may have columns that you simply don't care about, and you don't want to accidentially use them in your analysis. 
+
+```{r}
+normtimedata %>% select(Nasality, Vowel, Speaker)
+
+normtimedata %>% select(Time:Speaker)
+
+normtimedata %>% select(-Type)
+```
+
+What happens if you want to rename a particular variable while doing this? There are many tedious ways to do this, such as creating an identical variable with the different name, or using the colnames() function in base R. The easiest way to do it is to use the rename function, which is a different version of select. It keeps anything not specifically mentioned.
+
+```{r}
+normtimedata %>% rename(Normalized_Time = NormTime)
+
+normtimedata %>% rename(Normalized_Time = NormTime) %>%
+  select(-Type)
+
+
+```
+
+
+Finally, you can use the everything() function to move something to the beginning of the data frame:
+```{r}
+normtimedata %>% rename(Normalized_Time = NormTime) %>%
+  select(Speaker, Nasality, everything()) %>%
+  select(-Type)
+
+```
+
+Other things that might help when selecting a variable can be found in the select help page.
+
+
+## Mutate
+Sometimes, you want to create a new variable, that is a function of an old variable. This function will add a new variable to the end of your dataset.
+
+```{r}
+normtimedata %>% mutate(F1_2= F2-F1)
+
+normtimedata %>% mutate(SpeakerNo = substr(Speaker, 3,4))
+#substr is a base R function. What does it do? 
+#?substr
+
+
+```
+
+## group_by
+I know I said there were five main functions. I kind of lied. Summarise (the next function) is not very useful unless we use it in conjunction with group_by. This is because we want to see summaries within different groups, not just across the whole dataset.
+
+```{r}
+normtimedata %>% group_by(Speaker, Vowel, Nasality)
+
+#this only looks a little different than the average tibble - it has groups listed on the top! Now what happens when we use summarise:
+
+```
+
+## Summarise
+
+Summarise allows you to collapse a data frame into a single row that tells you some sort of summary about that data. As you can see below, it isn't useful unless you use it with group_by.
+
+```{r}
+normtimedata %>% summarise(F1mean = mean(F1))
+
+normtimedata %>% group_by(Speaker, Vowel, Nasality) %>% summarise(F1mean = mean(F1))
+
+normtimedata %>% group_by(Speaker, Vowel, Nasality) %>% summarise(F1mean = mean(F1), F1sd = sd(F1), F2mean = mean(F2),F2sd = sd(F2), F3mean = mean(F3),F3sd = sd(F3))
+
+
+```
+
+There is one more thing to think about: what if we need to know the sample size in each of our groups? We can do this using n() and n_distinct(). The first gives the number of times in each group, and the second gives the number of distinct items in each group.
+
+```{r}
+
+normtimedata %>% group_by(Speaker, Vowel, Nasality) %>% summarise(F1mean = mean(F1), number = n())
+
+normtimedata %>% group_by(Vowel, Nasality) %>% summarise(F1mean = mean(F1), number = n_distinct(Speaker))
+
+```
+
+
+
+#Tidying data with tidyr
+We will continue to use my dissertation data for this section. I have reformatted the data for some sections, in order to show you these functions.
+
+
+Recall that tidy data is based on the principles that every variable is saved in a column, and each observation is saved in a row. Sometimes you have to change your data to different format to achieve the tidy data shape.
+Keep in mind that there are times when you might want to violate these principles. If those come up, you need to know how to reshape your data.
+
+##Shapes of data
+Data comes into one of two shapes: wide and long. The easiest way to demonstrate the difference between the two is with a picture.
+![ ](/img/widelong.png)
+
+Wide data is presented with each different data variable in a separate column, whereas long data is presented with one column containing all the values and another column listing the context of the value. There are intermediate values between the extremites of long and short. Most modeling and visualization packages prefer long data to wide data.
+
+There are four basic functions to reshape data in tidyr:
+
+* gather(): turn columns into rows
+* spread(): turn rows into columns
+* separate(): turn a character column into multiple columns 
+* unite(): turn multiple character columns into a single column
+
+
+
+##Gather
+Gather takes wide data and makes it long. It does this by taking a column name and making that into a variable (called a key), with the value being the cell contents.
+
+```{r}
+normtimedata %>% 
+  select(Speaker, Vowel, Nasality, NormTime, RepNo, F1, F2, F3) %>%
+  gather(variable, value, c(F1:F3))
+
+```
+
+##Spread
+Spread is going to take long data and make it wide. Be careful using this!
+Spread is going to take each value of its second argument (the first argument being the dataset, which if you are using the pipe is implicitly included) and make that into a column, with the value in that column being the value specified in the third arugment.
+
+To use spread, if you have a lot of dependent variables you will end up with a bunch of NAs and your data will look awful. In these cases it's better to maintain a long format. Another way of dealing with this is to create a new variable that includes the information for both variables.
+```{r}
+normtimedata %>% select(c(Speaker, Word:NormTime, F1)) %>% spread(Speaker, F1) %>% arrange(RepNo)
+
+normtimedata %>% filter(NormTime==0.5) %>% select(c(Speaker, Word:NormTime, F1)) %>% spread(Speaker, F1) %>% arrange(RepNo)
+
+
+
+normtimedata %>% 
+  select(Speaker, Vowel, Nasality, NormTime, RepNo, F1, F2, F3) %>%
+  gather(variable, value, c(F1:F3)) %>%
+  unite(temp, Speaker, variable) %>%
+  spread(NormTime, value)
+
+
+```
+
+
+
+
+## Separate
+Let's say you want to take information out of a column and make it into multiple columns (similar to the 'text to columns' command in Excel). You can use the separate() function to do this.
+
+By default, separate will separate based on any non-alphanumeric character. You can also specify the separater with sep = "____". You can also specify the number of characters to separate by.
+
+
+
+```{r}
+normtimedata %>% separate(Speaker, into = c("Language", "ID"), 2)
+```
+
+## Unite
+The opposite of separate is 'unite', which will make a new variable out of two variables. Note that for separate and unite, you end getting rid of the old variables.
+
+
+```{r}
+normtimedata %>% unite(VowNas, Vowel, Nasality, sep = "_")
+
+normtimedata %>% unite(MERP, Speaker, Vowel, Nasality, sep = "!")
+
+```
+
+#Relating different data sets with dplyr
+There are many datasets, especially once you get into larger experiments, that involve the use of multiple tables at once. For these datasets, we need to use a set of tools that relates these tables to one another. There is a great cheat sheet found [here](http://stat545.com/bit001_dplyr-cheatsheet.html#why-the-cheatsheet) to further explain these joins. You can also find more information in [R4DS](http://r4ds.had.co.nz/).
+
+In order to show you how different types of joins work, I have included another set of data. It is output from a second set of Praat scripts, which were run to gather further acoustic measures related to nasality (see Styler 2017 for more information). This set of scripts was run at 5 normalized time points, rather than 10, throughout the vowels' durations.
+
+```{r}
+nasalitydata
+```
+
+
+I will be making subsets of the datasets, which I will show you, in order to demonstrate these joins.
+
+There are two types of joins, and a few differeny options for these types of join:
+
+![Mutating joins](/img/joins.png)
+![Semi join](/img/semijoin.png)
+![Anti joins](/img/antijoin.png)
+
+
+* Mutating joins combine variables from two data frames in a variety of ways.
+  - left_join(a, b, by = c('...')) - join matching rows from b to a by matching variables in vector
+  - right_join(a, b, by = c('...')) - join matching rows from a to b by matching variables in vector
+  - inner_join(a, b, by = c('...')) - join data, retaining only rows in both a and b
+  - full_join(a, b, by = c('...')) - join data, retaining all values, all rows
+
+
+* Filtering joins match observations in two data frames, but only affect the observations, rather than the variables.
+  - semi_join(a, b) keeps all observations in a that have a match in b.
+  - anti_join(a b) drops all observations in a that have a match in b.
+
+
+
+
+##Mutating Joins
+
+First, we have an inner join. An inner join will only retain rows in both datasets.
+
+```{r}
+nasalitydata %>% filter(Speaker =="BP02") %>% inner_join(normtimedata)
+
+nasalitydata %>% filter(Speaker =="BP21", RepNo < 20) %>% inner_join(filter(normtimedata, RepNo > 10))
+
+```
+
+
+Whereas an inner join keeps observations in both datasets, outer joins keeps observations that exist in at least one dataset. There are three types of outer joins: left joins, right joins, and full joins.
+
+A left join will retain all observations that are in the first dataset. Conversely, a right join will retain all observations that are in the second dataset. These joins work by adding an additional “virtual” observation to each table. This observation has a key that always matches (if no other key matches), and a value filled with NA. A left join will be more common to use in the "wild."
+
+```{r}
+dim(nasalitydata)
+dim(normtimedata)
+nasalitydata %>% left_join(normtimedata)
+
+normtimedata %>% filter(NormTime ==0.3) %>% left_join(nasalitydata)
+
+nasalitydata %>% filter(NormTime ==0.2, Vowel =="a") %>% left_join(normtimedata)
+
+nasalitydata %>% filter(NormTime == 0.2, Vowel =="u") %>% right_join(normtimedata)
+
+
+```
+
+The last type of outer join is a full join. It keeps all observations from both datasets. Remember when using the pipe that the argument that goes into full join is on the left hand side of the full_join() function, so if you do any filtering, keep that in mind!
+
+```{r}
+normtimedata %>% full_join(nasalitydata)
+
+normtimedata %>% filter(NormTime == 0.4) %>% full_join(nasalitydata) %>% arrange(Speaker, Vowel, Nasality, RepNo, NormTime) 
+
+
+
+
+```
+Why does the second example here only have NormTime values of 0.2, 0.4, 0.6, 0.8, and 1?
+
+##Filtering joins
+Unlike mutating joins, filtering joins do not combine multiple datasets. They only affect the observations from the first dataset. (You can think of it as using data that is or isn't in the second set to filter the first set, based ona particular key.)
+
+A semi join will keep all observations in the first dataset which have a match in the second dataset. An anti join will discard these observations, and will only keep the observations in the first dataset that *don't* have a match in the second set.
+
+```{r}
+normtimedata %>% semi_join(nasalitydata)
+
+nasalitydata %>% semi_join(normtimedata)
+
+normtimedata %>% anti_join(nasalitydata)
+
+nasalitydata %>% anti_join(normtimedata)
+#As it turns out, there was one dataset in the nasality data that, for some reason, was not calculated in the normtime dataset.
+
+```
+
+#My data processing code
+This is the processing code I used to get the data from my dissertation out of .txt form and into R. Note that it is not the final version of the data. Rather, it is processed to the point where it can be worked with in this module. Further processing was done, specifically using the select() and filter() verbs, to create my final dataset, which is not shown here.
+
+Some of this is based on methods found on [this website](http://serialmentor.com/blog/2016/6/13/reading-and-combining-many-tidy-data-files-in-R).
+```{r datainsert1, ref.label='datainsert', eval = FALSE}
+```
+

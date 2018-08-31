@@ -23,6 +23,15 @@ Please make good use of the following cheat sheet!</description>
     </item>
     
     <item>
+      <title>Data Processing with the Tidyverse</title>
+      <link>/portfolio/dataprocessing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/portfolio/dataprocessing/</guid>
+      <description>Why the tidyverse? Tidy data Components of the tidyverse Importing data The pipe operator  Data Manipulation with dplyr Filter Arrange Select Mutate group_by Summarise  Tidying data with tidyr Shapes of data Gather Spread Separate Unite  Relating different data sets with dplyr Mutating Joins Filtering joins  My data processing code   Why the tidyverse? There are a few reasons to use R and the Tidyverse for data processing.</description>
+    </item>
+    
+    <item>
       <title>Introduction to R and RMarkdown</title>
       <link>/portfolio/intror/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

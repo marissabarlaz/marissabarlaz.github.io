@@ -56,11 +56,11 @@ load("~/Desktop/Other Materials/Git/MSB89/content/portfolio/my_oauth")
 
 There are a couple of different types of flows you can work with, depending on what your question is. For example, if you want to look at word counts and frequencies, your workflow will look something like this:
 
-![ ](/img/tidyflow-ch-1.png)
+![ ](/img/tidyflow-ch-1.png){95%}
 
 If you want to do sentiment analysis, your workflow will look something like this:
 
-![ ](/img/tidyflow-ch-2.png)
+![ ](/img/tidyflow-ch-2.png){95%}
 
 #Mining and Processing
 

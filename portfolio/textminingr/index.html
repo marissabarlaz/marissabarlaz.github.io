@@ -132,15 +132,9 @@
 <h1>Setting up an API</h1>
 <p>The first thing to do with R when getting ready to do Twitter mining is to set up your credentials. I won’t go through this process right now, but it is outlined <a href="https://github.com/mkearney/rtweet">here</a>. You need to first become a Twitter developer and create an app. It only takes a few moments.</p>
 <p>There are a couple of different types of flows you can work with, depending on what your question is. For example, if you want to look at word counts and frequencies, your workflow will look something like this:</p>
-<div class="figure">
-<img src="/img/tidyflow-ch-1.png" />
-
-</div>
+<p><img src="/img/tidyflow-ch-1.png" />{95%}</p>
 <p>If you want to do sentiment analysis, your workflow will look something like this:</p>
-<div class="figure">
-<img src="/img/tidyflow-ch-2.png" />
-
-</div>
+<p><img src="/img/tidyflow-ch-2.png" />{95%}</p>
 </div>
 <div id="mining-and-processing" class="section level1">
 <h1>Mining and Processing</h1>
@@ -419,10 +413,8 @@ sports_sentiments_bing &lt;- timelines_frequency %&gt;%
   count(word) %&gt;%
   with(wordcloud(word, n, max.words = 100))</code></pre>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
-<pre><code>## Warning in wordcloud(word, n, max.words = 100): premierleague could not be
-## fit on page. It will not be plotted.</code></pre>
-<pre><code>## Warning in wordcloud(word, n, max.words = 100): championship could not be
-## fit on page. It will not be plotted.</code></pre>
+<pre><code>## Warning in wordcloud(word, n, max.words = 100): report could not be fit on
+## page. It will not be plotted.</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-14-1.png" width="576" /></p>
 </div>
 </div>

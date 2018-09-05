@@ -34,19 +34,6 @@ library(twitteR)
 The first thing to do with R when getting ready to do Twitter mining is to set up your credentials. I won't go through this process right now, but it is outlined [here](https://github.com/mkearney/rtweet). You need to first become a Twitter developer and create an app. It only takes a few moments.
 
 ```{r include=FALSE}
-consumer_key = "pCT6Kiqeh1bxa7VQkdetw0Yya"
-consumer_secret = "nfPKs0RyFauI476eQAlaQrgPXI5Tt7RIeC5FOxOWHREG67yCFU"
-access_token = "1036690851425144838-mRlj6A6F1xkIf90W3q8foEvo3FPXDn"
-access_secret = "ec9Cnzm3fZguJCX5bYaFq4uhAhyhmZZxxUCbyuiwt1wiI"
-requestURL <- "https://api.twitter.com/oauth/request_token"
-accessURL <- "https://api.twitter.com/oauth/access_token"
-authURL <- "https://api.twitter.com/oauth/authorize"
-
-
-setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
-
-create_token(app = "R_2_MB", consumer_key = consumer_key, consumer_secret = consumer_secret, access_token = access_token, access_secret = access_secret)
-
 
 #my_oauth <- OAuthFactory$new(consumerKey = consumer_key, consumerSecret = consumer_secret, requestURL = requestURL, accessURL = accessURL, authURL = authURL)
 #my_oauth$handshake(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl"))

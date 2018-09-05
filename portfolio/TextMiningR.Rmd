@@ -418,7 +418,7 @@ animal_tweets <- animals_processed %>%
          !word =="amp")
 ```
 
-#Time and Space
+##Time and Space
 Here, I am looking at tweets over time and space by the animal mentioned. As you can see, not a lot of people are talking about hamsters!
 
 ```{r}

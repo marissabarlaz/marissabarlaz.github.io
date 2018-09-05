@@ -120,8 +120,8 @@
 <li><a href="#processing-data-1">Processing data</a></li>
 <li><a href="#locations-and-time-series">Locations and time series</a></li>
 </ul></li>
-<li><a href="#another-example-of-multiple-search-terms">Another example of multiple search terms</a></li>
-<li><a href="#time-and-space">Time and Space</a><ul>
+<li><a href="#another-example-of-multiple-search-terms">Another example of multiple search terms</a><ul>
+<li><a href="#time-and-space">Time and Space</a></li>
 <li><a href="#sentiments">Sentiments</a></li>
 </ul></li>
 <li><a href="#a-few-final-words">A few final words</a></li>
@@ -419,7 +419,9 @@ sports_sentiments_bing &lt;- timelines_frequency %&gt;%
   count(word) %&gt;%
   with(wordcloud(word, n, max.words = 100))</code></pre>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
-<pre><code>## Warning in wordcloud(word, n, max.words = 100): bbcfootball could not be
+<pre><code>## Warning in wordcloud(word, n, max.words = 100): premierleague could not be
+## fit on page. It will not be plotted.</code></pre>
+<pre><code>## Warning in wordcloud(word, n, max.words = 100): championship could not be
 ## fit on page. It will not be plotted.</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-14-1.png" width="576" /></p>
 </div>
@@ -540,9 +542,8 @@ animal_tweets &lt;- animals_processed %&gt;%
          str_detect(word, &quot;[a-z]&quot;),
          !str_detect(word, &quot;^http&quot;), 
          !word ==&quot;amp&quot;)</code></pre>
-</div>
-<div id="time-and-space" class="section level1">
-<h1>Time and Space</h1>
+<div id="time-and-space" class="section level2">
+<h2>Time and Space</h2>
 <p>Here, I am looking at tweets over time and space by the animal mentioned. As you can see, not a lot of people are talking about hamsters!</p>
 <pre class="r"><code>animalgeo = animals_processed %&gt;% filter(!is.na(lat), !is.na(animalmentioned))
 ggmap(usmap) + geom_point(data = animalgeo, aes(x = lng, y = lat, color = animalmentioned))</code></pre>
@@ -561,6 +562,7 @@ ggmap(usmap) + geom_point(data = animalgeo, aes(x = lng, y = lat, color = animal
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-24-1.png" width="576" /></p>
 <pre class="r"><code>ts_plot(animal10, &quot;mins&quot;)</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-24-2.png" width="576" /></p>
+</div>
 <div id="sentiments" class="section level2">
 <h2>Sentiments</h2>
 <p>Let’s look at sentiments in reference to animals. Once again I will use the Bing sentiment corpus. I also have created another dataset, animals_bing_time, that looks at sentiments over time by dividing the timestamps into 40 windows.</p>

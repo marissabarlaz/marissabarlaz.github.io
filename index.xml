@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>Text Mining with R</title>
+      <link>/portfolio/textminingr/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/portfolio/textminingr/</guid>
+      <description>Setting up an API Mining and Processing Searching for tweets  Comparing three Twitter Users Processing Data Word Ratios Frequencies of key words Sentiment analysis  Comparing tweets with certain search terms Processing data Locations and time series  Another example of multiple search terms Time and Space Sentiments  A few final words   Setting up an API The first thing to do with R when getting ready to do Twitter mining is to set up your credentials.</description>
+    </item>
+    
+    <item>
       <title>R Graphing Workshop</title>
       <link>/portfolio/rgraphingworkshop/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

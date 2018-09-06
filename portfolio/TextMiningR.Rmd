@@ -5,7 +5,7 @@ image: "img/twitter.png"
 showonlyimage: false
 weight: 1
 draft: false
-description: "The aim of this workshop is to teach you the basics of how to use R for data processing."
+description: "The aim of this workshop is to teach you the basics of how to use R for text mining, specifically from Twitter."
 output:
   blogdown::html_page:
     toc: true

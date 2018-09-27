@@ -213,22 +213,38 @@ ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(group = ubdb$v, color = ubdb$v)</code
 <pre class="r"><code>#Sing it with me - this is how you do it!
 ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(group = v, color = v))</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot3-1.png" width="576" /></p>
-<p>What about other aesthetics?</p>
+<p>What about other aesthetics? For boxplots and barplots, as well as other geoms, we can include significance levels with the <em>ggsignif</em> package. The pairwise comparisons being made are included in a list. The significance levels can be manually given using the ‘annotations’ argument. The geom_signif function has many other possibilities for changing the style of the significance bars.</p>
 <pre class="r"><code>ggplot(ubdb, aes(x=v, y=f1)) + geom_boxplot(aes(group = v))</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot33-1.png" width="576" /></p>
-<pre class="r"><code>ggplot(ubdb, aes(x=t1y, fill=v)) + geom_density(size = 1, alpha=.2)</code></pre>
+<pre class="r"><code>mycomparisons = list(c(&quot;AA&quot;, &quot;AE&quot;), c(&quot;IH&quot;, &quot;IY&quot;), c(&quot;IH&quot;, &quot;UW&quot;))
+ggplot(ubdb, aes(x=v, y=f1)) + geom_boxplot(aes(group = v)) + geom_signif(comparisons = mycomparisons, annotations = c(&quot;***&quot;, &quot;**&quot;, &quot;NS&quot;), y = c(1000, 1500, 1000))</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot33-2.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, fill=v)) + geom_density(size = 1, alpha=.2)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot34-1.png" width="576" /></p>
+<p>The following plots are going to look pretty darn ugly! Why is that? What can we do to fix them?</p>
 <pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(group = v))+geom_ribbon(aes(group = v, ymin = f1-sd(f1), ymax = f1+sd(f1)))</code></pre>
-<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot33-3.png" width="576" /></p>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-1.png" width="576" /></p>
 <pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(group = v))+geom_smooth(aes(group =v, color = v))</code></pre>
-<pre><code>## `geom_smooth()` using method = &#39;loess&#39;</code></pre>
-<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot33-4.png" width="576" /></p>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-2.png" width="576" /></p>
 <pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_smooth(aes(color = v), method = &quot;gam&quot;, size = 2)+geom_ribbon(aes(color = v, ymin = f1-sd(f1), ymax = f1+sd(f1)), alpha = .2)</code></pre>
-<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot33-5.png" width="576" /></p>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-3.png" width="576" /></p>
+<pre class="r"><code>#this is better. There is not an overload of information in these plots!
+ggplot(ubdb, aes(x=t1y, y=f1)) + geom_smooth(aes(color = v), method = &quot;gam&quot;, size = 2)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-4.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(color = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-5.png" width="576" /></p>
 <pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1))+geom_ribbon(aes(color = v, ymin = f1-sd(f1), ymax = f1+sd(f1)), alpha = .2)+ geom_line(aes(color = v), size = 1.2)</code></pre>
-<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot33-6.png" width="576" /></p>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-6.png" width="576" /></p>
+<p>Other plots that we can do include using geom_text, geom_violin, and geom_bar, among many others!</p>
 <pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1))+geom_text(aes(label=v, color = v))</code></pre>
-<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot33-7.png" width="576" /></p>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot36-1.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=v, y=f2))+geom_violin(aes(color = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot36-2.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=v, y=f2))+geom_violin(aes(color = v, fill = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot36-3.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=v))+geom_bar(aes(color = v, fill = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot36-4.png" width="576" /></p>
 </div>
 <div id="faceting" class="section level2">
 <h2>Faceting</h2>

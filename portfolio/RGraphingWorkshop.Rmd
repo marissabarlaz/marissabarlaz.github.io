@@ -16,6 +16,7 @@ description: "The aim of this workshop is to teach you the basics of using ggplo
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
+library(ggsignif)
 ubdb = read.csv("ubdb.csv", header = T)
 set.seed(555)
 myspeakers = c("S1", "S2", "S3", "S4", "S5")
@@ -146,21 +147,42 @@ ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(group = v, color = v))
 ```
 
 What about other aesthetics?
-
+For boxplots and barplots, as well as other geoms, we can include significance levels with the *ggsignif* package. The pairwise comparisons being made are included in a list. The significance levels can be manually given using the 'annotations' argument. The geom_signif function has many other possibilities for changing the style of the significance bars.
 ```{r ggplot33}
 ggplot(ubdb, aes(x=v, y=f1)) + geom_boxplot(aes(group = v))
+mycomparisons = list(c("AA", "AE"), c("IH", "IY"), c("IH", "UW"))
+ggplot(ubdb, aes(x=v, y=f1)) + geom_boxplot(aes(group = v)) + geom_signif(comparisons = mycomparisons, annotations = c("***", "**", "NS"), y = c(1000, 1500, 1000))
 
+```
+
+
+```{r ggplot34}
 ggplot(ubdb, aes(x=t1y, fill=v)) + geom_density(size = 1, alpha=.2)
+```
 
+The following plots are going to look pretty darn ugly! Why is that? What can we do to fix them?
+
+```{r ggplot35}
 ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(group = v))+geom_ribbon(aes(group = v, ymin = f1-sd(f1), ymax = f1+sd(f1)))
 
 ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(group = v))+geom_smooth(aes(group =v, color = v))
 
 ggplot(ubdb, aes(x=t1y, y=f1)) + geom_smooth(aes(color = v), method = "gam", size = 2)+geom_ribbon(aes(color = v, ymin = f1-sd(f1), ymax = f1+sd(f1)), alpha = .2)
 
-ggplot(ubdb, aes(x=t1y, y=f1))+geom_ribbon(aes(color = v, ymin = f1-sd(f1), ymax = f1+sd(f1)), alpha = .2)+ geom_line(aes(color = v), size = 1.2)
+#this is better. There is not an overload of information in these plots!
+ggplot(ubdb, aes(x=t1y, y=f1)) + geom_smooth(aes(color = v), method = "gam", size = 2)
+ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(color = v))
 
+ggplot(ubdb, aes(x=t1y, y=f1))+geom_ribbon(aes(color = v, ymin = f1-sd(f1), ymax = f1+sd(f1)), alpha = .2)+ geom_line(aes(color = v), size = 1.2)
+```
+
+
+Other plots that we can do include using geom_text, geom_violin, and geom_bar, among many others!
+```{r ggplot36}
 ggplot(ubdb, aes(x=t1y, y=f1))+geom_text(aes(label=v, color = v))
+ggplot(ubdb, aes(x=v, y=f2))+geom_violin(aes(color = v))
+ggplot(ubdb, aes(x=v, y=f2))+geom_violin(aes(color = v, fill = v))
+ggplot(ubdb, aes(x=v))+geom_bar(aes(color = v, fill = v))
 ```
 
 ## Faceting

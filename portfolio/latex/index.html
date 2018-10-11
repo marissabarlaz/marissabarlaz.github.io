@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Introduction to LaTeX</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/owl.carousel.css">
+<link rel="stylesheet" href="/css/owl.theme.css">
+
+
+  <link href="/css/style.default.css" rel="stylesheet" id="theme-stylesheet">
+
+ 
+
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+
+<link href="/css/custom.css" rel="stylesheet">
+<link rel="shortcut icon" href="/img/favicon.png">
+
+
+</head>
+<body>
+  <div id="all">
+      <div class="container-fluid">
+          <div class="row row-offcanvas row-offcanvas-left">
+              <div id="sidebar" class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+  <div class="sidebar-content">
+    <h1 class="sidebar-heading"><a href="/">Dr. Marissa Barlaz</a></h1>
+    
+      <p class="sidebar-p">I am the Linguistic Data Analytics Manager in the School of Literatures, Cultures, and Linguistics at the University of Illinois at Urbana-Champaign.</p>
+    
+    <ul class="sidebar-menu">
+      
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/about/">About</a></li>
+      
+        <li><a href="/contact/">Get in touch</a></li>
+      
+    </ul>
+    <p class="social">
+  
+  <a href="https://www.facebook.com/marissa.goldrich" data-animate-hover="pulse" class="external facebook">
+    <i class="fa fa-facebook"></i>
+  </a>
+  
+  
+  
+  
+  <a href="https://www.instagram.com/salem_samoyed/" title="" class="external instagram">
+    <i class="fa fa-instagram"></i>
+  </a>
+  
+  
+  <a href="mailto:marissa.barlaz@gmail.com" data-animate-hover="pulse" class="email">
+    <i class="fa fa-envelope"></i>
+  </a>
+  
+  
+  <a href="https://www.linkedin.com/in/marissa-barlaz-52801830/" data-animate-hover="pulse">
+    <i class="fa fa-linkedin"></i>
+  </a>
+  
+  
+  
+</p>
+
+
+    <div class="copyright">
+      <p class="credit">
+        
+          &copy;2018 Marissa Barlaz
+        
+        | Template by <a href="https://bootstrapious.com/free-templates" class="external">Bootstrapious.com</a>
+
+&amp; ported to Hugo by <a href="https://github.com/kishaningithub">Kishan B</a>
+
+      </p>
+    </div>
+  </div>
+</div>
+
+              
+<div class="col-xs-12 col-sm-8 col-md-9 content-column white-background">
+  <div class="small-navbar visible-xs">
+  <button type="button" data-toggle="offcanvas" class="btn btn-ghost pull-left"> <i class="fa fa-align-left"> </i>Menu</button>
+  <h1 class="small-navbar-heading"><a href="/">Dr. Marissa Barlaz</a></h1>
+</div>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="content-column-content">
+         <h1>Introduction to LaTeX</h1>
+         <div id="TOC">
+<ul>
+<li><a href="#introduction-to-latex">Introduction to LaTeX</a><ul>
+<li><a href="#what-is-latex">What is LaTeX?</a></li>
+<li><a href="#whats-so-great-about-latex">What’s so great about LaTeX?</a></li>
+<li><a href="#whats-not-so-great-about-latex">What’s not so great about LaTeX?</a></li>
+<li><a href="#editors">Editors</a></li>
+</ul></li>
+<li><a href="#basics-of-latex">Basics of LaTeX</a><ul>
+<li><a href="#important-symbols-and-commands">Important symbols and commands</a></li>
+</ul></li>
+<li><a href="#the-preamble">The preamble</a><ul>
+<li><a href="#document-classes">Document classes</a></li>
+<li><a href="#page-formatting">Page formatting</a></li>
+<li><a href="#packages">Packages</a></li>
+</ul></li>
+<li><a href="#body">Body</a><ul>
+<li><a href="#title-page">Title page</a></li>
+<li><a href="#sections">Sections</a></li>
+<li><a href="#font-styles">Font styles</a></li>
+<li><a href="#figures">Figures</a></li>
+<li><a href="#tables">Tables</a></li>
+</ul></li>
+<li><a href="#bibliographies">Bibliographies</a></li>
+<li><a href="#other-possibilities-with-latex">Other possibilities with LaTeX</a></li>
+</ul>
+</div>
+
+<div id="introduction-to-latex" class="section level1">
+<h1>Introduction to LaTeX</h1>
+<div id="what-is-latex" class="section level2">
+<h2>What is LaTeX?</h2>
+<p>LaTeX is a document preparation system, that is becoming the de-facto method in STEM fields, such as math, physics and computer science. It is being used heavily because it is extremely flexible and can create almost any document type you can think of, and will do so while doing semi-automatic formatting.</p>
+<p>LaTeX is different than programs like Word, where what you see is what you get. That is, the output is no different from the location in which you are inputting content. Rather, you do not immediately see the output of your document. You interact with a text editor, and input plain text plus markup commands that apply formatting. You then compile your document into a PDF output. LaTeX will take care of formatting the document and putting images and tables into the appropriate locations.</p>
+</div>
+<div id="whats-so-great-about-latex" class="section level2">
+<h2>What’s so great about LaTeX?</h2>
+<p>There are many pros to LaTeX, including:</p>
+<ul>
+<li>Superior typographic quality</li>
+<li>Automatic formatting</li>
+<li>Output device independence and portability</li>
+<li>Document longetivity</li>
+<li>Compatibility with revision control</li>
+<li>Mathematical typesetting</li>
+</ul>
+<p>I cannot stress this enough - <em>automatic formatting</em>. When it comes time to work on your dissertation, you are going to want to use LaTeX to organize your chapters, bibliography, tables, and figures. LaTeX will automatically number your figures and tables for you, even if you move them aroudn in your document. It will also automatically format your bibliography for you. More on that later.</p>
+<p>A version of the LaTeX template I used for my dissertation can be found <a href="https://github.com/mayhewsw/uiucthesis2014">here</a>. Bite that many journals have LaTeX templates you can download from their website for easy formatting.</p>
+</div>
+<div id="whats-not-so-great-about-latex" class="section level2">
+<h2>What’s not so great about LaTeX?</h2>
+<p>Of course, not every program is perfect. Here are some things to keep in mind when using LaTeX:</p>
+<ul>
+<li>More moving parts - you need an editor and a previewer.</li>
+<li>Previewing delay</li>
+<li>Difficulty remembering commands</li>
+<li>Adding new fonts and packages</li>
+<li>Possibility of syntax errors (many editors help out with this by coloring commands, braces, etc.)</li>
+</ul>
+</div>
+<div id="editors" class="section level2">
+<h2>Editors</h2>
+<p>LaTeX documents are saved as .tex files, and are plain text. Luckily, there are many editors out there that make it easier to create documents, view them, and easily check syntax. Some even have panels for easy character/figure/table/equation insertion. Some are OS dependent, but it’s important to remember that .tex files can be transferred between operating systems without issue. Popular ones are TexShop (Mac only), TexMaker, TexWorks and TexStudio. There are also online editors, akin to Google Drive, such as <a href="https://www.sharelatex.com/">ShareLaTeX</a> and <a href="https://www.overleaf.com/">Overleaf</a>.</p>
+</div>
+</div>
+<div id="basics-of-latex" class="section level1">
+<h1>Basics of LaTeX</h1>
+<p>For each document, there are a few basic steps to be taken: first, open your editor. Then type, save your document, compile it, and view it.</p>
+<p>There are two basic sections to a LaTeX document: the preamble, and the body. The preamble includes global commands, page layout and other information. The body includes everything else, including your content. In your editor, try typing this, saving it on your computer in a stable folder, and pressing ‘Build and View’ or ‘Compile’:</p>
+<pre><code>\documentclass{article}
+
+\begin{document}
+Hello world!
+\end{document}</code></pre>
+<p>Congratulations! You just made your first LaTeX document!</p>
+<p>If you open the folder you saved your document in, you will notice that there are a lot of auxiliary files created. These all have to do with the compilation of the document. Therefore it’s good practice have a separate folder for each document you are creating. That helps with document management, and you can create a subfolder just for your figures.</p>
+<div id="important-symbols-and-commands" class="section level2">
+<h2>Important symbols and commands</h2>
+<p>There are a number of symbols that are used for formatting and creating commands in LaTeX. If you need to use one of these symbols in your text, you need to tell LaTeX specifically that you are using that symbol, rather than making a new command. These symbols include:</p>
+<ul>
+<li>Backslash: \ (\textbackslash)</li>
+<li>Tilde: ~ (\textasciitilde OR $\sim$)</li>
+<li>Square brackets: […] (<span class="math display">\[...\]</span>)</li>
+<li>Curly brackets: {…} ({…})</li>
+<li>Dollar sign: $ (\$)</li>
+<li>Percentage sign: % (\%)</li>
+<li>Pound sign: # (\#)</li>
+<li>Ampersand: &amp; (\&amp;)</li>
+</ul>
+<p>Basic commands that include these symbols are:</p>
+<ul>
+<li>\begin{…} and \end{…}</li>
+<li>\par</li>
+<li>\ref{…}</li>
+<li>\cite{…}</li>
+</ul>
+</div>
+</div>
+<div id="the-preamble" class="section level1">
+<h1>The preamble</h1>
+<p>The preamble of your document includes all global parameters you will use. It also includes the specification of packages that might be needed, which will help with formatting, inserting special objects and characters (e.g., long tables, subfigures, IPA symbols, special bibliography formats).</p>
+<div id="document-classes" class="section level2">
+<h2>Document classes</h2>
+<p>There are many types of document classes. The most common type is ‘article’. Other classes include book (chapters, sections, etc.), report (similar to the book class but for single-sided printing), letter, slides, and beamer. When you are using a particular document style template, it will tell you the document type to use. The document type goes in curly brackets after \documentclass{}. There are also a number of optional changes you can make from the default, such as:</p>
+<ul>
+<li>Font size: 12pt, 14pt, etc. default: 10pt</li>
+<li>Font class: Arial, Times, etc. default: Computer Roman</li>
+<li>Number of columns: Onecolumn, twocolumn. default: onecolumn</li>
+<li>Paper size: A4paper, letterpaper, a5paper, b5paper, legalpaper, executivepaper. default: a4paper, or letterpaper</li>
+<li>Equation position: Fleqn (left alignment), leqno (left-sided formula labels). default: centered</li>
+<li>Two sided: Oneside, twoside. default: one sided</li>
+<li>Draft mode: draft</li>
+</ul>
+<p>The ordering of the optional arguments doesn’t matter. They are included in square brackets, before the class is specified, as such:</p>
+<pre><code>\documentclass[&lt;option1&gt;, &lt;option2&gt;]{article}</code></pre>
+</div>
+<div id="page-formatting" class="section level2">
+<h2>Page formatting</h2>
+<p>There are a number of items you can add after your document class to change page formatting, such as:</p>
+<ul>
+<li>\pageheight, \pagewidth - Height and width of the page to create (i.e. size of paper you’d print on).</li>
+<li>\topmargin - Margin at top of page above all printing. Add 1 inch (so that, for example, setting \topmargin to 0.25in would produce a top margin of 1.25 inches).</li>
+<li>\evensidemargin - Left margin on even numbered pages. Add 1 inch (as with \topmargin).</li>
+<li>\oddsidemargin - Left margin on odd numbered pages. Add 1 inch (as with \topmargin).</li>
+<li>\headheight - Height of the header (the header is text that appears atop all pages).</li>
+<li>\headsep - Distance from bottom of header to the body of text on a page.</li>
+<li>\topskip - Distance from top of main text box to the baseline of the first line of text in the main text box.</li>
+<li>\textheight, \textwidth - Height and width of main text box.</li>
+<li>\footskip - Distance from bottom of body to the bottom of the footer (the footer is the text at the bottom of each page).</li>
+<li>\parskip - Distance between paragraphs.</li>
+<li>\parindent - Amount of indentation at the first line of a paragraph.</li>
+</ul>
+<p>How would you create a document with the following specifications? Try it out, and add some text in the document!</p>
+<ul>
+<li>Article class</li>
+<li>12 point</li>
+<li>Times New Roman</li>
+<li>One Sided</li>
+<li>Two Columns</li>
+</ul>
+<pre><code>\documentclass[12pt,times, oneside, twocolumn]{article}</code></pre>
+</div>
+<div id="packages" class="section level2">
+<h2>Packages</h2>
+<p>Packages are a specific set of ready-to-use LaTeX commands that can make your document look nice and professional, with your custom needs. There are hundreds (or more!) of them. You include the packages in the preamble of your document, with the \usepackage{} command. You can specify many of them in one \usepackage{} using a comma to separate them. Many are preloaded into LaTeX, and others can be downloaded. Some helpful ones include <em>tipa</em>, <em>graphicx</em>, and <em>subcaption</em>.</p>
+<p>For <em>tipa</em>, your preamble would include:</p>
+<pre><code>\usepackage{tipa}</code></pre>
+<p>Your body would call symbols from the tipa package using:</p>
+<pre><code>\textipa{...}</code></pre>
+<p>A handy chart of common IPA symbols and diacritics is found <a href="https://jon.dehdari.org/tutorials/tipachart_mod.pdf">here</a>. A full list of <em>tipa</em> symbols available is found <a href="https://www.tug.org/tugboat/tb17-2/tb51rei.pdf">here</a>.</p>
+</div>
+</div>
+<div id="body" class="section level1">
+<h1>Body</h1>
+<p>The rest of your document is the body. It includes all of your content. If you have a simple document, like a report or even a journal article, your document will include all of your content, images, and tables. If you are working on your dissertation, or another big document, it is likely you will have a ‘Dissertation’ document with a body, that includes calls to include individual chapters. Here are some parts of your document that are useful to know about. Note that everything body-related to your document goes between \begin{document} and \end{document}.</p>
+<div id="title-page" class="section level2">
+<h2>Title page</h2>
+<p>If you need a title page for your document, you can specify the information you will need in your title page, and then use the \maketitle command. This will automatically create a nicely-formatted title page. The UIUC thesis template will create a title page that conforms to the Graduate College’s requirements for title pages.</p>
+<p>Note that in this example, the [titlepage] option creates a separate page for the title. The double backslashes indicate a new line.</p>
+<pre><code>\documentclass[titlepage]{article} 
+\begin{document}
+\title{How to Start a Latex File – or whatever you want to call you paper}
+\author{Your Name\\ 
+University of Illinois at Urbana-Champaign\\
+Urbana, IL}
+\date{\today}
+\maketitle
+this is a test
+\end{document}
+</code></pre>
+</div>
+<div id="sections" class="section level2">
+<h2>Sections</h2>
+<p>Splitting up a document into shorter sections is good practice (think of any dissertations or journal articles you’ve read lately). You can split them up using these commands:</p>
+<pre><code>\section{Section title}
+\subsection{Subsection title}
+\subsubsection{Subsubsection title}</code></pre>
+<p>You can make them numbered or unnumbered. Including a * creates unnumbered sections (\section{…} vs. \section*{…}). You can also label them and reference them in later text. Note that this doesn’t work for unnumbered sections, though there are packages that can allow you to do this.</p>
+<pre><code>\section{…}{label: sec:mysection}
+See Section~\ref{sec:mysection} for details</code></pre>
+</div>
+<div id="font-styles" class="section level2">
+<h2>Font styles</h2>
+<p>Most font families will allow you to use the following commands for font styling:</p>
+<ul>
+<li>\textit{italic} italic</li>
+<li>\textbf{bold} bold</li>
+<li>\textsc{small caps} SMALL CAPS</li>
+<li>\underline{underline} underline</li>
+<li>\texttt{teletype} teletype</li>
+</ul>
+<p>You can also mix styles.</p>
+<ul>
+<li>\textbf{\textit{bold-italic}} bold-italic</li>
+<li>\textsc{\textit{small caps-italic}} SMALL CAPS-ITALIC</li>
+<li>\textsc{\texttt{small caps-teletype}} SMALL CAPS-TELETYPE</li>
+</ul>
+<p>To emphasize text use the command \emph{…}, which compensates for the style of the surrounding text.</p>
+<ul>
+<li>\textit{ was unhappy} She was unhappy</li>
+<li>\texttt{ was not} He was not</li>
+</ul>
+<p>##Lists
+You can do enumerated lists, bulleted lists, and description lists. You can also embed lists within one another.</p>
+<p>Enumerated lists:</p>
+<pre><code>\begin{enumerate}
+\item Number 1
+\item Number 2
+\end{enumerate}</code></pre>
+<p>Itemized lists</p>
+<pre><code>\begin{itemize}
+\item Dog
+\item Cat
+\end{itemize}
+</code></pre>
+<p>Descriptions</p>
+<pre><code>\begin{description}
+\item[1st option] Pizza
+\item[2nd option] Pasta
+\end{description}
+</code></pre>
+<p>Embedded lists</p>
+<pre><code>\begin{enumerate}
+\item Merp
+\begin{itemize}
+\item Dog
+\item Cat
+\end{itemize}
+\item Derp
+\end{enumerate}</code></pre>
+</div>
+<div id="figures" class="section level2">
+<h2>Figures</h2>
+<p>Figures are made in the figure environment:</p>
+<pre><code>\begin{figure}[placement]
+...
+\end{figure}</code></pre>
+<p>Placement possibilities include:</p>
+<ul>
+<li>h: here (the exact location)</li>
+<li>t: at the top of the page</li>
+<li>b: at the bottom of the page</li>
+<li>p: on a special page for floating bodies</li>
+</ul>
+<p>LaTeX will try to put your figure as close as possible to where you specify it. Note that if it isn’t in the place you want, if you add more text to your document, the location will change!</p>
+<p>Note that the image you are importing has to be in the proper folder. The default is same folder as the .tex file (assuming you give only the file name). It is usually useful to specify a graphics folder where all figures are located in the preamble:</p>
+<pre><code>\usepackage{graphicx}
+\graphicspath{ {Images/} } - relative directory (within same folder as .tex file)
+\graphicspath{/Users/goldrch2/Desktop/Images/} – absolute directory</code></pre>
+<p>The full specification to include a figure is as such. Note that the types of figures allowed include jpg, png, eps, and pdf.</p>
+<pre><code>\begin{figure}[placement]
+\includegraphics[parameters]{graphic}
+\caption{include a caption}
+\label{fig:myfigure}
+\end{figure}</code></pre>
+<p>Figure parameters can include the following:</p>
+<ul>
+<li>Scale = (percentage of figure’s actual size)</li>
+<li>Specify relative to the size of the document ([width = .80\columnwidth, height = \textheight])
+<ul>
+<li>\columnwidth: width of the column</li>
+<li>n\columnwidth: proportional to the column width by n; can do this for the following parameters as well</li>
+<li>\linewidth: width of the line in the current environment</li>
+<li>\paperwidth; \paperheight</li>
+<li>\textwidth; \textheight</li>
+<li>Note that you can specify one or both of these, but specifying both width and height can distort your figure!</li>
+</ul></li>
+<li>Absolute sizes: [width = 10cm, height = 10cm]
+<ul>
+<li>Units: pt (point, about 0.35mm), mm, cm, in, ex (height of an x in the current font), em (width of an m in the current font)</li>
+</ul></li>
+</ul>
+</div>
+<div id="tables" class="section level2">
+<h2>Tables</h2>
+<p>Tables are found in the table environment:</p>
+<pre><code>\begin{tabular}{specifications}
+...
+\end{tabular}</code></pre>
+<p>Specifications <em>must</em> include:</p>
+<ul>
+<li>Number of columns</li>
+<li>Alignment of each column</li>
+<li>Vertical lines on margins or between columns</li>
+</ul>
+<p>Number of columns and alignment are coded together. Each column is specified by an alignment:</p>
+<ul>
+<li>l: left-aligned column</li>
+<li>c: centered column</li>
+<li>r: right-aligned column</li>
+</ul>
+<p>Vertical Lines are specified as follows. If you do not want a line between columns, do not include anything between them.</p>
+<ul>
+<li>| vertical line</li>
+<li>|| double vertical line</li>
+</ul>
+<p>With the following example, there are three columns. The first is left-aligned, the middle is right-aligned, and the last is centered. There is adouble line on left margin, a single line between first and middle column, no line between the middle and last column, and a single line on right margin.</p>
+<pre><code>\begin{tabular}{|| l | r c |} 
+...
+\end{tabular}</code></pre>
+<p>Other parts of tables:</p>
+<ul>
+<li>\hline: makes horizontal lines between rows</li>
+<li>&amp;: separate the data for each column within a single row</li>
+<li>\: separates the rows of each table</li>
+</ul>
+<p>Placing a table into the table environment allows you to assign it a caption and a label.</p>
+<pre><code>\begin{table}
+\begin{tabular} 
+...
+\end{tabular}
+\caption{This is a table!}
+\label{tab:mytable}
+\end{table}
+</code></pre>
+<p>Note that making tables in LaTeX by hand can be VERY annoying. Luckily there are a few tricks to help. First, if you are exporting data or a model output from R to include in a document, the <em>texreg</em> package in R will automatically convert this output into LaTeX table form. The <em>stargazer</em> package also is able to output LaTeX table code. In addition, if you have a table in an Excel or Word file, or you need to create a table from scratch, the website <a href="https://www.tablesgenerator.com/" class="uri">https://www.tablesgenerator.com/</a> can help, including with formatting.</p>
+</div>
+</div>
+<div id="bibliographies" class="section level1">
+<h1>Bibliographies</h1>
+<p>There are two ways to include bibliographies in LaTeX. One way to do it is to include all citations in your document. This becomes very messy very quickly.</p>
+<pre><code>\begin{thebibliography}{1}
+@article{chomsky1968sound, 
+title={The sound pattern of English.}, 
+author={Chomsky, Noam and Halle, Morris}, 
+year={1968}, publisher={ERIC} }
+
+
+\end{thebibliography}
+</code></pre>
+<p>It’s easier to use a program such as BibDesk, which will do the work for you. Zotero or Jabref can also generate .bib files. A .bib file with bibliographic data should be saved in the same folder as the .tex file. With Bibdesk, you are given a database-like interface. You compile a bibliography file, which then converts to a .bbl. You tell LaTeX the name of your file using the \bibliography{…} command. (If you want your bibliography on a new page, use \newpage).</p>
+<p>Many websites, including Google Scholar, will allow you to automatically generate a LaTeX-style citation (sometimes called a Bibdesk citation). This includes a reference key (for example, <em>chomsky1968sound</em>), all information about the reference, and its type (<em>article</em> in this case).</p>
+<p>To make an APA-style bibliography, or another specific format, the following needs to go into a preamble:</p>
+<pre><code>\usepackage{natbib}
+\bibliographystyle{apalike}</code></pre>
+<p>Note that specific journals or conference proceedings might have a bibliography style of their own.</p>
+<p>To make a citation in your document, you can use the \cite{…} command. The <em>natbib</em> package also allows for \citep{…}, which puts your whole citation in parentheses, and \citet{…}, which only puts the year in parentheses.</p>
+</div>
+<div id="other-possibilities-with-latex" class="section level1">
+<h1>Other possibilities with LaTeX</h1>
+<p>While I won’t go into them now, there are many other things you can do with LaTeX, such as doing nice mathematical formatting, includin equations, and figure formatting (rotation, cropping, in-text positioning, etc.). When you run into an issue you can’t figure out, Google it! Stack Exchange has a specific subpage, TeX Exchange, specifically focused on how to use LaTeX for customized documents. Be sure to search for your issue before posting a question - most of the time, someone has already run into this issue, and it is faster to find the answer they received than to wait for a new answer to your question.</p>
+</div>
+
+         
+      </div>
+    </div>
+  </div>
+</div>
+
+          </div>
+      </div>
+  </div>
+  <script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.cookie.js"> </script>
+<script src="/js/ekko-lightbox.js"></script>
+<script src="/js/jquery.scrollTo.min.js"></script>
+<script src="/js/masonry.pkgd.min.js"></script>
+<script src="/js/imagesloaded.pkgd.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/front.js"></script>
+
+</body>
+</html>

@@ -19,9 +19,9 @@ knitr::opts_chunk$set(echo = TRUE)
 #Welcome to R!
 You might be asking, why should I use R instead of another type of software? In addition to being able to do statistics (like in Minitab, SPSS, Stata, etc.), you can do high-level scripting, statistical programming, and exploratory data analysis in R. It is free and open-source, meaning there is a large community of contributors and users. R and Rmarkdown allow reproducibility and transparency in analyses, which is becoming increasingly important in social sciences research.
 
-To install R, go to [www.r-project.org](www.r-project.org) and choose a mirror site near here. (There is one at WashU in St. Louis that works.)
+To install R, go to [https://www.r-project.org](https://www.r-project.org) and choose a mirror site near here. (There is one at WashU in St. Louis that works.)
 
-While R is great, it is not very user friendly. Luckily, RStudio exists to help with this problem. To download, go to [www.rstudio.org](www.rstudio.org). This is what RStudio looks like. It has four subwindows: the console, the code/variable viewer, the environment and history viewer, and the "other" viewer.
+While R is great, it is not very user friendly. Luckily, RStudio exists to help with this problem. To download, go to [https://www.rstudio.com](https://www.rstudio.com). This is what RStudio looks like. It has four subwindows: the console, the code/variable viewer, the environment and history viewer, and the "other" viewer.
 
 ![ ](/img/Rstudio.png){width=95%}
 

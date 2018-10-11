@@ -1,0 +1,395 @@
+---
+title: "Introduction to LaTeX"
+author: "Marissa Barlaz"
+image: "img/portfolio/tex.png"
+showonlyimage: false
+weight: 10
+
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+description: "The aim of this workshop is to teach you the basics of using LaTeX for document preparation."
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction to LaTeX
+
+## What is LaTeX?
+LaTeX is a document preparation system, that is becoming the de-facto method in STEM fields, such as math, physics and computer science. It is being used heavily because it is extremely flexible and can create almost any document type you can think of, and will do so while doing semi-automatic formatting.
+
+LaTeX is different than programs like Word, where what you see is what you get. That is, the output is no different from the location in which you are inputting content. Rather, you do not immediately see the output of your document. You interact with a text editor, and input plain text plus markup commands that apply formatting. You then compile your document into a PDF output. LaTeX will take care of formatting the document and putting images and tables into the appropriate locations.
+
+## What's so great about LaTeX?
+
+There are many pros to LaTeX, including:
+
+* Superior typographic quality
+* Automatic formatting
+* Output device independence and portability
+* Document longetivity
+* Compatibility with revision control
+* Mathematical typesetting 
+
+I cannot stress this enough - *automatic formatting*. When it comes time to work on your dissertation, you are going to want to use LaTeX to organize your chapters, bibliography, tables, and figures. LaTeX will automatically number your figures and tables for you, even if you move them aroudn in your document. It will also automatically format your bibliography for you. More on that later.
+
+A version of the LaTeX template I used for my dissertation can be found [here](https://github.com/mayhewsw/uiucthesis2014). Bite that many journals have LaTeX templates you can download from their website for easy formatting.
+
+## What's not so great about LaTeX?
+
+Of course, not every program is perfect. Here are some things to keep in mind when using LaTeX:
+
+* More moving parts - you need an editor and a previewer.
+* Previewing delay
+* Difficulty remembering commands
+* Adding new fonts and packages
+* Possibility of syntax errors (many editors help out with this by coloring commands, braces, etc.)
+
+## Editors
+LaTeX documents are saved as .tex files, and are plain text. Luckily, there are many editors out there that make it easier to create documents, view them, and easily check syntax. Some even have panels for easy character/figure/table/equation insertion. Some are OS dependent, but it's important to remember that .tex files can be transferred between operating systems without issue. Popular ones are TexShop (Mac only), TexMaker, TexWorks and TexStudio. There are also online editors, akin to Google Drive, such as [ShareLaTeX](https://www.sharelatex.com/) and [Overleaf](https://www.overleaf.com/).
+
+# Basics of LaTeX
+
+For each document, there are a few basic steps to be taken: first, open your editor. Then type, save your document, compile it, and view it. 
+
+There are two basic sections to a LaTeX document: the preamble, and the body. The preamble includes global commands, page layout and other information. The body includes everything else, including your content. In your editor, try typing this, saving it on your computer in a stable folder, and pressing 'Build and View' or 'Compile':
+
+```
+\documentclass{article}
+
+\begin{document}
+Hello world!
+\end{document}
+```
+
+Congratulations! You just made your first LaTeX document!
+
+If you open the folder you saved your document in, you will notice that there are a lot of auxiliary files created. These all have to do with the compilation of the document. Therefore it's good practice have a separate folder for each document you are creating. That helps with document management, and you can create a subfolder just for your figures.
+
+## Important symbols and commands
+
+There are a number of symbols that are used for formatting and creating commands in LaTeX. If you need to use one of these symbols in your text, you need to tell LaTeX specifically that you are using that symbol, rather than making a new command. These symbols include:
+
+* Backslash: \\ (\\textbackslash)
+* Tilde: \~ (\\textasciitilde OR \$\\sim$)
+* Square brackets: [...] (\[...\])
+* Curly brackets: {...} (\{...\})
+* Dollar sign: \$ (\\$)
+* Percentage sign: \% (\\%)
+* Pound sign: \# (\\#)
+* Ampersand: \& (\\&)
+
+Basic commands that include these symbols are:
+
+* \\begin{...} and \\end{...}
+* \\par
+* \\ref{...}
+* \\cite{...}
+
+# The preamble
+
+The preamble of your document includes all global parameters you will use. It also includes the specification of packages that might be needed, which will help with formatting, inserting special objects and characters (e.g., long tables, subfigures, IPA symbols, special bibliography formats).
+
+## Document classes
+
+There are many types of document classes. The most common type is 'article'. Other classes include book (chapters, sections, etc.), report (similar to the book class but for single-sided printing), letter, slides, and beamer. When you are using a particular document style template, it will tell you the document type to use. The document type goes in curly brackets after \\documentclass{}. There are also a number of optional changes you can make from the default, such as:
+
+* Font size: 12pt, 14pt, etc. default: 10pt
+* Font class: Arial, Times, etc. default: Computer Roman
+* Number of columns: Onecolumn, twocolumn. default: onecolumn
+* Paper size: A4paper, letterpaper, a5paper, b5paper, legalpaper, executivepaper. default: a4paper, or letterpaper
+* Equation position: Fleqn (left alignment), leqno (left-sided formula labels). default: centered
+* Two sided: Oneside, twoside. default: one sided
+* Draft mode: draft
+
+The ordering of the optional arguments doesn't matter. They are included in square brackets, before the class is specified, as such:
+
+```
+\documentclass[<option1>, <option2>]{article}
+```
+
+## Page formatting
+There are a number of items you can add after your document class to change page formatting, such as:
+
+* \\pageheight, \\pagewidth - Height and width of the page to create (i.e. size of paper you'd print on).
+* \\topmargin - Margin at top of page above all printing. Add 1 inch (so that, for example, setting \\topmargin to 0.25in would produce a top margin of 1.25 inches).
+* \\evensidemargin - Left margin on even numbered pages. Add 1 inch (as with \\topmargin).
+* \\oddsidemargin - Left margin on odd numbered pages. Add 1 inch (as with \\topmargin).
+* \\headheight - Height of the header (the header is text that appears atop all pages).
+* \\headsep - Distance from bottom of header to the body of text on a page.
+* \\topskip - Distance from top of main text box to the baseline of the first line of text in the main text box.
+* \\textheight, \\textwidth - Height and width of main text box.
+* \\footskip - Distance from bottom of body to the bottom of the footer (the footer is the text at the bottom of each page).
+* \\parskip - Distance between paragraphs.
+* \\parindent - Amount of indentation at the first line of a paragraph.
+
+How would you create a document with the following specifications? Try it out, and add some text in the document!
+
+* Article class
+* 12 point
+* Times New Roman
+* One Sided
+* Two Columns
+
+```
+\documentclass[12pt,times, oneside, twocolumn]{article}
+```
+
+## Packages
+Packages are a specific set of ready-to-use LaTeX commands that can make your document look nice and professional, with your custom needs. There are hundreds (or more!) of them. You include the packages in the preamble of your document, with the \\usepackage{} command. You can specify many of them in one \\usepackage{} using a comma to separate them. Many are preloaded into LaTeX, and others can be downloaded. Some helpful ones include *tipa*, *graphicx*, and *subcaption*. 
+
+For *tipa*, your preamble would include:
+
+```
+\usepackage{tipa}
+```
+Your body would call symbols from the tipa package using:
+
+```
+\textipa{...}
+```
+
+A handy chart of common IPA symbols and diacritics is found [here](https://jon.dehdari.org/tutorials/tipachart_mod.pdf). A full list of *tipa* symbols available is found [here](https://www.tug.org/tugboat/tb17-2/tb51rei.pdf). 
+
+# Body
+The rest of your document is the body. It includes all of your content. If you have a simple document, like a report or even a journal article, your document will include all of your content, images, and tables. If you are working on your dissertation, or another big document, it is likely you will have a 'Dissertation' document with a body, that includes calls to include individual chapters. Here are some parts of your document that are useful to know about. Note that everything body-related to your document goes between \\begin{document} and \\end{document}.
+
+## Title page
+
+If you need a title page for your document, you can specify the information you will need in your title page, and then use the \\maketitle command. This will automatically create a nicely-formatted title page. The UIUC thesis template will create a title page that conforms to the Graduate College's requirements for title pages. 
+
+Note that in this example, the [titlepage] option creates a separate page for the title. The double backslashes indicate a new line. 
+
+```
+\documentclass[titlepage]{article} 
+\begin{document}
+\title{How to Start a Latex File – or whatever you want to call you paper}
+\author{Your Name\\ 
+University of Illinois at Urbana-Champaign\\
+Urbana, IL}
+\date{\today}
+\maketitle
+this is a test
+\end{document}
+
+```
+
+## Sections
+Splitting up a document into shorter sections is good practice (think of any dissertations or journal articles you’ve read lately). You can split them up using these commands:
+
+```
+\section{Section title}
+\subsection{Subsection title}
+\subsubsection{Subsubsection title}
+```
+
+You can make them numbered or unnumbered. Including a \* creates unnumbered sections (\\section{...} vs. \\section*{...}).  You can also label them and reference them in later text. Note that this doesn’t work for unnumbered sections, though there are packages that can allow you to do this.
+
+
+```
+\section{…}{label: sec:mysection}
+See Section~\ref{sec:mysection} for details
+```
+
+## Font styles
+
+Most font families will allow you to use the following commands for font styling:
+
+* \\textit{italic} italic
+* \\textbf{bold} bold
+* \\textsc{small caps} SMALL CAPS
+* \\underline{underline} underline
+* \\texttt{teletype} teletype
+
+You can also mix styles.
+
+* \\textbf{\\textit{bold-italic}} bold-italic
+* \\textsc{\\textit{small caps-italic}} SMALL CAPS-ITALIC
+* \\textsc{\\texttt{small caps-teletype}} SMALL CAPS-TELETYPE 
+
+To emphasize text use the command \\emph{...}, which compensates for the style of the surrounding text.
+
+* \\textit{\emph{She} was unhappy} She was unhappy
+* \\texttt{\emph{He} was not} He was not
+
+
+##Lists
+You can do enumerated lists, bulleted lists, and description lists. You can also embed lists within one another.
+
+Enumerated lists:
+```
+\begin{enumerate}
+\item Number 1
+\item Number 2
+\end{enumerate}
+```
+
+Itemized lists
+```
+\begin{itemize}
+\item Dog
+\item Cat
+\end{itemize}
+
+```
+
+Descriptions
+
+```
+\begin{description}
+\item[1st option] Pizza
+\item[2nd option] Pasta
+\end{description}
+
+```
+
+Embedded lists
+```
+\begin{enumerate}
+\item Merp
+\begin{itemize}
+\item Dog
+\item Cat
+\end{itemize}
+\item Derp
+\end{enumerate}
+```
+
+## Figures
+Figures are made in the figure environment:
+
+```
+\begin{figure}[placement]
+...
+\end{figure}
+```
+Placement possibilities include:
+
+* h: here (the exact location) 
+* t: at the top of the page 
+* b: at the bottom of the page
+* p: on a special page for floating bodies
+
+LaTeX will try to put your figure as close as possible to where you specify it. Note that if it isn't in the place you want, if you add more text to your document, the location will change!
+
+Note that the image you are importing has to be in the proper folder. The default is same folder as the .tex file (assuming you give only the file name). It is usually useful to specify a graphics folder where all figures are located in the preamble:
+
+```
+\usepackage{graphicx}
+\graphicspath{ {Images/} } - relative directory (within same folder as .tex file)
+\graphicspath{/Users/goldrch2/Desktop/Images/} – absolute directory
+```
+The full specification to include a figure is as such. Note that the types of figures allowed include jpg, png, eps, and pdf.
+
+
+```
+\begin{figure}[placement]
+\includegraphics[parameters]{graphic}
+\caption{include a caption}
+\label{fig:myfigure}
+\end{figure}
+```
+
+Figure parameters can include the following:
+
+* Scale = (percentage of figure's actual size)
+* Specify relative to the size of the document ([width = .80\\columnwidth, height = \\textheight])
+  * \\columnwidth: width of the column
+  * n\\columnwidth: proportional to the column width by n; can do this for the following parameters as well
+  * \\linewidth: width of the line in the current environment
+  * \\paperwidth; \\paperheight
+  * \\textwidth; \\textheight
+  * Note that you can specify one or both of these, but specifying both width and height can distort your figure!
+* Absolute sizes: [width = 10cm, height = 10cm]
+  * Units: pt (point, about 0.35mm), mm, cm, in, ex (height of an x in the current font), em (width of an m in the current font)
+
+## Tables
+Tables are found in the table environment:
+
+```
+\begin{tabular}{specifications}
+...
+\end{tabular}
+```
+
+Specifications *must* include:
+
+* Number of columns
+* Alignment of each column
+* Vertical lines on margins or between columns
+
+Number of columns and alignment are coded together. Each column is specified by an alignment:
+
+* l: left-aligned column
+* c: centered column
+* r: right-aligned column
+
+Vertical Lines are specified as follows. If you do not want a line between columns, do not include anything between them.
+
+* \| vertical line
+* \|| double vertical line
+
+With the following example, there are three columns. The first is left-aligned, the middle is right-aligned, and the last is centered. There is adouble line on left margin, a single line between first and middle column, no line between the middle and last column, and a single line on right margin. 
+```
+\begin{tabular}{|| l | r c |} 
+...
+\end{tabular}
+```
+Other parts of tables:
+
+* \\hline: makes horizontal lines between rows
+* \&: separate the data for each column within a single row
+* \\\: separates the rows of each table
+
+Placing a table into the table environment allows you to assign it a caption and a label.
+
+```
+\begin{table}
+\begin{tabular} 
+...
+\end{tabular}
+\caption{This is a table!}
+\label{tab:mytable}
+\end{table}
+
+```
+
+Note that making tables in LaTeX by hand can be VERY annoying. Luckily there are a few tricks to help. First, if you are exporting data or a model output from R to include in a document, the *texreg* package in R will automatically convert this output into LaTeX table form. The *stargazer* package also is able to output LaTeX table code. In addition, if you have a table in an Excel or Word file, or you need to create a table from scratch, the website [https://www.tablesgenerator.com/](https://www.tablesgenerator.com/) can help, including with formatting. 
+
+
+# Bibliographies
+There are two ways to include bibliographies in LaTeX. One way to do it is to include all citations in your document. This becomes very messy very quickly. 
+
+```
+\begin{thebibliography}{1}
+@article{chomsky1968sound, 
+title={The sound pattern of English.}, 
+author={Chomsky, Noam and Halle, Morris}, 
+year={1968}, publisher={ERIC} }
+
+
+\end{thebibliography}
+
+```
+It’s easier to use a program such as BibDesk, which will do the work for you. Zotero or Jabref can also generate .bib files. A .bib file with bibliographic data should be saved in the same folder as the .tex file. With Bibdesk, you are given a database-like interface. You compile a bibliography file, which then converts to a .bbl. You tell LaTeX the name of your file using the \\bibliography{...} command. (If you want your bibliography on a new page, use \\newpage). 
+
+Many websites, including Google Scholar, will allow you to automatically generate a LaTeX-style citation (sometimes called a Bibdesk citation). This includes a reference key (for example, *chomsky1968sound*), all information about the reference, and its type (*article* in this case). 
+
+To make an APA-style bibliography, or another specific format, the following needs to go into a preamble:
+
+```
+\usepackage{natbib}
+\bibliographystyle{apalike}
+```
+
+Note that specific journals or conference proceedings might have a bibliography style of their own. 
+
+To make a citation in your document, you can use the \\cite{...} command. The *natbib* package also allows for \\citep{...}, which puts your whole citation in parentheses, and \\citet{...}, which only puts the year in parentheses.
+
+
+# Other possibilities with LaTeX
+
+While I won't go into them now, there are many other things you can do with LaTeX, such as doing nice mathematical formatting, includin equations, and figure formatting (rotation, cropping, in-text positioning, etc.). When you run into an issue you can't figure out, Google it! Stack Exchange has a specific subpage, TeX Exchange, specifically focused on how to use LaTeX for customized documents. Be sure to search for your issue before posting a question - most of the time, someone has already run into this issue, and it is faster to find the answer they received than to wait for a new answer to your question.

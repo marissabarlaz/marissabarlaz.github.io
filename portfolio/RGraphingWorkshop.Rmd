@@ -17,6 +17,7 @@ description: "The aim of this workshop is to teach you the basics of using ggplo
 knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(ggsignif)
+library(tidyverse)
 ubdb = read.csv("ubdb.csv", header = T)
 set.seed(555)
 myspeakers = c("S1", "S2", "S3", "S4", "S5")
@@ -142,7 +143,7 @@ ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(group = v, color = v)
 #This is one way to get around the aes() issue, but is not the best! It means you have to call your data file again, and if you have some similarly-titled data frames, a simple typo can give you an inaccurate graph!
 ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(group = ubdb$v, color = ubdb$v)
 
-#Sing it with me - this is how you do it!
+#This is the best method of doing it!
 ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(group = v, color = v))
 ```
 
@@ -183,6 +184,19 @@ ggplot(ubdb, aes(x=t1y, y=f1))+geom_text(aes(label=v, color = v))
 ggplot(ubdb, aes(x=v, y=f2))+geom_violin(aes(color = v))
 ggplot(ubdb, aes(x=v, y=f2))+geom_violin(aes(color = v, fill = v))
 ggplot(ubdb, aes(x=v))+geom_bar(aes(color = v, fill = v))
+```
+
+
+What if we wanted to plot the average F1 for each vowel? This doesn't do it...
+```{r}
+ggplot(ubdb, aes(x=v, y = f1))+geom_bar(aes(color = v, fill = v), stat = "identity")
+```
+What we need to do is create a summary function and pass that into ggplot. 
+
+```{r}
+ubdb %>% group_by(v) %>% summarise(meanF1 = mean(f1)) %>% ggplot(aes(x=v, y = meanF1))+geom_bar(aes(color = v, fill = v), stat = "identity")
+```
+
 ```
 
 ## Faceting
@@ -229,6 +243,9 @@ ggplot(ubdb, aes(x=f2, y=f1))+geom_text(data = mymeans, aes(color = v, label = v
 
 ggplot(ubdb, aes(x=f2, y=f1))+geom_text(data = mymeans, aes(color = v, label = v), size = 4)+stat_ellipse(aes(color = v, linetype = v))
 
+ggplot(ubdb, aes(x=f2, y=f1))+geom_text(data = mymeans, aes(color = v, label = v), size = 4)+stat_ellipse(aes(color = v, linetype = v))+ geom_point(aes(color = v), alpha = 0.2)
+
+
 ggplot(ubdb, aes(x=f2, y=f1))+geom_text(data = mymeans2, aes(color = v, label = v), size = 4,show.legend = FALSE)+stat_ellipse(aes(color = v, linetype = v))+facet_wrap(~speaker)
 
 ```
@@ -246,7 +263,7 @@ cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
 
 # To use for line and point colors, add  scale_colour_manual(values=cbPalette)
 
-ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)
+ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v), alpha = 0.3)+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)
 
 
 ```
@@ -290,7 +307,7 @@ ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color 
 In sum, *ggplot2* is an extremely powerful package that can create lots of beautiful plots for your research. Think carefully about what you want to plot, and add layers as needed. I encourage you to save your plots as variables. You can then view and save them.
 
 ```{r wrapup}
-myplot = ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(position = "top")+scale_y_reverse(position = "right")+ xlab("F2!!!!") + ylab("F1!!!!!") + ggtitle("My vowel plot") + theme_minimal()
+myplot = ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v), alpha = 0.2, size = 0.4)+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(position = "top")+scale_y_reverse(position = "right")+ xlab("F2!!!!") + ylab("F1!!!!!") + ggtitle("My vowel plot") + theme_minimal() + geom_label(data = mymeans,aes(color = v, label = v), size = 4,show.legend =FALSE)
 
 myplot
 

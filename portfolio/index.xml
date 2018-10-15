@@ -25,7 +25,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/portfolio/rgraphingworkshop/</guid>
-      <description>Data Aesthetics Faceting Statistical Transformations Other Aspects of the graph Colors Labels, titles, and Axes Theme  Wrapping up   The aim of this workshop is to teach you the ins and outs of using the ggplot2 package in R.
+      <description>Data Aesthetics Faceting Statistical Transformations Other Aspects of the graph Colors  Wrapping up   The aim of this workshop is to teach you the ins and outs of using the ggplot2 package in R.
 The materials for this workshop can be found here.
 A lot of the information in this workshop is based on workshops given at Harvard: https://dss.iq.harvard.edu/workshop-materials
 Please make good use of the following cheat sheet!</description>

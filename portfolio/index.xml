@@ -69,5 +69,14 @@ What is the point? When looking at data, we want to determine if there is a rela
       <description>Introduction to LaTeX What is LaTeX? What’s so great about LaTeX? What’s not so great about LaTeX? Editors  Basics of LaTeX Important symbols and commands  The preamble Document classes Page formatting Packages  Body Title page Sections Font styles Figures Tables  Bibliographies Other possibilities with LaTeX   Introduction to LaTeX What is LaTeX? LaTeX is a document preparation system, that is becoming the de-facto method in STEM fields, such as math, physics and computer science.</description>
     </item>
     
+    <item>
+      <title>Phonetics Tools in R</title>
+      <link>/portfolio/phoneticstools/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/portfolio/phoneticstools/</guid>
+      <description>PraatR Pitch analysis  rPraat Using apply to create .Pitch files  PhonTools Pitch tracking Formant Tracking  Comparison and plotting F0 Plotting Formants - PhonR and ggplot PhonR ggplot2 Spectrograms with PhonTools    library(tidyverse) library(PraatR) library(rPraat) library(phonR) library(dygraphs) library(phonTools) library(audio) library(tuneR) library(gss) For this workshop, I will be using a subset of my dissertation data. I will be using words with oral vowels in Brazilian Portuguese (/a/ from the word babado, /i/ from the word cabido, and /u/ from the word tributo), repeated by five female speakers in a carrier phrase.</description>
+    </item>
+    
   </channel>
 </rss>

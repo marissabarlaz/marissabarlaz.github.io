@@ -52,6 +52,10 @@
   </url>
   
   <url>
+    <loc>/portfolio/phoneticstools/</loc>
+  </url>
+  
+  <url>
     <loc>/portfolio/</loc>
     <priority>0</priority>
   </url>

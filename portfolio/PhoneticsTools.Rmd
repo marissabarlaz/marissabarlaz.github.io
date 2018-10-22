@@ -227,23 +227,24 @@ praat( "Down to IntensityTier", input=testint, output=testinttier, overwrite=TRU
 
 
 tg.test = tg.read(testtext)
-tg.plot(tg.test)
 pt.test = pt.read(testpitchtier)
-pt.plot(pt.test)
 it.test = it.read(testinttier)
-it.plot(it.test)
-pt = data.frame(t = round(pt.test$t, 3), f = pt.test$f, row.names = NULL)
-it = data.frame(t = round(it.test$t, 3), i = it.test$i, row.names = NULL)
-ptit = inner_join(pt, it)
+```
 
-d = dygraph(ptit[1:500,]) %>% dyAxis("y", label = "F0") %>% dyAxis("y2", label = "Intensity", independentTicks = TRUE) %>% dySeries("i", axis = 'y2') 
 
-d
+```{r dygraph, eval = FALSE}
+#Plot individually using groups
+tg.plot(tg.test, group = "testplot")
+pt.plot(pt.test, group = "testplot")
+it.plot(it.test, group = "testplot")
+
+#plot sound
 sndWav <- readWave(testwav); fs <- sndWav@samp.rate; snd <- sndWav@left / (2^(sndWav@bit-1))
 t <- seqM(0, (length(snd)-1)/fs, by = 1/fs)
 
-g = dygraph(data.frame(t, snd)[1:200000,], xlab = "Time (sec)")
-g
+dygraph(data.frame(t, snd), xlab = "Time (sec)", group = "testplot")%>% dyRangeSelector(height = 20)
+rm(sndWav, t)
+
 ```
 
 
@@ -344,7 +345,7 @@ sndWav <- readWave(testwav); fs <- sndWav@samp.rate; snd <- sndWav@left / (2^(sn
 t <- seqM(0, (length(snd)-1)/fs, by = 1/fs)
 
 sound = makesound((sndWav@left / (2^(sndWav@bit-1))), mydir[1], fs = sndWav@samp.rate)
-mytrack = formanttrack(sound)
+mytrack = formanttrack(sound, show = FALSE)
 
 mypitch = pitchtrack(sound, f0range = c(60,400), timestep = 2, minacf = .5,correction = TRUE, show = TRUE, windowlength = 50, addtospect = FALSE)
 mypitch$time = mypitch$time/1000

@@ -1,0 +1,107 @@
+---
+title: "Phonetics Tools in R - Supplementary code"
+author: "Marissa Barlaz"
+image: "img/portfolio/praat.png"
+showonlyimage: false
+
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+description: "Here are some examples of dygraphs in R, and how to use rPraat for formants."
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE, warning = FALSE)
+```
+
+```{r libraries}
+library(tidyverse)
+library(PraatR)
+library(rPraat)
+library(phonR)
+library(dygraphs)
+library(phonTools)
+library(audio)
+library(tuneR)
+library(gss)
+```
+
+```{r}
+absdir = "/Users/goldrch2/Desktop/Research/FemaleBP/"
+mydir = list.files(absdir, "*.WAV")
+mydir
+testwav = paste0(absdir, mydir[1])
+testwav
+
+testtext = str_replace(testwav, ".WAV", ".TextGrid")
+testformant = str_replace(testwav, ".WAV", ".Formant")
+testpitch = str_replace(testwav, ".WAV", ".Pitch")
+testpitchtier = str_replace(testwav, ".WAV", ".PitchTier")
+testint = str_replace(testwav, ".WAV", ".Intensity")
+testinttier = str_replace(testwav, ".WAV", ".IntensityTier")
+testtable = str_replace(testwav, ".WAV", ".Table")
+
+```
+
+
+
+```{praat, eval = FALSE}
+praat( "To Pitch...", arguments=list( 0.001, 75,350), input=testwav, output=testpitch, overwrite=TRUE )
+praat( "Down to PitchTier", input=testpitch, output=testpitchtier, overwrite=TRUE, filetype="headerless spreadsheet" )
+
+praat( "To Intensity...", arguments = list(100, 0), input=testwav, output=testint, overwrite=TRUE )
+praat( "Down to IntensityTier", input=testint, output=testinttier, overwrite=TRUE, filetype="text" )
+
+praat( "To Formant (burg)...", arguments = list(0, 5, 5500, 0.025, 50), input=testwav, output=testformant, overwrite=TRUE )
+```
+
+```{r readin}
+form.test = formant.read(testformant)
+tg.test = tg.read(testtext)
+pt.test = pt.read(testpitchtier)
+it.test = it.read(testinttier)
+
+tg.testmini = tg.cut0(tg.test, tStart = 0, tEnd = 5)
+pt.testmini = pt.cut0(pt.test, tStart = 0, tEnd = 5)
+it.testmini = it.cut0(it.test, tStart = 0, tEnd = 5)
+mylength = length(form.test$t[form.test$t<=5])
+form.testmini = form.test
+form.testmini$t = form.testmini$t[1:mylength]
+form.testmini$xmax = form.testmini$t[mylength]
+form.testmini$frame = form.test$frame[1:mylength] 
+form.testmini$nx = mylength
+
+formlist = data.frame(form.test$t, do.call("rbind", form.test$frame)) %>% mutate(frequency = str_replace_all(frequency, "(^[^[:digit:]]+|\\)$)", ""), bandwidth = str_replace_all(bandwidth, "(^[^[:digit:]]+|\\)$)", "")) %>% separate(frequency, into =c("f1", "f2", "f3", "f4", "f5"), sep = ",") %>% separate(bandwidth, into =c("f1_bw", "f2_bw", "f3_bw", "f4_bw", "f5_bw"), sep = ",") %>% mutate_at(.vars = c(4:13), .funs  = "as.numeric")
+```
+
+
+```{r dygraph}
+#tg.plot(tg.test, group = "testplot")
+#pt.plot(pt.test, group = "testplot")
+#it.plot(it.test, group = "testplot")
+# formant.plot(form.test, group = "testplot", scaleIntensity = TRUE, drawBandwidth = TRUE)
+# tg.plot(tg.testmini, formant = form.testmini)
+# tg.plot(tg.testmini, pt = pt.testmini, it = it.testmini)
+
+tg.plot(tg.testmini, group = "testplot2")
+pt.plot(pt.testmini, group = "testplot2")
+it.plot(it.testmini, group = "testplot2")
+formant.plot(form.testmini, group = "testplot2", scaleIntensity = TRUE, drawBandwidth = TRUE)
+tg.plot(tg.testmini, formant = form.testmini)
+tg.plot(tg.testmini, pt = pt.testmini, it = it.testmini)
+
+
+#plot sound
+sndWav <- readWave(testwav)
+fs <- sndWav@samp.rate
+snd <- sndWav@left / (2^(sndWav@bit-1))
+t <- seqM(0, (length(snd)-1)/fs, by = 1/fs)
+
+snddf = data.frame(t, snd) %>% filter(t <=5)
+dygraph(snddf, xlab = "Time (sec)", group = "testplot")%>% dyRangeSelector(height = 20)
+tg.plot(tg.testmini, formant = form.testmini, group = "testplot")
+
+
+```
+

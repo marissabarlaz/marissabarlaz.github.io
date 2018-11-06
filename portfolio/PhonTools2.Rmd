@@ -14,7 +14,7 @@ description: "Here are some examples of dygraphs in R, and how to use rPraat for
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, cache = TRUE, warning = FALSE)
 ```
-
+# Data processing
 ```{r libraries}
 library(tidyverse)
 library(PraatR)
@@ -45,7 +45,7 @@ testtable = str_replace(testwav, ".WAV", ".Table")
 ```
 
 
-
+## PraatR
 ```{praat, eval = FALSE}
 praat( "To Pitch...", arguments=list( 0.001, 75,350), input=testwav, output=testpitch, overwrite=TRUE )
 praat( "Down to PitchTier", input=testpitch, output=testpitchtier, overwrite=TRUE, filetype="headerless spreadsheet" )
@@ -56,6 +56,8 @@ praat( "Down to IntensityTier", input=testint, output=testinttier, overwrite=TRU
 praat( "To Formant (burg)...", arguments = list(0, 5, 5500, 0.025, 50), input=testwav, output=testformant, overwrite=TRUE )
 ```
 
+# Dygraphs
+## Create shorter examples from long audio
 ```{r readin}
 form.test = formant.read(testformant)
 tg.test = tg.read(testtext)
@@ -75,7 +77,7 @@ form.testmini$nx = mylength
 formlist = data.frame(form.test$t, do.call("rbind", form.test$frame)) %>% mutate(frequency = str_replace_all(frequency, "(^[^[:digit:]]+|\\)$)", ""), bandwidth = str_replace_all(bandwidth, "(^[^[:digit:]]+|\\)$)", "")) %>% separate(frequency, into =c("f1", "f2", "f3", "f4", "f5"), sep = ",") %>% separate(bandwidth, into =c("f1_bw", "f2_bw", "f3_bw", "f4_bw", "f5_bw"), sep = ",") %>% mutate_at(.vars = c(4:13), .funs  = "as.numeric")
 ```
 
-
+# Create dygraphs
 ```{r dygraph}
 #tg.plot(tg.test, group = "testplot")
 #pt.plot(pt.test, group = "testplot")
@@ -121,6 +123,9 @@ ptsamp = pt.sample()
 tg1 = data.frame(t11 =tgtg$phone$t1, t21 = tgtg$phone$t2, label1 = tgtg$phone$label)
 tg2 = data.frame(t12 =tgtg$syllable$t1, t22 = tgtg$syllable$t2, label2= tgtg$syllable$label)
 
+head(tg1)
+head(tg2)
+
 #this is getting five points of f0 throughout each phoneme. 
 #first, get times for calculating f0 and saving them into the tg data frame
 tg1= tg1 %>% mutate(RepNo = as.numeric(as.factor(t11))) %>% group_by(t11) %>% 
@@ -144,6 +149,7 @@ setkey(tg1)
 setkey(tg2)
 #combine syllable level with phone level tgs
 tgall = foverlaps(tg1, tg2, by.x  = c("t11", "t21"), by.y = c("t12", "t22"), type = "within")
-
+tgall = data.frame(tgall)
+head(tgall)
 ```
 

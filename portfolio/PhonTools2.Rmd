@@ -77,7 +77,7 @@ form.testmini$nx = mylength
 formlist = data.frame(form.test$t, do.call("rbind", form.test$frame)) %>% mutate(frequency = str_replace_all(frequency, "(^[^[:digit:]]+|\\)$)", ""), bandwidth = str_replace_all(bandwidth, "(^[^[:digit:]]+|\\)$)", "")) %>% separate(frequency, into =c("f1", "f2", "f3", "f4", "f5"), sep = ",") %>% separate(bandwidth, into =c("f1_bw", "f2_bw", "f3_bw", "f4_bw", "f5_bw"), sep = ",") %>% mutate_at(.vars = c(4:13), .funs  = "as.numeric")
 ```
 
-# Create dygraphs
+## Create dygraphs
 ```{r dygraph}
 #tg.plot(tg.test, group = "testplot")
 #pt.plot(pt.test, group = "testplot")
@@ -129,7 +129,7 @@ head(tg2)
 #this is getting five points of f0 throughout each phoneme. 
 #first, get times for calculating f0 and saving them into the tg data frame
 tg1= tg1 %>% mutate(RepNo = as.numeric(as.factor(t11))) %>% group_by(t11) %>% 
-  mutate(normtime = list(seq(0.1,1.0,.2)),
+  mutate(normtime = list(seq(0.2,1.0,.2)),
          acttimenorm= list(seq(from = t11, to = t21, by = (t21-t11)/4))) %>%
   unnest() %>% mutate(f0=0)
 
@@ -150,6 +150,6 @@ setkey(tg2)
 #combine syllable level with phone level tgs
 tgall = foverlaps(tg1, tg2, by.x  = c("t11", "t21"), by.y = c("t12", "t22"), type = "within")
 tgall = data.frame(tgall)
-head(tgall)
+head(tgall, 15)
 ```
 

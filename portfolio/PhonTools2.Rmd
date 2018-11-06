@@ -105,3 +105,45 @@ tg.plot(tg.testmini, formant = form.testmini, group = "testplot")
 
 ```
 
+
+# Getting information from two tiers
+Sometimes you will want to include information from two tiers - for example, if you have a phone tier and a syllable tier, you might want to know what syllable each phone is in. I give an example using the data.table package here. The exmaple is given using the sample data that comes from the rPraat package, sicne my dissertation data does not include two annotated tiers. 
+```{r}
+
+library(data.table)
+
+
+#get sample data
+tgtg = tg.sample()
+ptsamp = pt.sample()
+
+#create data frames for phone and syllable tiers
+tg1 = data.frame(t11 =tgtg$phone$t1, t21 = tgtg$phone$t2, label1 = tgtg$phone$label)
+tg2 = data.frame(t12 =tgtg$syllable$t1, t22 = tgtg$syllable$t2, label2= tgtg$syllable$label)
+
+#this is getting five points of f0 throughout each phoneme. 
+#first, get times for calculating f0 and saving them into the tg data frame
+tg1= tg1 %>% mutate(RepNo = as.numeric(as.factor(t11))) %>% group_by(t11) %>% 
+  mutate(normtime = list(seq(0.1,1.0,.2)),
+         acttimenorm= list(seq(from = t11, to = t21, by = (t21-t11)/4))) %>%
+  unnest() %>% mutate(f0=0)
+
+#now extracting f0 from the pitch tier data
+for (i in 1:length(tg1$t11)){
+  mycurpoint = which.min(abs(tg1$acttimenorm[i] - ptsamp$t))
+  tg1$f0[i] = ptsamp$f[mycurpoint]
+}
+
+head(tg1)
+
+
+#create data tables and set keys
+tg1 = data.table(tg1)
+tg2 = data.table(tg2)
+setkey(tg1)
+setkey(tg2)
+#combine syllable level with phone level tgs
+tgall = foverlaps(tg1, tg2, by.x  = c("t11", "t21"), by.y = c("t12", "t22"), type = "within")
+
+```
+

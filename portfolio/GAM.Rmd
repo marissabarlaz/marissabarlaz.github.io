@@ -1,0 +1,306 @@
+---
+title: "GAM in R"
+author: "Marissa Barlaz"
+image: "img/gam.png"
+showonlyimage: false
+weight: 4
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+description: "This workshop aims to teach you the basics of generalized additive models in R."
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(mgcv)
+library(itsadug)
+library(gganimate)
+library(mgcViz)
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+```
+
+# Packages
+The packages you will need for this workshop are as follows. I am also including the hex codes for a colorblind-friendly palette, which I use for my plots. I used the gganimate package to show my dissertation data (below), but this is not crucial for data processing/analysis.
+
+```{r eval=FALSE}
+library(tidyverse)
+library(mgcv)
+library(itsadug)
+library(mgcViz)
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+```
+
+![](/img/cbpalette.png)
+
+# Data
+The data I am using in this workshop is my dissertation acoustics data. The data has the following variables:
+
+- Speaker
+- Vowel
+- Nasality
+- Repetiton Number
+- Normalized Time
+- F1
+- F2
+- F3
+- F3-F2 difference
+
+```{r echo = FALSE}
+BP = read_csv("/Users/goldrch2/Desktop/Teaching/SPAN 588/Course Data/normtimedata.csv") 
+
+normtimeBP = BP%>% mutate(label = str_replace_all(label, "~", "s")) %>% mutate_at(.vars = c(1:5, 7:8), .funs = as.factor) %>% group_by(Speaker) %>% filter(F1>=200 & F1 <=800, Nasality!="nasal_final") %>% select(-Word, -Type, -label, -Time)
+
+```
+
+```{r}
+head(normtimeBP) 
+str(normtimeBP, give.attr = FALSE)
+dim(normtimeBP)
+levels(normtimeBP$Nasality)
+
+
+normtimeBP %>% filter(Speaker =="BP02") %>% ggplot(aes(x = F2, y = F1, color= Nasality)) + geom_point() + scale_x_reverse(position = "top") + scale_y_reverse(position = "right") +scale_color_manual(values = cbPalette) + facet_grid(.~Vowel) + theme_minimal() +   theme(legend.position="bottom", plot.title = element_text(hjust = 0.5))+ labs(title = 'Speaker BP02, Time Point {closest_state} (out of 1)', x = 'F2', y = 'F1') + transition_states(NormTime) +   ease_aes('linear')
+
+```
+
+
+# What is a generalized additive model?
+A generalized additive model (henceforth, GAM) is a model that relaxes the assumption of a linear relaiton between the dependent variable and a predictor or set of predictors. The relationship between dependent and independent variables is instead estimated by a smooth function, which is created by an addition (hence additive model!) of multiple basis functions.
+
+GAM has a number of advantages over linear and polynomial regressions. For instance, the optimal shape of the non-linearity is determined automatically by the model, as opposed to comparing various shapes of models. The appropriate smoothness is determined by combining calculations for minimizations of error in addition to penalizing "wiggliness" of the model. This combination of error minimization and non-linearity penalty is done in order to avoid overfitting.GAM models non-linearities by incorporating one or more smooths of predictor variables, which have their own basis functions. The basic smooth in a GAM is a thin plate regression spline, which combines increasingly complex basis functions. GAM also allows for multiple dimensions of a predictor to be incorporated onto a (hyper) surface smooth.
+
+# Running a GAM in R
+
+## Fitting a basic GAM
+
+The first GAM I am going to fit looks at differences in F1 for different nasality conditions. For this particular question, I will begin by looking only at one speaker's data, and only at the vowel /a/.
+
+What does this mean? The output should look quite similar to that of a linear (mixed effects) model.
+```{r}
+BP02a = normtimeBP%>% filter(Speaker=="BP02"& Vowel=="a")
+
+BP02gam1 = gam(F1~Nasality, data = BP02a)
+summary(BP02gam1)
+```
+
+
+Now, let's add in a smooth term. This is a thin plate regression spline, where we are smoothing over time. 
+```{r}
+BP02gam2 = gam(F1~Nasality + s(NormTime), data = BP02a)
+summary(BP02gam2)
+```
+What do we have here? We have two sections of the model - parametric coefficients, and non-parametric coefficients.
+
+Let's go over the following:
+
+- Meaning of parametric coefficients
+- Meaning of non-parametric coefficients
+- Model statistics (Deviance explained, etc.)
+- Effective degrees of freedom
+
+What if we want to add in time dynamics separately for each nasality condition? Let's build a third model:
+
+```{r}
+BP02gam3 = gam(F1~ Nasality + s(NormTime, by = Nasality), data = BP02a)
+summary(BP02gam3)
+```
+
+## Visualizing GAM results
+
+GAM interpretation relies heavily on visualization. There are a number of methods available for plotting GAM results. One is to use the plot function in R, which passes your model to plot.GAM. Note the difference between plotting the fits for these two models.
+
+```{r}
+plot(BP02gam2)
+plot(BP02gam3, pages = 1)
+
+```
+
+Another method for plotting GAM results is the *mgcViz* package. This package utilizes ggplot2 as a plotting basis, which allows customization of plots. In order to utilize this package, the visualization of a model needs to be extracted, and then the model can be plotted.
+
+```{r}
+BP02gam3viz = getViz(BP02gam3, nsim = 0)
+print(plot(BP02gam3viz), pages = 1)
+```
+
+
+The method that has been adopted for plotting is using the *itsadug* package, which was actually developed in part by linguists. The *itsadug* package allows for plotting of different smooths, as well as differences between conditions.
+
+We will go through how to plot results of a gam using the plot_smooth and plot_diff functions. Note the difference between plotting the model without and with individual smooths by Nasality.
+
+We will begin by using the plot_smooth() function. This takes the following arguments:
+
+- model name
+- view (name of your smoothed independent x-axis variable)
+- cond (named list of the values to use for the other predictor terms) OR plot_all (vector with the name(s) of model predictors, for which all levels should be plotted)
+- rm.ranef (whether or not to remove random effects, if they are included in the model. Default is TRUE)
+- Other plotting specifications (xlab, ylab, xlim, ylim, col, main, etc.)
+
+We will then use the plot_diff() function, which plots a difference curve based on model predictions. The plot_diff() function takes the following arguments:
+
+- model name
+- view (name of your smoothed independent x-axis variable)
+- comp (list of the grouping predictor variable, and the two levels of this variable to calculate the difference for)
+- cond (named list of the values to use for the other predictor terms) OR plot_all (vector with the name(s) of model predictors, for which all levels should be plotted)
+- rm.ranef (whether or not to remove random effects, if they are included in the model. Default is TRUE)
+- Other plotting specifications (xlab, ylab, xlim, ylim, col, main, etc.)
+
+Note that these plotting methods in *itsadug* are plotting summed effects. That is, it is plotting the smooth of the different conditions, with a constant y-axis shift of the parametric coefficients. 
+
+```{r}
+par(mfrow = c(2,2))
+
+#Model 2: Without different smooths for nasality
+plot_smooth(BP02gam2, view = "NormTime", cond = list(Nasality = "nasal"), main = "model 2, nasal")
+plot_smooth(BP02gam2, view = "NormTime", cond = list(Nasality = "nasalized"), main = "model 2, nasalized")
+plot_smooth(BP02gam2, view = "NormTime", cond = list(Nasality = "oral"), main = "model 2, oral")
+plot_smooth(BP02gam2, view = "NormTime", plot_all = c("Nasality"), main = "model 2", col = cbPalette[1:3])
+
+
+#Model 3: With different smooths for nasality
+
+plot_smooth(BP02gam3, view = "NormTime", cond = list(Nasality = "nasal"), main = "model 3, nasal")
+plot_smooth(BP02gam3, view = "NormTime", cond = list(Nasality = "nasalized"), main = "model 3, nasalized")
+plot_smooth(BP02gam3, view = "NormTime", cond = list(Nasality = "oral"), main = "model 3, oral")
+
+plot_smooth(BP02gam3, view = "NormTime", plot_all = c("Nasality"), main = "model 3", col = cbPalette[1:3])
+
+par(mfrow = c(1, 1))
+plot_diff(BP02gam3, view = "NormTime", comp = list(Nasality = c("nasal", "nasalized")), main = "model 3, nasal minus nasalized")
+
+```
+
+## Random effects
+
+Recall that fixed effects factors are categorical, with a small number of levels, all of which are included in our data and are used to answer a research question. Random effects, on the other hand, introduce systematic variation into the model. There are generally a larger number of categorical levels, and we are generally interested in generalizing over these levels. These levels are generally sampled from a larger population.
+
+### Random intercepts
+
+Random intercepts allow for differences in the "baseline" across all levels of a random effect. However, the relationship between the predictor and the response variables maintains the same structure - they are just shifted up or down along the y-axis. Hence, the intercept of the line differs for each participant/word/other random variable.
+
+In *lme4*, a random intercept is included with the syntax (1|Participant) (where participant is the random effect in question). In *mgcv*, a random intercept is included with the syntax s(Participant, bs="re"). Here, participant is the random effect, and bs="re" tells R that the basis function here is a random effect structure.
+
+Let's build a model with a random intercept, and show how to interpret it and plot the results. First, there is a model run with no random effect, then a model with a random intercept. First, notice the differences in the summaries of these models. Then, is there  a difference in deviance explained?
+
+Here, I am including only a subset of the speakers from my dataset, because otherwise it takes forever to compile this document!
+
+```{r}
+BPa = normtimeBP%>% filter(Vowel=="a", Speaker %in% c("BP02", "BP04", "BP05", "BP10", "BP14"))
+BPgama0 = gam(F1~ Nasality + s(NormTime, by = Nasality) , data = BPa, method = "REML")
+summary(BPgama0)
+BPgama1 = gam(F1~ Nasality + s(NormTime, by = Nasality) + s(Speaker, bs = "re"), data = BPa, method = "REML")
+summary(BPgama1)
+```
+
+As you can see, there is a difference in deviance explained, as well as in the summary - there is an extra line in the smooth terms for s(Speaker).
+
+Now, let's talk about visualization of these terms. Let's first visualize the fit for nasal /a/, for the models with and without random term. What is the default setting for the model with the random effect?
+
+```{r}
+plot_smooth(BPgama0, view = "NormTime", cond = list(Nasality = "nasal"))
+plot_smooth(BPgama1, view = "NormTime", cond = list(Nasality = "nasal"))
+```
+
+As you can see, the models look pretty similar, except for model *BPgama1*, the plot is set to Speaker = "BP04". What if we wanted to see another speaker's data?
+
+```{r}
+plot_smooth(BPgama1, view = "NormTime", cond = list(Nasality = "nasal", Speaker = "BP10"))
+```
+
+What if we wanted to plot the data for a few speakers? Or all of them? If you would like to plot only a subset of your speakers, you need to specify that you want to plot "all" speakers, then list the ones you want to plot specifically.
+
+Notice that the relationship between time and F1 is the same for all speakers - just the baseline has been moved up or down!
+```{r}
+plot_smooth(BPgama1, view = "NormTime", cond = list(Nasality = "nasal"), plot_all = "Speaker")
+
+plot_smooth(BPgama1, view = "NormTime", cond = list(Nasality = "nasal",Speaker = c("BP02", "BP05", "BP10")), plot_all = "Speaker")
+
+```
+
+What if we wanted to see the overall trend, rather than a particular speaker's data? In both plot_smooth() and plot_diff(), you can use rm.ranef = TRUE to show the overall shape of the model. Notice the difference in the size of the confidence intervals.
+
+```{r}
+par(mfrow = c(1,2))
+plot_smooth(BPgama1, view = "NormTime", cond = list(Nasality = "nasal"))
+plot_smooth(BPgama1, view = "NormTime", cond = list(Nasality = "nasal"), rm.ranef = TRUE)
+plot_diff(BPgama1, view = "NormTime", comp = list(Nasality =c("oral", "nasal")))
+plot_diff(BPgama1, view = "NormTime", comp = list(Nasality =c("oral", "nasal")),  rm.ranef = TRUE)
+
+par(mfrow = c(1,1))
+```
+
+
+### Random slopes
+Random slopes allow for differences in the relationship between a predictor variable and the response variable, for each level of the random effect. These are often used if there are possible individual differences in these relationships, which could have an influence on the model. For example, differences in anatomical structure could lead to differences in vowel space (i.e. the distance in F1 between /a/ and /i/ could be bigger for a male speaker, due to having a larger oral cavity). Or, there could be social influences on the magnitude of the difference between oral and nasal vowels. Therefore, random slopes should be used.
+
+
+In *lme4*, a random slope with correlated random intercept is included with the syntax (1+Nasality|Participant), and a random slope with no variation in intercept is included with the syntax (0+Nasality|Participant) where participant is the random effect in question, and the random slope is built for each level of Nasality). In *mgcv*, a random slope is included with the syntax s(Participant,Nasality, bs="re"). Here, participant is the random effect, the random slope is being built over Nasality, and bs="re" tells R that the basis function here is a random effect structure. Note that this is the analog of (0+Nasality|Participant) for lme4 syntax. The structure (1+Nasality|Participant) is not possible in *mgcv*, so a random slope *and* random intercept must be specified.
+
+
+First, what is the difference in these models, and their summaries?
+```{r}
+BPgama1 = gam(F1~ Nasality + s(NormTime, by = Nasality) + s(Speaker, bs = "re"), data = BPa, method = "REML")
+summary(BPgama1)
+
+BPgama2 = gam(F1~ Nasality + s(NormTime, by = Nasality)+ s(Speaker, Nasality, bs = "re"), data = BPa, method = "REML")
+summary(BPgama2)
+
+BPgama3 = gam(F1~ Nasality + s(NormTime, by = Nasality) + s(Speaker, bs = "re")+ s(Speaker, Nasality, bs = "re"), data = BPa, method = "REML")
+summary(BPgama3)
+
+
+```
+
+
+
+Next, let's look at all of the speakers' data for each of these models, for nasal vowels.
+```{r}
+
+plot_smooth(BPgama1, view = "NormTime", cond = list(Nasality = "nasal"), plot_all = "Speaker")
+plot_smooth(BPgama2, view = "NormTime", cond = list(Nasality = "nasal"), plot_all = "Speaker")
+plot_smooth(BPgama3, view = "NormTime", cond = list(Nasality = "nasal"), plot_all = "Speaker")
+```
+
+### Random factor smooths
+
+Up until now the random effects structures we've been including have had the same general shape across random variables. That is, the random intercepts move the splines up and down, but have the same shape. Random slopes tilt the splines, but do not change their general shape. 
+
+With GAMs, we can actually include non-linear random effects. That is, individual variability can be taken into account across time or another smoothed predictor. These non-linear random effects are called "factor smooths" and are denoted with the syntax s(NormTime, Speaker, bs = "fs", m = 1). Here, "fs" (standing for "factor smooth") is the basis function. m indicates the order of the non-linearity penalty. Setting m = 1 indicates that the first derivative of the smooth (i.e., velocity) is penalized, rather than the second derivative, which is the default. According to Wieling (2018), "this, in turn, means that the estimated non-linear differences for the levels of the random-effect factor are assumed to be somewhat less 'wiggly' than their actual patterns." Here, we are replacing the random intercept with the factor smooth, as this included the intercept shift implicitly (as the factor smooth is not centered).
+
+
+While including non-linear differences over time is important, this model only includes one non-linearity per speaker, rather than looking at individual variability in each category over time, per speaker. Therefore, we can replace the random slope of s(Speaker, Nasality, bs = "re") with an edit made to the random factor smooth: s(NormTime, Speaker, by = Nasality, bs = "fs", m=1). This is replacing the random slope because the difference between nasality conditions are taken into account by the (non-centered) factor smooth. That is, the random factor smooth incorporates a non-centered smooth per nasality condition per speaker, which accounts for both the random intercept and random slope, as well as non-linear differences between categories across time.
+
+
+What do you notice is different in the summary of these models?
+```{r}
+BPgama4 = gam(F1~ Nasality + s(NormTime, by = Nasality) + s(Speaker, Nasality, bs = "re") + s(NormTime, Speaker, bs = "fs", m =1), data = BPa, method = "REML")
+summary(BPgama4)
+
+
+BPgama5 = gam(F1~ Nasality + s(NormTime, by = Nasality)  + s(NormTime, Speaker, by = Nasality, bs = "fs", m =1), data = BPa, method = "REML")
+summary(BPgama5)
+```
+
+
+Now what happens when we plot each speaker's nasal vowel condition?
+```{r}
+
+plot_smooth(BPgama3, view = "NormTime", cond = list(Nasality = "nasal"), plot_all = "Speaker")
+plot_smooth(BPgama4, view = "NormTime", cond = list(Nasality = "nasal"), plot_all = "Speaker")
+plot_smooth(BPgama5, view = "NormTime", cond = list(Nasality = "nasal"), plot_all = "Speaker")
+
+```
+
+
+You can use the plot_diff() function as well, in order to look at differences in categories across speakers.
+
+# Other topics to consider
+
+Due to time constraints, I have elected to only discuss the basics of GAM, and how to include random effects. However, there are many other things to consider in utilizing the GAM method.
+
+First, we only discussed two-dimensional smooths. That is, we discussed a smooth over an independent variable (in this case, time) for a dependent variable (in this case, F1). What happens if we have an interaction between two independent variables? This comes into play when dealing with multidimensional data. Baayen et al. (2016) use trial number to show how the "human factor" 
+

@@ -61,6 +61,15 @@ What is the point? When looking at data, we want to determine if there is a rela
     </item>
     
     <item>
+      <title>GAM in R</title>
+      <link>/portfolio/gam/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/portfolio/gam/</guid>
+      <description>Packages Data What is a generalized additive model? Running a GAM in R Fitting a basic GAM Visualizing GAM results Random effects Random intercepts Random slopes Random factor smooths   Other topics to consider   Packages The packages you will need for this workshop are as follows. I am also including the hex codes for a colorblind-friendly palette, which I use for my plots. I used the gganimate package to show my dissertation data (below), but this is not crucial for data processing/analysis.</description>
+    </item>
+    
+    <item>
       <title>Introduction to LaTeX</title>
       <link>/portfolio/latex/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

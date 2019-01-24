@@ -188,7 +188,7 @@ cbPalette &lt;- c(&quot;#999999&quot;, &quot;#E69F00&quot;, &quot;#56B4E9&quot;,
 <pre><code>## [1] 46876     9</code></pre>
 <pre class="r"><code>levels(normtimeBP$Nasality)</code></pre>
 <pre><code>## [1] &quot;nasal&quot;       &quot;nasal_final&quot; &quot;nasalized&quot;   &quot;oral&quot;</code></pre>
-<pre class="r"><code>normtimeBP %&gt;% filter(Speaker ==&quot;BP02&quot;) %&gt;% ggplot(aes(x = F2, y = F1, color= Nasality)) + geom_point() + scale_x_reverse(position = &quot;top&quot;) + scale_y_reverse(position = &quot;right&quot;) +scale_color_manual(values = cbPalette) + facet_grid(.~Vowel) + theme_minimal() +   theme(legend.position=&quot;bottom&quot;, plot.title = element_text(hjust = 0.5))+ labs(title = &#39;Speaker BP02, Time Point {closest_state} (out of 1)&#39;, x = &#39;F2&#39;, y = &#39;F1&#39;) + transition_states(NormTime) +   ease_aes(&#39;linear&#39;)</code></pre>
+<pre class="r"><code>animate(BP02_animation, height=600, width = 600)</code></pre>
 <p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-3-1.gif" /><!-- --></p>
 </div>
 <div id="what-is-a-generalized-additive-model" class="section level1">
@@ -709,7 +709,11 @@ summary(BPgama4)</code></pre>
 <div id="other-topics-to-consider" class="section level1">
 <h1>Other topics to consider</h1>
 <p>Due to time constraints, I have elected to only discuss the basics of GAM, and how to include random effects. However, there are many other things to consider in utilizing the GAM method.</p>
-<p>First, we only discussed two-dimensional smooths. That is, we discussed a smooth over an independent variable (in this case, time) for a dependent variable (in this case, F1). What happens if we have an interaction between two independent variables? This comes into play when dealing with multidimensional data. Baayen et al. (2016) use trial number to show how the “human factor”</p>
+<p>First, we only discussed two-dimensional smooths. That is, we discussed a smooth over an independent variable (in this case, time) for a dependent variable (in this case, F1). What happens if we have an interaction between two independent variables? This comes into play when dealing with multidimensional data. Baayen et al. (2016) use trial number to show how the “human factor” has a non-linear relationship with variables such as reaction time.</p>
+<p>Second, we did not discuss model checking and the number of knots necessary for a smooth. In short, the number of knots correlates with “turning points” in the smooth. The number of knots used depends on the size of data and number of points per spline given. More knots indicates more “wiggliness” but can make the model subject to overfitting. Determining the optimal number of knots is important for creating a good model.</p>
+<p>Third, we did not discuss model comparison. Wieling (2018) suggests, as do many others, that a maximal effects structure is not necessarily the best, and that various models should be compared to ensure the “best” model is fit to your data.</p>
+<p>Finally, we did not discuss autocorrelation. If you recall from learning about linear models, one of the assumptions behind these models is that the residuals are not correlated. That is, the residual of one point does not affect the residual of another point. This is usually the case, as linear regressions generally are looking at the data from one point in time. However, when looking at data that will be modeled with a GAM, such as time-series data, there will be some inherent correlation between the residuals. That’s because time points <span class="math inline">\(t_x\)</span> and <span class="math inline">\(t_{x+1}\)</span> will somehow be related to one another. Autocorelation is what we call the temporal (or spatial!) dependence in the model. This needs to be accounted for in the model.</p>
+<p>If you would like to discuss any of these topics further, please let me know! I am happy to meet with you and discuss how GAM can be used to analyze your data. You can set up a meeting <a href="calendly.com/marissabarlaz">here</a>. I also would recommend reading Wieling’s 2018 tutorial on how to run GAM in R, published in the Journal of Phonetics. The article can be found <a href="https://www.sciencedirect.com/science/article/pii/S0095447017301377">here</a>.</p>
 </div>
 
          

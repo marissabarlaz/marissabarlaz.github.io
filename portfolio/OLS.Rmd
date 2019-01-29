@@ -1,7 +1,7 @@
 ---
 title: "Ordinal logistic regression in R"
 author: "Marissa Barlaz"
-image: "img/likert.jpg"
+image: "img/likert.png"
 showonlyimage: false
 weight: 4
 output:

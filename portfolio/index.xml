@@ -70,6 +70,15 @@ What is the point? When looking at data, we want to determine if there is a rela
     </item>
     
     <item>
+      <title>Ordinal logistic regression in R</title>
+      <link>/portfolio/ols/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/portfolio/ols/</guid>
+      <description>Packages What is ordinal logistic regression? Probabilities, odds, and odds ratios Set-up of the model  Running an ordinal logistic regression in R Data Initial model Adding another term Including a continuous predictor Interactions Random effects The full model    Packages The packages you will need for this workshop are as follows. I am also including the hex codes for a colorblind-friendly palette, which I use for my plots.</description>
+    </item>
+    
+    <item>
       <title>Introduction to LaTeX</title>
       <link>/portfolio/latex/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

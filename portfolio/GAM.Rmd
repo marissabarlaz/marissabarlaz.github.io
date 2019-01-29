@@ -38,7 +38,7 @@ cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
 ![](/img/cbpalette.png)
 
 # Data
-The data I am using in this workshop is my dissertation acoustics data. The data has the following variables:
+The data I am using in this workshop is my dissertation acoustics data. A copy can be found [here](https://uofi.box.com/s/jtzww0bmgo9216qgpxu6d7avpaa15sey). The data has the following variables:
 
 - Speaker
 - Vowel

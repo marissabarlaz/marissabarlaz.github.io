@@ -79,6 +79,15 @@ What is the point? When looking at data, we want to determine if there is a rela
     </item>
     
     <item>
+      <title>Vowel Normalization in R</title>
+      <link>/portfolio/vowelnormalization/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/portfolio/vowelnormalization/</guid>
+      <description>What is vowel normalization? Types of vowel normalization Speaker intrinsic/vowel intrinsic/formant intrinsic Log transformations ERB Bark Mel  Speaker intrinsic/vowel intrinsic/formant extrinsic Bark distance model  Speaker intrinsic/vowel extrinsic/formant intrinsic Z-score/Lobanov normalization Individual log means (Nearey1) Centroids (Watt-Fabricius)  Speaker intrinsic/vowel extrinsic/formant extrinsic Shared log-mean (Nearey2)  Speaker extrinsic/vowel extrinsic/formant extrinsic ANAE method   Which method is best?   I will be using the following packages in this workshop.</description>
+    </item>
+    
+    <item>
       <title>Introduction to LaTeX</title>
       <link>/portfolio/latex/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

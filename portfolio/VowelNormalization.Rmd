@@ -1,0 +1,437 @@
+---
+title: "Vowel Normalization in R"
+author: "Marissa Barlaz"
+image: "img/vowelspace.png"
+showonlyimage: false
+weight: 5
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+description: "This workshop is geared towards issues with vowel normalization, and how to implement different methods in R."
+editor_options: 
+  chunk_output_type: console
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(phonR)
+library(phonTools)
+library(vowels)
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cbPalette10 = c('#543005','#8c510a','#bf812d','#dfc27d','#f6e8c3','#c7eae5','#80cdc1','#35978f','#01665e','#003c30')
+```
+I will be using the following packages in this workshop. If you do not have them installed now, please install them. I also will be using this colorblind-friendly palette for my plotting, when possible.
+
+```{r eval = FALSE}
+library(tidyverse)
+library(phonR)
+library(phonTools)
+library(vowels)
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+```
+
+
+
+# What is vowel normalization?
+Vowel normalization is, broadly speaking, a way to make acoustic data comparable across individual speakers. This is done by eliminating differences between acoustic outputs that arise due to different social and physical differences. Normalization is done in many different contexts, including (but not limited to!) cross-gender and/or cross-age comparisons, cross- and within-sociolinguistic community comparisons, longitudinal studies, etc.
+
+There are three main types of information conveyed by a speaker to a listener (Ladefoged and Broadbent, 1957). All three of these types of information systematically affect formant frequencies in some way.
+
+1) Phonemic information
+2) anatomical/physiological information
+3) sociolinguistic information
+
+There are four general goals listed for vowel normalization (based on Flynn and Foulkes, 2011; Watt et al., 2010). The type of normalization done depends on the goal of your research project.  
+
+1. minimize inter-speaker variation due to physiological or anatomical differences
+2. preserve inter-speaker variation in vowel quality due to dialectal or social factors, or to preserve features in a sound change
+3. maintain phonological differences
+4. model cognitive processes that allow listeners to understand different speakers.
+
+
+To demonstrate these types of normalization, I will use two datasets: 1) the Peterson and Barney (1952) vowel dataset, available through the phonTools package (There are 76 speakers, each producing 2 repetitions of 10 vowels, for a total of 1520 observations), and 2) the Indonesian vowels dataset, available through the phonR package (There are 8 speakers, five vowels, an uneven number of repetitions, for a total of 1725 observations).
+
+
+
+
+```{r}
+library(phonTools)
+data(pb52)
+head(pb52)
+str(pb52)
+summary(pb52)
+
+pb52$speaker = as.factor(pb52$speaker)
+pb52$vowelxsampa = pb52$vowel
+levels(pb52$vowel)
+levels(pb52$vowel) = c("æ", "ɚ", "ɑ", "ɛ", "i", "ɪ", "ɔ", "u", "ʊ","ʌ")
+levels(pb52$vowel)
+head(pb52)
+
+
+library(phonR)
+data("indoVowels")
+indo$subj = as.factor(indo$subj)
+head(indo)
+str(indo)
+summary(indo)
+
+```
+
+
+# Types of vowel normalization
+
+As mentioned above, there are different methods of doing vowel normalization, depending on the end goal of your study. We can classify these methods as having three traits: whether they are speaker-intrinsic or speaker-extrinsic, vowel-intrinsic or vowel-extrinsic, and formant-intrinsic or formant-extrinsic. Each of these refers to whether or not a calculation of normalization is being done on a single instance/measure of an object, or across multiple instances or measures.
+
+*Vowel*: vowel intrinsic measures use only the acoustic information within a single vowel token to normalize said token, while vowel extrinsic measures use the acoustic information across more than one vowel of a talker (e.g., the "point" vowels or the whole vowel space of the speaker)
+
+*Formant*: formant intrinsic measures use only a single formant for normalization, while formant extrinsic measures use multiple formants
+
+*Speaker*: speaker intrinsic measures use only a single speaker's data for normalization, while speaker extrinsic measures try to look at an entire population to modify the vowel space
+
+I will go through different types of transformations used in the literature, and show you how they are implemented in R. First, I want to show you the vowel spaces without any transformation, so we can compare. Note that I will show you a lot of transformaiton methods available in the *phonR* and *phontools* packages. There is another package, called *vowels*, which also has functions for some of these transformations, but it requires data to be in a very particular structure, so I do not like to use it.
+
+```{r}
+
+ggplot(pb52, aes(x = f2, y = f1, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)
+
+
+ggplot(pb52, aes(x = f2, y = f1, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_shape_manual(values = 1:10)+ scale_x_reverse() + scale_y_reverse()  + geom_text(data=pb52 %>% 
+               group_by(vowel) %>% 
+               summarise_at(vars(f1:f2), mean, na.rm = TRUE), aes(label = vowel), size = 8)
+
+
+ggplot(pb52, aes(x = f2, y = f1, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_x_reverse() + scale_y_reverse()  + geom_text(data=pb52 %>% 
+               group_by(vowel) %>% 
+               summarise_at(vars(f1:f2), mean, na.rm = TRUE), aes(label = vowel), size = 8)
+
+ggplot(indo, aes(x = f2, y = f1, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)
+
+
+ggplot(indo, aes(x = f2, y = f1, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette) + scale_shape_manual(values = 1:10)+ scale_x_reverse() + scale_y_reverse()  + geom_text(data=indo %>% 
+               group_by(vowel) %>% 
+               summarise_at(vars(f1:f2), mean, na.rm = TRUE), aes(label = vowel), size = 8)
+
+
+ggplot(indo, aes(x = f2, y = f1, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_x_reverse() + scale_y_reverse()  + geom_text(data=indo %>% 
+               group_by(subj,vowel) %>% 
+               summarise_at(vars(f1:f2), mean, na.rm = TRUE), aes(label = vowel), size = 6) + facet_wrap(~subj, ncol = 2)
+
+
+
+
+
+
+```
+
+
+
+## Speaker intrinsic/vowel intrinsic/formant intrinsic
+
+Methods that are speaker, vowel, and formant intrinsic are often transformations that approximate the non-linear frequency response of the inner ear (hello basilar membrane!). That is, these transformations reflect the higher sensitivities to frequency changes in the lower end of the spectrum. There are a few psychoperceptual scales here, including log transformations, ERB transformation, mel transformation, and Bark transformation.
+
+### Log transformations
+Log transformation is exactly what it sounds like: doing a logarithmic transformation of a value. Note that in R, the log() function does base-*e* (i.e., namtural logarithm) transformation. The log10() function performs base-10 logarithmic transformation.
+
+
+```{r}
+
+pb52log = pb52 %>% mutate(f1log = log(f1), f2log = log(f2), f1log10 = log10(f1), f2log10 = log10(f2)) 
+head(pb52log)
+
+ggplot(pb52log, aes(x = f2log, y = f1log, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)+ ggtitle("Log-transformed vowel plot (PB52 data)")
+
+
+
+ggplot(pb52log, aes(x = f2log, y = f1log, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_x_reverse() + scale_y_reverse()  + geom_text(data=pb52log%>%group_by(vowel) %>% 
+               summarise_at(vars(f1log:f2log), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("Log-transformed vowel plot (PB52 data)")
+
+
+
+ggplot(pb52log, aes(x = f2log10, y = f1log10, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10) + ggtitle("Log10-transformed vowel plot (PB52 data)")
+
+
+
+ggplot(pb52log, aes(x = f2log10,y = f1log10, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_x_reverse() + scale_y_reverse()  + geom_text(data=pb52log%>%group_by(vowel) %>% 
+               summarise_at(vars(f1log10:f2log10), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("Log10-transformed vowel plot (PB52 data)")
+```
+
+
+```{r}
+indolog = indo  %>% mutate(f1log = log(f1), f2log = log(f2), f1log10 = log10(f1), f2log10 = log10(f2))
+
+ggplot(indolog, aes(x = f2log, y = f1log, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)+ ggtitle("Log-transformed vowel plot (Indo data)") + facet_wrap(~subj, ncol = 2)
+
+
+
+ggplot(indolog, aes(x = f2log, y = f1log, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_x_reverse() + scale_y_reverse()  + geom_text(data=indolog%>%group_by(vowel, subj) %>% 
+               summarise_at(vars(f1log:f2log), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("Log-transformed vowel plot (Indo data)") + facet_wrap(~subj, ncol = 2)
+
+
+
+ggplot(indolog, aes(x = f2log10, y = f1log10, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10) + ggtitle("Log10-transformed vowel plot (Indo data)") + facet_wrap(~subj, ncol = 2)
+
+
+
+ggplot(indolog, aes(x = f2log10,y = f1log10, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_x_reverse() + scale_y_reverse()  + geom_text(data=indolog%>%group_by(vowel, subj) %>% 
+               summarise_at(vars(f1log10:f2log10), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("Log10-transformed vowel plo (Indo data)t")+facet_wrap(~subj, ncol = 2)
+
+
+
+
+
+```
+
+### ERB
+ERB (or, equivalent rectangular bandwidth), tries to approximate the bandwidths of the filtering system used in human hearing.
+
+$ERB = 21.4 \times log_{10}(1+F \times 0.00437))$
+
+The phonR function *normErb* converts a given formant into ERB scale.
+
+```{r}
+pb52erb = pb52 %>% mutate(f1erb = normErb(f1), f2erb = normErb(f2)) 
+head(pb52erb)
+
+ggplot(pb52erb, aes(x = f2erb, y = f1erb, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)+ ggtitle("ERB-transformed vowel plot (PB52 data)")
+
+
+
+ggplot(pb52erb, aes(x = f2erb, y = f1erb, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_x_reverse() + scale_y_reverse()  + geom_text(data=pb52erb%>%group_by(vowel) %>% 
+               summarise_at(vars(f1erb:f2erb), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("ERB-transformed vowel plot (PB52 data)")
+
+
+```
+
+### Bark 
+The Bark scale also tries to approximate the bandwidths of the filtering system used in human hearing.
+
+$Bark = \frac{26.81 \times F}{1960 + F} - 0.53$
+
+```{r}
+pb52bark = pb52 %>% mutate(f1bark = normBark(f1), f2bark = normBark(f2)) 
+head(pb52bark)
+
+ggplot(pb52bark, aes(x = f2bark, y = f1bark, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)+ ggtitle("bark-transformed vowel plot (PB52 data)")
+
+
+
+ggplot(pb52bark, aes(x = f2bark, y = f1bark, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_x_reverse() + scale_y_reverse()  + geom_text(data=pb52bark%>%group_by(vowel) %>% 
+               summarise_at(vars(f1bark:f2bark), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("bark-transformed vowel plot (PB52 data)")
+
+
+indobark = indo %>% mutate(f1bark = normBark(f1), f2bark = normBark(f2)) 
+head(indobark)
+
+ggplot(indobark, aes(x = f2bark, y = f1bark, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)+ ggtitle("bark-transformed vowel plot (Indo data)")
+
+
+
+ggplot(indobark, aes(x = f2bark, y = f1bark, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_x_reverse() + scale_y_reverse()  + geom_text(data=indobark%>%group_by(vowel, subj) %>% 
+               summarise_at(vars(f1bark:f2bark), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("bark-transformed vowel plot (Indo data)") + facet_wrap(~subj, ncol = 2)
+
+
+```
+
+
+
+
+### Mel
+The Mel scale was originally developed as a perceptual scale of pitches judged by listeners to be equal in distance from one another. It was originally developed as a musical perceptual scale, but was extended to f0 and other formants. 
+
+$Mel = 2595 \times log_{10}(1 + frac{F}{700})$
+
+```{r}
+pb52mel = pb52 %>% mutate(f1mel = normMel(f1), f2mel = normMel(f2)) 
+head(pb52mel)
+
+ggplot(pb52mel, aes(x = f2mel, y = f1mel, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)+ ggtitle("mel-transformed vowel plot (PB52 data)")
+
+
+
+ggplot(pb52mel, aes(x = f2mel, y = f1mel, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_x_reverse() + scale_y_reverse()  + geom_text(data=pb52mel%>%group_by(vowel) %>% 
+               summarise_at(vars(f1mel:f2mel), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("mel-transformed vowel plot (PB52 data)")
+
+
+indomel = indo %>% mutate(f1mel = normMel(f1), f2mel = normMel(f2)) 
+head(indomel)
+
+ggplot(indomel, aes(x = f2mel, y = f1mel, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)+ ggtitle("mel-transformed vowel plot (Indo data)")
+
+
+
+ggplot(indomel, aes(x = f2mel, y = f1mel, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_x_reverse() + scale_y_reverse()  + geom_text(data=indomel%>%group_by(vowel, subj) %>% 
+               summarise_at(vars(f1mel:f2mel), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("mel-transformed vowel plot (Indo data)") + facet_wrap(~subj, ncol = 2)
+
+
+```
+
+
+## Speaker intrinsic/vowel intrinsic/formant extrinsic
+Speaker intrinsic and formant extrinsic methods use multiple formants in order to calculate normalized values. The most common one is the Bark-distance model.
+
+
+### Bark distance model
+The Bark distance model was proposed by Syrdal and Gopal (1986). In this model, F0-F3 are transformed into bark scale. Following this, $F1\prime$ is calculated as the difference: $F1_{bark} - F0_{bark}$, and $F2\prime$ is calculated as the difference: $F3_{bark} - F2_{bark}$. Unfortunately, there is no function to do this calculation directly, so we will use the normBark function and calculate the differences ourselves. Note that the Peterson and Barney data has f0-F3 information, whereas the indo data only has F1-F2.
+
+```{r}
+pb52SG = pb52 %>% mutate(f0bark = normBark(f0), f1bark = normBark(f1), f2bark = normBark(f2), f3bark = normBark(f3), f1new = f1bark-f0bark, f2new = f3bark-f2bark) 
+
+ggplot(pb52SG, aes(x = f2new, y = f1new, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)+ ggtitle("SG-transformed vowel plot (PB52 data)")
+
+
+
+ggplot(pb52SG, aes(x = f2new, y = f1new, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_y_reverse()  + geom_text(data=pb52SG%>%group_by(vowel) %>% 
+               summarise_at(vars(f1new:f2new), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("SG-transformed vowel plot (PB52 data)")
+
+set.seed(13579)
+
+pb52SGsample = pb52SG %>% filter(speaker %in% sample(levels(pb52SG$speaker), 10, replace = FALSE)) 
+
+ggplot(pb52SGsample, aes(x = f2new, y = f1new, color = vowel)) +theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_y_reverse()  +facet_wrap(~speaker) + geom_text(data=pb52SGsample%>%group_by(vowel, speaker) %>% summarise_at(vars(f1new:f2new), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("SG-transformed vowel plot (10 speakers from the PB52 data)")
+
+
+
+```
+
+
+## Speaker intrinsic/vowel extrinsic/formant intrinsic
+Vowel extrinsic, formant intrinsic models are often used for sociophonetic purposes. These take into account all vowels in a system simultaneously, but only use one formant at a time.
+
+### Z-score/Lobanov normalization
+The use of z-score as a method of vowel normalization was first introduced by Lobanov (1971). In this method, each subject's formants are put on a scale of standard deviations.
+
+$F_i = \frac{F_i-\mu(F_i}{\sigma(F_i)}$
+
+This can be done using either the *normLobanov()* function from phonR or the *scale()* function in base R.
+```{r}
+pb52lobanov = pb52 %>% group_by(speaker) %>% mutate(f1scale = scale(f1), f2scale = scale(f2), f1lobanov = normLobanov(f1), f2lobanov = normLobanov(f2))
+
+#to show that these two functions do the same thing
+all.equal(pb52lobanov$f1lobanov, pb52lobanov$f1scale)
+all.equal(pb52lobanov$f2lobanov, pb52lobanov$f2scale)
+
+
+ggplot(pb52lobanov, aes(x = f2lobanov, y = f1lobanov, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)+ ggtitle("Lobanov-transformed vowel plot (PB52 data)")
+
+
+
+ggplot(pb52lobanov, aes(x = f2lobanov, y = f1lobanov, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_y_reverse() + scale_x_reverse()  + geom_text(data=pb52lobanov%>%group_by(vowel) %>% 
+               summarise_at(vars(f1lobanov:f2lobanov), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("Lobanov-transformed vowel plot (PB52 data)")
+
+set.seed(13579)
+
+pb52lobanovsample = pb52lobanov %>% filter(speaker %in% sample(levels(pb52lobanov$speaker), 10, replace = FALSE)) 
+
+ggplot(pb52lobanovsample, aes(x = f2lobanov, y = f1lobanov, color = vowel))  +theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_y_reverse() +scale_x_reverse() +facet_wrap(~speaker) + geom_text(data=pb52lobanovsample%>%group_by(vowel, speaker) %>% summarise_at(vars(f1lobanov:f2lobanov), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("lobanov-transformed vowel plot (10 speakers from the PB52 data)")
+
+
+```
+
+### Individual log means (Nearey1)
+Note that Terrance Nearey, in his 1978 dissertation, created two methods for vowel normalization. Both are vowel extrinsic. This method is formant intrinsic. I will discuss the formant extrinsic method below. The method described here is useful for sociophonetic purposes, and has been considered by many to be the most successful in maintaining sociophonetic data during normalization.
+
+$F_n\prime = log_e(F_n) - \mu(log_e(F_n))$
+
+Note that F1 and F2 are required for this method as an input.
+```{r}
+pb52nearey1 = with(pb52, normNearey1(cbind(f1, f2), group = speaker))
+colnames(pb52nearey1) = c("f1nearey1", "f2nearey1")
+pb52nearey1 = cbind(pb52, pb52nearey1)
+
+ggplot(pb52nearey1, aes(x = f2nearey1, y = f1nearey1, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)+ ggtitle("nearey1-transformed vowel plot (PB52 data)")
+
+
+
+ggplot(pb52nearey1, aes(x = f2nearey1, y = f1nearey1, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_y_reverse() + scale_x_reverse()  + geom_text(data=pb52nearey1%>%group_by(vowel) %>% 
+               summarise_at(vars(f1nearey1:f2nearey1), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("nearey1-transformed vowel plot (PB52 data)")
+
+set.seed(13579)
+
+pb52nearey1sample = pb52nearey1 %>% filter(speaker %in% sample(levels(pb52nearey1$speaker), 10, replace = FALSE)) 
+
+ggplot(pb52nearey1sample, aes(x = f2nearey1, y = f1nearey1, color = vowel))  +theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_y_reverse() +scale_x_reverse() +facet_wrap(~speaker) + geom_text(data=pb52nearey1sample%>%group_by(vowel, speaker) %>% summarise_at(vars(f1nearey1:f2nearey1), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("nearey1-transformed vowel plot (10 speakers from the PB52 data)")
+
+```
+
+
+### Centroids (Watt-Fabricius)
+The Watt and Fabricius method is vowel extrinsic, but unlike other methods, the centroid used to calculate normalized values is based on points that represent the corners of the vowel space (/a/, /i/, and /u/).
+
+$<F1\prime, F2\prime> = <\frac{2\times F2}{min(\mu*F2_v) +max(\mu*F2_v)}, \frac{3\times F1}{2 \times min(\mu*F1_v) +max(\mu*F1_v)}>$
+
+Note that the implementation of this method used in phonR calculates "which vowel has the highest mean F2 value and uses that to calculate the upper left corner, rather than expressly looking for the mean of the "point vowel" /i/. The upper right corner is, as in the original method, derived from the other two. If the vowels with the highest mean F1 and highest mean F2 are not the same pair of vowels for all members of group, normWattFabricius returns an error." (quote taken from the phonR help page)
+
+
+```{r, error = TRUE}
+pb52WF = with(pb52, normWattFabricius(cbind(f1, f2), group = speaker, vowel = vowel))
+```
+
+Therefore, for simplicity, we will use the phonTools function *normalize()*.
+
+```{r}
+pb52WF = with(pb52, normalize(cbind(f1, f2), speaker, vowel,method = 'wandf', corners = c('i','u')))
+head(pb52WF)
+
+ggplot(pb52WF, aes(x = f2, y = f1, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)+ ggtitle("Watt-Fabricius-transformed vowel plot (PB52 data)")
+
+
+
+ggplot(pb52WF, aes(x = f2, y = f1, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_y_reverse() + scale_x_reverse()  + geom_text(data=pb52WF%>%group_by(vowel)%>% 
+               summarise_at(vars(f1:f2), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("Watt-Fabricius-transformed vowel plot (PB52 data)")
+
+set.seed(13579)
+
+pb52WFsample = pb52WF %>% filter(speaker %in% sample(levels(pb52WF$speaker), 10, replace = FALSE)) 
+
+ggplot(pb52WFsample, aes(x = f2, y = f1, color = vowel))  +theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_y_reverse() +scale_x_reverse() +facet_wrap(~speaker) + geom_text(data=pb52WFsample%>%group_by(vowel, speaker) %>% summarise_at(vars(f1:f2), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("WF-transformed vowel plot (10 speakers from the PB52 data)")
+```
+
+
+## Speaker intrinsic/vowel extrinsic/formant extrinsic
+
+### Shared log-mean (Nearey2)
+This method is similar to the Nearey1 method above, except rather than calculating the logmean for an individual vowel formant, it calculates the logmean for all formants.
+
+$F_n = F_n - (\mu_0 + \mu_1 + \mu_2 + \mu_3)$ where $\mu_n$ is the log mean for f0-F3.
+
+```{r}
+pb52nearey2 = with(pb52, normNearey2(cbind(f0, f1, f2, f3), group = speaker))
+head(pb52nearey2)
+colnames(pb52nearey2) = c("f0nearey2", "f1nearey2", "f2nearey2", "f3nearey2")
+pb52nearey2 = cbind(pb52, pb52nearey2)
+
+ggplot(pb52nearey2, aes(x = f2nearey2, y = f1nearey2, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)+ ggtitle("nearey2-transformed vowel plot (PB52 data)")
+
+
+
+ggplot(pb52nearey2, aes(x = f2nearey2, y = f1nearey2, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_y_reverse() + scale_x_reverse()  + geom_text(data=pb52nearey2%>%group_by(vowel) %>% 
+               summarise_at(vars(f1nearey2:f2nearey2), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("nearey2-transformed vowel plot (PB52 data)")
+
+set.seed(13579)
+
+pb52nearey2sample = pb52nearey2 %>% filter(speaker %in% sample(levels(pb52nearey2$speaker), 10, replace = FALSE)) 
+
+ggplot(pb52nearey2sample, aes(x = f2nearey2, y = f1nearey2, color = vowel))  +theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_y_reverse() +scale_x_reverse() +facet_wrap(~speaker) + geom_text(data=pb52nearey2sample%>%group_by(vowel, speaker) %>% summarise_at(vars(f1nearey2:f2nearey2), mean, na.rm = TRUE), aes(label = vowel), size = 8)+ ggtitle("nearey2-transformed vowel plot (10 speakers from the PB52 data)")
+
+```
+
+
+## Speaker extrinsic/vowel extrinsic/formant extrinsic
+
+### ANAE method
+This is the normalization method used by the phonological Atlas of North American English (Labov et al. 2006) - is a modification of Nearey2.
+
+> While it also uses a log-mean method to normalize the formant values, the primary difference is that it computes a single grand mean for all speakers included in the study (i.e. it's speaker-extrinsic, while Nearey is typically speaker-intrinsic). Also, unlike Nearey, it computes a scaling factor for each individual which is then used to modify each individual's vowel space rather than computing a set of non-Hertz-like values. In other words, since it is speaker-extrinsic, it is able to scale the original Hertz values as a part of its normalization process. 
+[source](http://lingtools.uoregon.edu/norm/package/html/norm.labov.html)
+
+
+Note that the *vowels* package is the only one that does this method, as far as I am aware. I tried really hard and could not get this method to work and give me meaningful results (I was getting F1 = 5000 Hz and F2 = 1000 Hz, so...). Note that Labov said when writing about this method that it took up to 350 speakers before the sliding mean would change, so it is unlikely we will be using this method in our current research.
+
+
+# Which method is best?
+Of course, after being bombarded with this information, you are probably wondering which of these is the best method to use. Adank et al. (2004) ran a series of linear discriminant analyses using these methods in order to identify the "best" method of vowel normalization. The results showed that the Lobanov method is the best procedure, though the difference with the Nearey1 method is relatively small. It is of course important to note that these methods end up with non-Hz scales of the formants, so proceed with caution!
+
+A summary of the methods discussed above can be found [here](http://cw.routledge.com/textbooks/9780415498791/data/chapter9/Table9-1.pdf).

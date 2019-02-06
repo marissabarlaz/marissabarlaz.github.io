@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Eye Tracking Analysis</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/owl.carousel.css">
+<link rel="stylesheet" href="/css/owl.theme.css">
+
+
+  <link href="/css/style.default.css" rel="stylesheet" id="theme-stylesheet">
+
+ 
+
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+
+<link href="/css/custom.css" rel="stylesheet">
+<link rel="shortcut icon" href="/img/favicon.png">
+
+
+</head>
+<body>
+  <div id="all">
+      <div class="container-fluid">
+          <div class="row row-offcanvas row-offcanvas-left">
+              <div id="sidebar" class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+  <div class="sidebar-content">
+    <h1 class="sidebar-heading"><a href="/">Dr. Marissa Barlaz</a></h1>
+    
+      <p class="sidebar-p">I am the Linguistic Data Analytics Manager in the School of Literatures, Cultures, and Linguistics at the University of Illinois at Urbana-Champaign.</p>
+    
+    <ul class="sidebar-menu">
+      
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/about/">About</a></li>
+      
+        <li><a href="/contact/">Get in touch</a></li>
+      
+    </ul>
+    <p class="social">
+  
+  <a href="https://www.facebook.com/marissa.goldrich" data-animate-hover="pulse" class="external facebook">
+    <i class="fa fa-facebook"></i>
+  </a>
+  
+  
+  
+  
+  <a href="https://www.instagram.com/salem_samoyed/" title="" class="external instagram">
+    <i class="fa fa-instagram"></i>
+  </a>
+  
+  
+  <a href="mailto:marissa.barlaz@gmail.com" data-animate-hover="pulse" class="email">
+    <i class="fa fa-envelope"></i>
+  </a>
+  
+  
+  <a href="https://www.linkedin.com/in/marissa-barlaz-52801830/" data-animate-hover="pulse">
+    <i class="fa fa-linkedin"></i>
+  </a>
+  
+  
+  
+</p>
+
+
+    <div class="copyright">
+      <p class="credit">
+        
+          &copy;2018 Marissa Barlaz
+        
+        | Template by <a href="https://bootstrapious.com/free-templates" class="external">Bootstrapious.com</a>
+
+&amp; ported to Hugo by <a href="https://github.com/kishaningithub">Kishan B</a>
+
+      </p>
+    </div>
+  </div>
+</div>
+
+              
+<div class="col-xs-12 col-sm-8 col-md-9 content-column white-background">
+  <div class="small-navbar visible-xs">
+  <button type="button" data-toggle="offcanvas" class="btn btn-ghost pull-left"> <i class="fa fa-align-left"> </i>Menu</button>
+  <h1 class="small-navbar-heading"><a href="/">Dr. Marissa Barlaz</a></h1>
+</div>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="content-column-content">
+         <h1>Eye Tracking Analysis</h1>
+         <div id="TOC">
+<ul>
+<li><a href="#what-is-the-visual-world-paradigm">What is the visual world paradigm?</a></li>
+<li><a href="#how-to-process-eye-tracking-data-in-r">How to process eye tracking data in R</a></li>
+<li><a href="#data-preparation">Data preparation</a><ul>
+<li><a href="#vwpre-method">VWPre method</a></li>
+<li><a href="#eyetrackingr-method">eyetrackingR method</a></li>
+</ul></li>
+<li><a href="#data-plotting">Data plotting</a><ul>
+<li><a href="#vwpre">VWPre</a></li>
+<li><a href="#eyetrackingr">eyetrackingR</a></li>
+</ul></li>
+<li><a href="#data-analysis">Data analysis</a><ul>
+<li><a href="#linear-mixed-effects-regression">Linear mixed effects regression</a></li>
+<li><a href="#growth-curve-analysis">Growth curve analysis</a></li>
+<li><a href="#generalized-additive-modeling">Generalized additive modeling</a></li>
+</ul></li>
+<li><a href="#conclusions-and-references">Conclusions and references</a></li>
+</ul>
+</div>
+
+<div id="what-is-the-visual-world-paradigm" class="section level1">
+<h1>What is the visual world paradigm?</h1>
+<blockquote>
+<p>The basic set-up in a comprehension visual world experiment is simple: On each trial the participants hear an utterance while looking at an experimental display. The participants’ eye movements are recorded for later analyses. In one popular version of the paradigm the visual input consists of line drawings of semi-realistic scenes shown on a computer screen and sentences that describe or comment upon the scenes (e.g., “The boy will eat the cake”, Altmann &amp; Kamide, 1999; see Fig. 1i). Typically, the display includes objects mentioned in the utterance (i.e., a boy and a cake for the previous example) and distractor objects that are not mentioned. In another version the displays are sets of objects, either laid out on a workspace (e.g., Tanenhaus et al., 1995) or shown as line drawings on a computer screen (e.g., Allopenna et al., 1998; see Fig. 1ii). The use of semi-realistic scenes allows researchers to assess, among other things, how the listeners’ perception of the scene and/or their world knowledge about scenes and events affect their understanding of the spoken utterances (for further discussion see Henderson &amp; Ferreira, 2004). When arrays of objects are used, the impact of such knowledge is minimized, which renders arrays well suited for studying the activation of conceptual and lexical knowledge associated with individual words.</p>
+</blockquote>
+<ul>
+<li><a href="https://www.sciencedirect.com/science/article/pii/S0001691810002180">Huettig, Rommers, and Meyer, 2011</a></li>
+</ul>
+</div>
+<div id="how-to-process-eye-tracking-data-in-r" class="section level1">
+<h1>How to process eye tracking data in R</h1>
+<p>I found two packages in R to process eye tracking data. I will show you how to use both of them. The packages are VWPre, which is used for preprocessing Visual World Paradigm data collected with the SR Eyelink system. The second package is eyetrackingR, which is used for preprocessing and analyzing eyetracking data. It is not as intuitive but allows for other systems to be used. You can install both packages using <em>install.packages()</em>:</p>
+<pre class="r"><code>install.packages(c(&quot;eyetrackingR&quot;, &quot;VWPre&quot;))
+library(eyetrackingR)
+library(VWPre)</code></pre>
+<p>I will demonstrate the versitility of these packages using the example data from the VWPre package. The data is a subset of the data presented in <a href="https://www.sciencedirect.com/science/article/pii/S0095447016300146">Porretta, Tucker, and Järvikivi, 2016</a>, which examines the effect of foreign accentedness on word recognition using native and Chinese-accented English. In this version of the VWP, participants heard an accented token and found its written form among four options.</p>
+</div>
+<div id="data-preparation" class="section level1">
+<h1>Data preparation</h1>
+<pre class="r"><code>data(&quot;VWdat&quot;)
+head(VWdat)</code></pre>
+<pre><code>##   RECORDING_SESSION_LABEL LEFT_GAZE_X LEFT_GAZE_Y LEFT_INTEREST_AREA_ID
+## 1                   14001          NA          NA                    NA
+## 2                   14001          NA          NA                    NA
+## 3                   14001          NA          NA                    NA
+## 4                   14001          NA          NA                    NA
+## 5                   14001          NA          NA                    NA
+## 6                   14001          NA          NA                    NA
+##   LEFT_INTEREST_AREA_LABEL RIGHT_GAZE_X RIGHT_GAZE_Y
+## 1                       NA        959.8        458.8
+## 2                       NA        959.9        458.9
+## 3                       NA        960.1        459.0
+## 4                       NA        960.0        458.7
+## 5                       NA        959.9        458.5
+## 6                       NA        959.7        458.2
+##   RIGHT_INTEREST_AREA_ID RIGHT_INTEREST_AREA_LABEL SAMPLE_MESSAGE
+## 1                     NA                      &lt;NA&gt;           &lt;NA&gt;
+## 2                     NA                      &lt;NA&gt;           &lt;NA&gt;
+## 3                     NA                      &lt;NA&gt;           &lt;NA&gt;
+## 4                     NA                      &lt;NA&gt;           &lt;NA&gt;
+## 5                     NA                      &lt;NA&gt;           &lt;NA&gt;
+## 6                     NA                      &lt;NA&gt;           &lt;NA&gt;
+##   TIMESTAMP TRIAL_INDEX target rhymecomp onsetcomp distractor talker cb
+## 1   1047304           1  booze      fuse       bun      leach    EN3  1
+## 2   1047305           1  booze      fuse       bun      leach    EN3  1
+## 3   1047306           1  booze      fuse       bun      leach    EN3  1
+## 4   1047307           1  booze      fuse       bun      leach    EN3  1
+## 5   1047308           1  booze      fuse       bun      leach    EN3  1
+## 6   1047309           1  booze      fuse       bun      leach    EN3  1
+##   Gender Age Rating InteractChinese  Exp itemid
+## 1   Male  19    2.7              27 High    311
+## 2   Male  19    2.7              27 High    311
+## 3   Male  19    2.7              27 High    311
+## 4   Male  19    2.7              27 High    311
+## 5   Male  19    2.7              27 High    311
+## 6   Male  19    2.7              27 High    311</code></pre>
+<pre class="r"><code>str(VWdat)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    410143 obs. of  24 variables:
+##  $ RECORDING_SESSION_LABEL  : int  14001 14001 14001 14001 14001 14001 14001 14001 14001 14001 ...
+##  $ LEFT_GAZE_X              : logi  NA NA NA NA NA NA ...
+##  $ LEFT_GAZE_Y              : logi  NA NA NA NA NA NA ...
+##  $ LEFT_INTEREST_AREA_ID    : logi  NA NA NA NA NA NA ...
+##  $ LEFT_INTEREST_AREA_LABEL : logi  NA NA NA NA NA NA ...
+##  $ RIGHT_GAZE_X             : num  960 960 960 960 960 ...
+##  $ RIGHT_GAZE_Y             : num  459 459 459 459 458 ...
+##  $ RIGHT_INTEREST_AREA_ID   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ RIGHT_INTEREST_AREA_LABEL: chr  NA NA NA NA ...
+##  $ SAMPLE_MESSAGE           : Factor w/ 4 levels &quot;Preview&quot;,&quot;TargetOnset&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ TIMESTAMP                : num  1047304 1047305 1047306 1047307 1047308 ...
+##  $ TRIAL_INDEX              : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ target                   : Factor w/ 40 levels &quot;bait&quot;,&quot;bat&quot;,&quot;bees&quot;,..: 11 11 11 11 11 11 11 11 11 11 ...
+##  $ rhymecomp                : Factor w/ 40 levels &quot;begs&quot;,&quot;breeze&quot;,..: 18 18 18 18 18 18 18 18 18 18 ...
+##  $ onsetcomp                : Factor w/ 40 levels &quot;bake&quot;,&quot;ball&quot;,..: 15 15 15 15 15 15 15 15 15 15 ...
+##  $ distractor               : Factor w/ 40 levels &quot;can&quot;,&quot;cat&quot;,&quot;club&quot;,..: 18 18 18 18 18 18 18 18 18 18 ...
+##  $ talker                   : Factor w/ 4 levels &quot;CH1&quot;,&quot;CH10&quot;,&quot;CH9&quot;,..: 4 4 4 4 4 4 4 4 4 4 ...
+##  $ cb                       : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ Gender                   : Factor w/ 2 levels &quot;Female&quot;,&quot;Male&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ Age                      : int  19 19 19 19 19 19 19 19 19 19 ...
+##  $ Rating                   : num  2.7 2.7 2.7 2.7 2.7 2.7 2.7 2.7 2.7 2.7 ...
+##  $ InteractChinese          : num  27 27 27 27 27 27 27 27 27 27 ...
+##  $ Exp                      : Factor w/ 2 levels &quot;High&quot;,&quot;Low&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ itemid                   : int  311 311 311 311 311 311 311 311 311 311 ...</code></pre>
+<pre class="r"><code>summary(VWdat)</code></pre>
+<pre><code>##  RECORDING_SESSION_LABEL LEFT_GAZE_X    LEFT_GAZE_Y   
+##  Min.   :14001           Mode:logical   Mode:logical  
+##  1st Qu.:14002           NA&#39;s:410143    NA&#39;s:410143   
+##  Median :14004                                        
+##  Mean   :14005                                        
+##  3rd Qu.:14007                                        
+##  Max.   :14010                                        
+##                                                       
+##  LEFT_INTEREST_AREA_ID LEFT_INTEREST_AREA_LABEL  RIGHT_GAZE_X   
+##  Mode:logical          Mode:logical             Min.   : 239.3  
+##  NA&#39;s:410143           NA&#39;s:410143              1st Qu.: 639.2  
+##                                                 Median : 945.9  
+##                                                 Mean   : 926.3  
+##                                                 3rd Qu.:1128.4  
+##                                                 Max.   :2701.9  
+##                                                 NA&#39;s   :3678    
+##   RIGHT_GAZE_Y    RIGHT_INTEREST_AREA_ID RIGHT_INTEREST_AREA_LABEL
+##  Min.   :  29.4   Min.   :1.00           Length:410143            
+##  1st Qu.: 242.9   1st Qu.:1.00           Class :character         
+##  Median : 535.5   Median :1.00           Mode  :character         
+##  Mean   : 513.6   Mean   :1.72                                    
+##  3rd Qu.: 650.2   3rd Qu.:3.00                                    
+##  Max.   :1655.0   Max.   :4.00                                    
+##  NA&#39;s   :3678     NA&#39;s   :187075                                  
+##       SAMPLE_MESSAGE     TIMESTAMP        TRIAL_INDEX       target      
+##  Preview     :   320   Min.   :1047304   Min.   : 1.0   bait   : 10256  
+##  TargetOnset :   320   1st Qu.:1607494   1st Qu.:10.0   bat    : 10256  
+##  TIMER_search:   320   Median :1875372   Median :21.0   bite   : 10256  
+##  VowelOnset  :   320   Mean   :3052611   Mean   :20.5   but    : 10256  
+##  NA&#39;s        :408863   3rd Qu.:3960783   3rd Qu.:31.0   boot   : 10255  
+##                        Max.   :8463334   Max.   :40.0   chop   : 10255  
+##                                                         (Other):348609  
+##    rhymecomp        onsetcomp        distractor      talker      
+##  chat   : 10256   bake   : 10256   can    : 10256   CH1 :102537  
+##  cut    : 10256   ball   : 10256   loop   : 10256   CH10:102535  
+##  height : 10256   bend   : 10256   mill   : 10256   CH9 :102534  
+##  mate   : 10256   bike   : 10256   noon   : 10256   EN3 :102537  
+##  cop    : 10255   bud    : 10255   jam    : 10255                
+##  dubbed : 10255   chore  : 10255   juice  : 10255                
+##  (Other):348609   (Other):348609   (Other):348609                
+##        cb         Gender            Age            Rating     
+##  Min.   :1.0   Female:358878   Min.   :18.00   Min.   :1.033  
+##  1st Qu.:2.0   Male  : 51265   1st Qu.:18.00   1st Qu.:2.800  
+##  Median :2.0                   Median :18.00   Median :4.133  
+##  Mean   :2.5                   Mean   :18.62   Mean   :4.361  
+##  3rd Qu.:3.5                   3rd Qu.:19.50   3rd Qu.:5.817  
+##  Max.   :4.0                   Max.   :20.00   Max.   :8.733  
+##                                                               
+##  InteractChinese   Exp             itemid      
+##  Min.   : 0.00   High:307605   Min.   : 101.0  
+##  1st Qu.: 0.20   Low :102538   1st Qu.: 140.0  
+##  Median :25.00                 Median : 340.0  
+##  Mean   :23.46                 Mean   : 595.5  
+##  3rd Qu.:27.00                 3rd Qu.: 940.0  
+##  Max.   :60.00                 Max.   :1040.0  
+## </code></pre>
+<div id="vwpre-method" class="section level2">
+<h2>VWPre method</h2>
+<p>The VWPre package assumes the data to be in a specific format (hence why it requires the data to be collected with the SR Eyelink system). The data needs to have the following columns: <strong>LEFT_INTEREST_AREA_ID, RIGHT_INTEREST_AREA_ID, LEFT_INTEREST_AREA_LABEL, RIGHT_INTEREST_AREA_LABEL, TIMESTAMP, and TRIAL_INDEX</strong>. The functions also checks for the columns <strong>SAMPLE_MESSAGE, RIGHT_GAZE_X, RIGHT_GAZE_Y, LEFT_GAZE_X, and LEFT_GAZE_Y</strong>. These columns are not needed in the data, but are needed if you need to align the dataset to a particular message (i.e., onset of a target sound), or if you would like to redefine interest areas based on coordinates on the screen.</p>
+<p>The prep_data() function makes sure all of the correct data columns exist, and converts them to the correct form if necessary. It also requires you to specify which column includes Subject (often listed as RECORDING_SESSION_LABEL) and item.</p>
+<pre class="r"><code>dat0 &lt;- prep_data(data = VWdat, Subject = &quot;RECORDING_SESSION_LABEL&quot;, Item = &quot;itemid&quot;)</code></pre>
+<pre><code>## Checking required columns...</code></pre>
+<pre><code>##     All required columns are present in the data.</code></pre>
+<pre><code>## Checking optional columns...</code></pre>
+<pre><code>##     The following optional is not present in the data:  EYE_TRACKED</code></pre>
+<pre><code>## Working on required columns...</code></pre>
+<pre><code>##     RECORDING_SESSION_LABEL renamed to Subject.</code></pre>
+<pre><code>##     Subject converted to factor.</code></pre>
+<pre><code>##     itemid renamed to Item.</code></pre>
+<pre><code>##     Item converted to factor.</code></pre>
+<pre><code>##     LEFT_INTEREST_AREA_ID converted to numeric.</code></pre>
+<pre><code>##     RIGHT_INTEREST_AREA_ID already numeric.</code></pre>
+<pre><code>##     LEFT_INTEREST_AREA_LABEL converted to factor.</code></pre>
+<pre><code>##     RIGHT_INTEREST_AREA_LABEL converted to factor.</code></pre>
+<pre><code>##     TIMESTAMP already numeric.</code></pre>
+<pre><code>##     TRIAL_INDEX already numeric.</code></pre>
+<pre><code>##     Event variable created from Subject and TRIAL_INDEX</code></pre>
+<pre><code>## Working on optional columns...</code></pre>
+<pre><code>##     Optional column SAMPLE_MESSAGE already factor.</code></pre>
+<pre><code>##     Optional column LEFT_GAZE_X converted to numeric.</code></pre>
+<pre><code>##     Optional column LEFT_GAZE_Y converted to numeric.</code></pre>
+<pre><code>##     Optional column RIGHT_GAZE_X already numeric.</code></pre>
+<pre><code>##     Optional column RIGHT_GAZE_Y already numeric.</code></pre>
+<pre class="r"><code>head(dat0)</code></pre>
+<pre><code>## # A tibble: 6 x 25
+##   Subject LEFT_GAZE_X LEFT_GAZE_Y LEFT_INTEREST_A… LEFT_INTEREST_A…
+##   &lt;fct&gt;         &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt; &lt;fct&gt;           
+## 1 14001            NA          NA               NA &lt;NA&gt;            
+## 2 14001            NA          NA               NA &lt;NA&gt;            
+## 3 14001            NA          NA               NA &lt;NA&gt;            
+## 4 14001            NA          NA               NA &lt;NA&gt;            
+## 5 14001            NA          NA               NA &lt;NA&gt;            
+## 6 14001            NA          NA               NA &lt;NA&gt;            
+## # … with 20 more variables: RIGHT_GAZE_X &lt;dbl&gt;, RIGHT_GAZE_Y &lt;dbl&gt;,
+## #   RIGHT_INTEREST_AREA_ID &lt;int&gt;, RIGHT_INTEREST_AREA_LABEL &lt;fct&gt;,
+## #   SAMPLE_MESSAGE &lt;fct&gt;, TIMESTAMP &lt;dbl&gt;, TRIAL_INDEX &lt;int&gt;,
+## #   target &lt;fct&gt;, rhymecomp &lt;fct&gt;, onsetcomp &lt;fct&gt;, distractor &lt;fct&gt;,
+## #   talker &lt;fct&gt;, cb &lt;int&gt;, Gender &lt;fct&gt;, Age &lt;int&gt;, Rating &lt;dbl&gt;,
+## #   InteractChinese &lt;dbl&gt;, Exp &lt;fct&gt;, Item &lt;fct&gt;, Event &lt;fct&gt;</code></pre>
+<p>When the data is read by the SR Eyelink system, samples that are outside of the interest areas are automatically labeled as NA. The <em>relabel_na()</em> function takes the number of interest areas, and relabels anything that falls outside of this number of interest areas as 0/Outside. The <em>check_ia()</em> function makes sure the interest area IDs are labeled and numbered appropriately.</p>
+<pre class="r"><code>dat1 &lt;- relabel_na(data = dat0, NoIA = 4)</code></pre>
+<pre><code>## LEFT_INTEREST_AREA_LABEL: Number of levels DO NOT match NoIA.</code></pre>
+<pre><code>## RIGHT_INTEREST_AREA_LABEL: Number of levels match NoIA.</code></pre>
+<pre class="r"><code>head(dat1)</code></pre>
+<pre><code>## # A tibble: 6 x 25
+##   Subject LEFT_GAZE_X LEFT_GAZE_Y LEFT_INTEREST_A… LEFT_INTEREST_A…
+##   &lt;fct&gt;         &lt;dbl&gt;       &lt;dbl&gt;            &lt;dbl&gt; &lt;fct&gt;           
+## 1 14001            NA          NA                0 Outside         
+## 2 14001            NA          NA                0 Outside         
+## 3 14001            NA          NA                0 Outside         
+## 4 14001            NA          NA                0 Outside         
+## 5 14001            NA          NA                0 Outside         
+## 6 14001            NA          NA                0 Outside         
+## # … with 20 more variables: RIGHT_GAZE_X &lt;dbl&gt;, RIGHT_GAZE_Y &lt;dbl&gt;,
+## #   RIGHT_INTEREST_AREA_ID &lt;dbl&gt;, RIGHT_INTEREST_AREA_LABEL &lt;fct&gt;,
+## #   SAMPLE_MESSAGE &lt;fct&gt;, TIMESTAMP &lt;dbl&gt;, TRIAL_INDEX &lt;int&gt;,
+## #   target &lt;fct&gt;, rhymecomp &lt;fct&gt;, onsetcomp &lt;fct&gt;, distractor &lt;fct&gt;,
+## #   talker &lt;fct&gt;, cb &lt;int&gt;, Gender &lt;fct&gt;, Age &lt;int&gt;, Rating &lt;dbl&gt;,
+## #   InteractChinese &lt;dbl&gt;, Exp &lt;fct&gt;, Item &lt;fct&gt;, Event &lt;fct&gt;</code></pre>
+<pre class="r"><code>check_ia(data = dat1)</code></pre>
+<pre><code>## Interest Area IDs for the right eye are coded appropriately.</code></pre>
+<pre><code>##  ID      Label
+##   0    Outside
+##   1     Target
+##   2  RhymeComp
+##   3  OnsetComp
+##   4 Distractor</code></pre>
+<pre><code>## Interest Area IDs for the left eye are coded appropriately.</code></pre>
+<pre><code>##  ID   Label
+##   0 Outside</code></pre>
+<p>Next, the <em>create_time_series()</em> function creates a new column for time, which allows for doing time series analyses, If an adjustment is needed, specify it in the Adjust parameter. This subtracts the given value from all time points.</p>
+<p>If you would like to do this based on a message give in the system, you can use the check_msg_time() and align_dat() functions.</p>
+<pre class="r"><code>#Hard coding the alignment adjustment, if you know what it is
+check_msg_time(data = dat1, Msg = &quot;TargetOnset&quot;)</code></pre>
+<pre><code>## # A tibble: 320 x 3
+##    Event    SAMPLE_MESSAGE TIMESTAMP
+##    &lt;fct&gt;    &lt;fct&gt;              &lt;dbl&gt;
+##  1 14001.1  TargetOnset      1047404
+##  2 14001.2  TargetOnset      1054655
+##  3 14001.3  TargetOnset      1062588
+##  4 14001.4  TargetOnset      1069839
+##  5 14001.5  TargetOnset      1077056
+##  6 14001.6  TargetOnset      1084256
+##  7 14001.7  TargetOnset      1091490
+##  8 14001.8  TargetOnset      1099623
+##  9 14001.9  TargetOnset      1107174
+## 10 14001.10 TargetOnset      1114525
+## # … with 310 more rows</code></pre>
+<pre class="r"><code>dat2 &lt;- create_time_series(data = dat1, Adjust = 100)</code></pre>
+<pre><code>## 100 ms adjustment applied.</code></pre>
+<pre class="r"><code>check_msg_time(data = dat2, Msg = &quot;TargetOnset&quot;)</code></pre>
+<pre><code>## # A tibble: 320 x 3
+##    Event   SAMPLE_MESSAGE  Time
+##    &lt;fct&gt;   &lt;fct&gt;          &lt;dbl&gt;
+##  1 14001.1 TargetOnset        0
+##  2 14002.1 TargetOnset        0
+##  3 14003.1 TargetOnset        0
+##  4 14004.1 TargetOnset        0
+##  5 14005.1 TargetOnset        0
+##  6 14006.1 TargetOnset        0
+##  7 14008.1 TargetOnset        0
+##  8 14010.1 TargetOnset        0
+##  9 14001.2 TargetOnset        0
+## 10 14002.2 TargetOnset        0
+## # … with 310 more rows</code></pre>
+<pre class="r"><code>#Or, to align based on a messge
+dat1a = align_msg(data = dat1, Msg = &quot;TargetOnset&quot;)
+check_msg_time(data = dat1a, Msg = &quot;TargetOnset&quot;)</code></pre>
+<pre><code>## # A tibble: 320 x 3
+##    Event    SAMPLE_MESSAGE Align
+##    &lt;fct&gt;    &lt;fct&gt;          &lt;dbl&gt;
+##  1 14001.1  TargetOnset        0
+##  2 14001.2  TargetOnset        0
+##  3 14001.3  TargetOnset        0
+##  4 14001.4  TargetOnset        0
+##  5 14001.5  TargetOnset        0
+##  6 14001.6  TargetOnset        0
+##  7 14001.7  TargetOnset        0
+##  8 14001.8  TargetOnset        0
+##  9 14001.9  TargetOnset        0
+## 10 14001.10 TargetOnset        0
+## # … with 310 more rows</code></pre>
+<pre class="r"><code>dat2a = create_time_series(dat1a, Adjust = 0)</code></pre>
+<pre><code>## No adjustment applied.</code></pre>
+<pre class="r"><code>check_msg_time(data = dat2a, Msg = &quot;TargetOnset&quot;)</code></pre>
+<pre><code>## # A tibble: 320 x 3
+##    Event   SAMPLE_MESSAGE  Time
+##    &lt;fct&gt;   &lt;fct&gt;          &lt;dbl&gt;
+##  1 14001.1 TargetOnset        0
+##  2 14002.1 TargetOnset        0
+##  3 14003.1 TargetOnset        0
+##  4 14004.1 TargetOnset        0
+##  5 14005.1 TargetOnset        0
+##  6 14006.1 TargetOnset        0
+##  7 14008.1 TargetOnset        0
+##  8 14010.1 TargetOnset        0
+##  9 14001.2 TargetOnset        0
+## 10 14002.2 TargetOnset        0
+## # … with 310 more rows</code></pre>
+<pre class="r"><code>check_time_series(data = dat2)</code></pre>
+<pre><code>## [1] -100</code></pre>
+<pre class="r"><code>check_time_series(data = dat2a)</code></pre>
+<pre><code>## [1] -100</code></pre>
+<p>Next, we need to check which eye was recorded, and select the correct columns. Here, the WhenLandR setting is not necessary - it is just a precaution, set to use only the right eye data in case there is some data from both.</p>
+<pre class="r"><code>check_eye_recording(data = dat2)</code></pre>
+<pre><code>## Checking gaze data using Data Viewer columns LEFT_INTEREST_AREA_ID and RIGHT_INTEREST_AREA_ID</code></pre>
+<pre><code>## The dataset contains recordings for ONLY the right eye. 
+##  Set the Recording parameter in select_recorded_eye() to &#39;R&#39;.</code></pre>
+<pre class="r"><code>dat3 &lt;- select_recorded_eye(data = dat2, Recording = &quot;R&quot;, WhenLandR = &quot;Right&quot;)</code></pre>
+<pre><code>## Selecting gaze data using Data Viewer columns LEFT_INTEREST_AREA_ID and RIGHT_INTEREST_AREA_ID and the Recording argument: R</code></pre>
+<pre><code>## Gaze data summary for 320 events:</code></pre>
+<pre><code>## 0 event(s) contained gaze data for both eyes, for which the Right eye has been selected.</code></pre>
+<pre><code>## The final data frame contains 319 event(s) using gaze data from the right eye.</code></pre>
+<pre><code>## The final data frame contains 1 event(s) with no samples falling within any interest area during the given time series.</code></pre>
+<p>Next, in order to get proportional data, we need to bin the samples into chunks of time, count the number of samples per chunk for each IA, and then calculate proportions of samples. Here, we can check the sampling rate of the data, as the sampling rate is necessary for the <em>bin_prop()</em> function. The <em>ds_options()</em> function will give options for how many items per bin will give a particular downsampled rate for the time course of the eyetracking data.</p>
+<pre class="r"><code>check_samplingrate(dat3)</code></pre>
+<pre><code>## Sampling rate(s) present in the data are: 1000 Hz.</code></pre>
+<pre class="r"><code>ds_options(SamplingRate = 1000)</code></pre>
+<pre><code>## Suggested binning/downsampling options:</code></pre>
+<pre><code>## Bin size: 1 ms; Samples per bin: 1 samples; Downsampled rate: 1000 Hz</code></pre>
+<pre><code>## Bin size: 2 ms; Samples per bin: 2 samples; Downsampled rate: 500 Hz</code></pre>
+<pre><code>## Bin size: 4 ms; Samples per bin: 4 samples; Downsampled rate: 250 Hz</code></pre>
+<pre><code>## Bin size: 5 ms; Samples per bin: 5 samples; Downsampled rate: 200 Hz</code></pre>
+<pre><code>## Bin size: 8 ms; Samples per bin: 8 samples; Downsampled rate: 125 Hz</code></pre>
+<pre><code>## Bin size: 10 ms; Samples per bin: 10 samples; Downsampled rate: 100 Hz</code></pre>
+<pre><code>## Bin size: 20 ms; Samples per bin: 20 samples; Downsampled rate: 50 Hz</code></pre>
+<pre><code>## Bin size: 25 ms; Samples per bin: 25 samples; Downsampled rate: 40 Hz</code></pre>
+<pre><code>## Bin size: 40 ms; Samples per bin: 40 samples; Downsampled rate: 25 Hz</code></pre>
+<pre><code>## Bin size: 50 ms; Samples per bin: 50 samples; Downsampled rate: 20 Hz</code></pre>
+<pre><code>## Bin size: 100 ms; Samples per bin: 100 samples; Downsampled rate: 10 Hz</code></pre>
+<pre class="r"><code>dat4 &lt;- bin_prop(dat3, NoIA = 4, BinSize = 20, SamplingRate = 1000)</code></pre>
+<pre><code>## Binning information: 
+##  Original rate of 1000 Hz with one sample every 1 ms. 
+##  Downsampled rate of 50 Hz using 20 ms bins. 
+##  New bins contain 20 samples.</code></pre>
+<pre><code>## Binning...</code></pre>
+<pre><code>## Calculating proportions...</code></pre>
+<pre><code>## There are 320 data points with less than 20 samples per bin.</code></pre>
+<pre><code>## These can be examined and/or removed using the column &#39;NSamples&#39;.</code></pre>
+<pre><code>## These occur at time bin(s): 1180</code></pre>
+<pre><code>## Subsequent Empirical Logit calculations may be influenced by the number of samples (depending on the number of observations requested).</code></pre>
+<pre class="r"><code>check_samplingrate(dat4)</code></pre>
+<pre><code>## Sampling rate(s) present in the data are: 50 Hz.</code></pre>
+<pre class="r"><code>check_samples_per_bin(dat4)</code></pre>
+<pre><code>## There are 20 samples per bin.</code></pre>
+<pre><code>## One data point every 20 millisecond(s)</code></pre>
+<p>While most journal articles I have read include proportions in graphs or mixed effects models, there are some that prefer using logits (log odds ratios). This next line transforms the data into elogits, or empirical (i.e., based on your data, not on a model) log odds ratios.</p>
+<pre class="r"><code>dat5 &lt;- transform_to_elogit(dat4, NoIA = 4, ObsPerBin = 20)</code></pre>
+<pre><code>## Number of Observations equal to Number of Samples. 
+##  Calculation will be based on Number of Samples.</code></pre>
+<p>And finally, we create our final dataset by selecting out the columns we want to keep.</p>
+<pre class="r"><code>FinalDat &lt;- dat5 %&gt;% 
+  # Select just the columns you want
+  select(., Subject, Item, Time, starts_with(&quot;IA&quot;), Event, TRIAL_INDEX, Rating, talker, Exp,
+         InteractChinese, Exp, target, rhymecomp, onsetcomp, distractor) %&gt;%
+  # Order the data by Subject, Trial, and Time
+  arrange(., Subject, TRIAL_INDEX, Time)
+
+head(FinalDat)</code></pre>
+<pre><code>## # A tibble: 6 x 36
+##   Subject Item   Time IA_ID IA_LABEL IA_Data IA_0_C IA_1_C IA_2_C IA_3_C
+##   &lt;fct&gt;   &lt;fct&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;    &lt;fct&gt;    &lt;int&gt;  &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
+## 1 14001   311    -100     0 Outside  Contai…     20      0      0      0
+## 2 14001   311     -80     0 Outside  Contai…     20      0      0      0
+## 3 14001   311     -60     0 Outside  Contai…     20      0      0      0
+## 4 14001   311     -40     0 Outside  Contai…     20      0      0      0
+## 5 14001   311     -20     0 Outside  Contai…     20      0      0      0
+## 6 14001   311       0     0 Outside  Contai…     20      0      0      0
+## # … with 26 more variables: IA_4_C &lt;int&gt;, IA_0_P &lt;dbl&gt;, IA_1_P &lt;dbl&gt;,
+## #   IA_2_P &lt;dbl&gt;, IA_3_P &lt;dbl&gt;, IA_4_P &lt;dbl&gt;, IA_0_ELogit &lt;dbl&gt;,
+## #   IA_0_wts &lt;dbl&gt;, IA_1_ELogit &lt;dbl&gt;, IA_1_wts &lt;dbl&gt;, IA_2_ELogit &lt;dbl&gt;,
+## #   IA_2_wts &lt;dbl&gt;, IA_3_ELogit &lt;dbl&gt;, IA_3_wts &lt;dbl&gt;, IA_4_ELogit &lt;dbl&gt;,
+## #   IA_4_wts &lt;dbl&gt;, Event &lt;fct&gt;, TRIAL_INDEX &lt;int&gt;, Rating &lt;dbl&gt;,
+## #   talker &lt;fct&gt;, Exp &lt;fct&gt;, InteractChinese &lt;dbl&gt;, target &lt;fct&gt;,
+## #   rhymecomp &lt;fct&gt;, onsetcomp &lt;fct&gt;, distractor &lt;fct&gt;</code></pre>
+<pre class="r"><code>str(FinalDat)</code></pre>
+<pre><code>## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    20800 obs. of  36 variables:
+##  $ Subject        : Factor w/ 8 levels &quot;14001&quot;,&quot;14002&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Item           : Factor w/ 160 levels &quot;1001&quot;,&quot;1002&quot;,..: 91 91 91 91 91 91 91 91 91 91 ...
+##  $ Time           : num  -100 -80 -60 -40 -20 0 20 40 60 80 ...
+##  $ IA_ID          : num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ IA_LABEL       : Factor w/ 5 levels &quot;Distractor&quot;,&quot;OnsetComp&quot;,..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ IA_Data        : Factor w/ 2 levels &quot;Contains_IA_Looks&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ IA_0_C         : int  20 20 20 20 20 20 20 20 20 20 ...
+##  $ IA_1_C         : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ IA_2_C         : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ IA_3_C         : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ IA_4_C         : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ IA_0_P         : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ IA_1_P         : num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ IA_2_P         : num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ IA_3_P         : num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ IA_4_P         : num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ IA_0_ELogit    : num  3.71 3.71 3.71 3.71 3.71 ...
+##  $ IA_0_wts       : num  2.05 2.05 2.05 2.05 2.05 ...
+##  $ IA_1_ELogit    : num  -3.71 -3.71 -3.71 -3.71 -3.71 ...
+##  $ IA_1_wts       : num  2.05 2.05 2.05 2.05 2.05 ...
+##  $ IA_2_ELogit    : num  -3.71 -3.71 -3.71 -3.71 -3.71 ...
+##  $ IA_2_wts       : num  2.05 2.05 2.05 2.05 2.05 ...
+##  $ IA_3_ELogit    : num  -3.71 -3.71 -3.71 -3.71 -3.71 ...
+##  $ IA_3_wts       : num  2.05 2.05 2.05 2.05 2.05 ...
+##  $ IA_4_ELogit    : num  -3.71 -3.71 -3.71 -3.71 -3.71 ...
+##  $ IA_4_wts       : num  2.05 2.05 2.05 2.05 2.05 ...
+##  $ Event          : Factor w/ 320 levels &quot;14001.1&quot;,&quot;14002.1&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ TRIAL_INDEX    : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ Rating         : num  2.7 2.7 2.7 2.7 2.7 2.7 2.7 2.7 2.7 2.7 ...
+##  $ talker         : Factor w/ 4 levels &quot;CH1&quot;,&quot;CH10&quot;,&quot;CH9&quot;,..: 4 4 4 4 4 4 4 4 4 4 ...
+##  $ Exp            : Factor w/ 2 levels &quot;High&quot;,&quot;Low&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ InteractChinese: num  27 27 27 27 27 27 27 27 27 27 ...
+##  $ target         : Factor w/ 40 levels &quot;bait&quot;,&quot;bat&quot;,&quot;bees&quot;,..: 11 11 11 11 11 11 11 11 11 11 ...
+##  $ rhymecomp      : Factor w/ 40 levels &quot;begs&quot;,&quot;breeze&quot;,..: 18 18 18 18 18 18 18 18 18 18 ...
+##  $ onsetcomp      : Factor w/ 40 levels &quot;bake&quot;,&quot;ball&quot;,..: 15 15 15 15 15 15 15 15 15 15 ...
+##  $ distractor     : Factor w/ 40 levels &quot;can&quot;,&quot;cat&quot;,&quot;club&quot;,..: 18 18 18 18 18 18 18 18 18 18 ...</code></pre>
+<pre class="r"><code>summary(FinalDat)</code></pre>
+<pre><code>##     Subject          Item            Time          IA_ID       
+##  14001  :2600   1001   :  130   Min.   :-100   Min.   :0.0000  
+##  14002  :2600   1002   :  130   1st Qu.: 220   1st Qu.:0.0000  
+##  14003  :2600   1003   :  130   Median : 540   Median :1.0000  
+##  14004  :2600   1004   :  130   Mean   : 540   Mean   :0.9311  
+##  14005  :2600   1005   :  130   3rd Qu.: 860   3rd Qu.:1.0000  
+##  14006  :2600   1006   :  130   Max.   :1180   Max.   :4.0000  
+##  (Other):5200   (Other):20020                                  
+##        IA_LABEL                 IA_Data          IA_0_C      
+##  Distractor: 916   Contains_IA_Looks:20735   Min.   : 0.000  
+##  OnsetComp :1939   No_IA_Looks      :   65   1st Qu.: 0.000  
+##  Outside   :9511                             Median : 0.000  
+##  RhymeComp :1452                             Mean   : 8.994  
+##  Target    :6982                             3rd Qu.:20.000  
+##                                              Max.   :20.000  
+##                                                              
+##      IA_1_C           IA_2_C          IA_3_C           IA_4_C       
+##  Min.   : 0.000   Min.   : 0.00   Min.   : 0.000   Min.   : 0.0000  
+##  1st Qu.: 0.000   1st Qu.: 0.00   1st Qu.: 0.000   1st Qu.: 0.0000  
+##  Median : 0.000   Median : 0.00   Median : 0.000   Median : 0.0000  
+##  Mean   : 6.615   Mean   : 1.39   Mean   : 1.842   Mean   : 0.8772  
+##  3rd Qu.:20.000   3rd Qu.: 0.00   3rd Qu.: 0.000   3rd Qu.: 0.0000  
+##  Max.   :20.000   Max.   :20.00   Max.   :20.000   Max.   :20.0000  
+##                                                                     
+##      IA_0_P           IA_1_P           IA_2_P            IA_3_P       
+##  Min.   :0.0000   Min.   :0.0000   Min.   :0.00000   Min.   :0.00000  
+##  1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.00000   1st Qu.:0.00000  
+##  Median :0.0000   Median :0.0000   Median :0.00000   Median :0.00000  
+##  Mean   :0.4501   Mean   :0.3414   Mean   :0.07072   Mean   :0.09329  
+##  3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:0.00000   3rd Qu.:0.00000  
+##  Max.   :1.0000   Max.   :1.0000   Max.   :1.00000   Max.   :1.00000  
+##                                                                       
+##      IA_4_P         IA_0_ELogit         IA_0_wts       IA_1_ELogit    
+##  Min.   :0.00000   Min.   :-3.7136   Min.   :0.1905   Min.   :-3.714  
+##  1st Qu.:0.00000   1st Qu.:-3.7136   1st Qu.:2.0488   1st Qu.:-3.714  
+##  Median :0.00000   Median :-3.7136   Median :2.0488   Median :-3.714  
+##  Mean   :0.04448   Mean   :-0.3372   Mean   :1.9595   Mean   :-1.195  
+##  3rd Qu.:0.00000   3rd Qu.: 3.7136   3rd Qu.:2.0488   3rd Qu.: 3.714  
+##  Max.   :1.00000   Max.   : 3.7136   Max.   :2.6667   Max.   : 3.714  
+##                                                                       
+##     IA_1_wts       IA_2_ELogit        IA_2_wts       IA_3_ELogit    
+##  Min.   :0.1905   Min.   :-3.714   Min.   :0.1905   Min.   :-3.714  
+##  1st Qu.:2.0488   1st Qu.:-3.714   1st Qu.:2.0488   1st Qu.:-3.714  
+##  Median :2.0488   Median :-3.714   Median :2.0488   Median :-3.714  
+##  Mean   :2.0185   Mean   :-3.160   Mean   :2.0358   Mean   :-2.990  
+##  3rd Qu.:2.0488   3rd Qu.:-3.714   3rd Qu.:2.0488   3rd Qu.:-3.714  
+##  Max.   :2.6667   Max.   : 3.714   Max.   :2.6667   Max.   : 3.714  
+##                                                                     
+##     IA_3_wts       IA_4_ELogit        IA_4_wts          Event      
+##  Min.   :0.1905   Min.   :-3.714   Min.   :0.1905   14001.1:   65  
+##  1st Qu.:2.0488   1st Qu.:-3.714   1st Qu.:2.0488   14002.1:   65  
+##  Median :2.0488   Median :-3.714   Median :2.0488   14003.1:   65  
+##  Mean   :2.0287   Mean   :-3.351   Mean   :2.0399   14004.1:   65  
+##  3rd Qu.:2.0488   3rd Qu.:-3.714   3rd Qu.:2.0488   14005.1:   65  
+##  Max.   :2.6667   Max.   : 3.714   Max.   :2.6667   14006.1:   65  
+##                                                     (Other):20410  
+##   TRIAL_INDEX        Rating       talker       Exp        InteractChinese
+##  Min.   : 1.00   Min.   :1.033   CH1 :5200   High:15600   Min.   : 0.00  
+##  1st Qu.:10.75   1st Qu.:2.792   CH10:5200   Low : 5200   1st Qu.: 7.55  
+##  Median :20.50   Median :4.117   CH9 :5200                Median :25.25  
+##  Mean   :20.50   Mean   :4.361   EN3 :5200                Mean   :23.46  
+##  3rd Qu.:30.25   3rd Qu.:5.775                            3rd Qu.:30.25  
+##  Max.   :40.00   Max.   :8.733                            Max.   :60.00  
+##                                                                          
+##      target        rhymecomp       onsetcomp       distractor   
+##  bait   :  520   begs   :  520   bake   :  520   can    :  520  
+##  bat    :  520   breeze :  520   ball   :  520   cat    :  520  
+##  bees   :  520   burp   :  520   ban    :  520   club   :  520  
+##  beet   :  520   chat   :  520   beach  :  520   crude  :  520  
+##  bet    :  520   coat   :  520   bend   :  520   doll   :  520  
+##  bit    :  520   cop    :  520   bids   :  520   dome   :  520  
+##  (Other):17680   (Other):17680   (Other):17680   (Other):17680</code></pre>
+</div>
+<div id="eyetrackingr-method" class="section level2">
+<h2>eyetrackingR method</h2>
+<p>The eyetrackingR package requires data to be in a slightly different format. It requires a column for which IA is being looked at at that particular time point, as well as a column for each IA that includes a TRUE or FALSE value for whether that is the IA being looked at that that point. It also requires a column called TrackLoss, which includes a TRUE if the eyetracking system lost the eyes for that system. This is used for cleaning the data and removing unreliable trials.</p>
+<p>Before I go into how to transform the SR Eyelink data from VWPre into this format, I will show you an example dataset from the eyetrackingR package in the right format.</p>
+<pre class="r"><code>data(&quot;word_recognition&quot;)
+head(word_recognition)</code></pre>
+<pre><code>##   ParticipantName Sex   Age TrialNum          Trial TimeFromTrialOnset
+## 1        ANCAT139   F 21.86        1 FamiliarBottle                  0
+## 2        ANCAT139   F 21.86        1 FamiliarBottle                 17
+## 3        ANCAT139   F 21.86        1 FamiliarBottle                 33
+## 4        ANCAT139   F 21.86        1 FamiliarBottle                 50
+## 5        ANCAT139   F 21.86        1 FamiliarBottle                 67
+## 6        ANCAT139   F 21.86        1 FamiliarBottle                 83
+##   Subphase TimeFromSubphaseOnset       AOI Animate Inanimate TrackLoss
+## 1  Preview                     0 TrackLoss      NA        NA      TRUE
+## 2  Preview                    17 TrackLoss      NA        NA      TRUE
+## 3  Preview                    33 TrackLoss      NA        NA      TRUE
+## 4  Preview                    50 TrackLoss      NA        NA      TRUE
+## 5  Preview                    67 TrackLoss      NA        NA      TRUE
+## 6  Preview                    83 TrackLoss      NA        NA      TRUE
+##   MCDI_Total MCDI_Nouns MCDI_Verbs
+## 1         47         29          8
+## 2         47         29          8
+## 3         47         29          8
+## 4         47         29          8
+## 5         47         29          8
+## 6         47         29          8</code></pre>
+<pre class="r"><code>str(word_recognition)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    195912 obs. of  15 variables:
+##  $ ParticipantName      : Factor w/ 30 levels &quot;ANCAT139&quot;,&quot;ANCAT18&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Sex                  : Factor w/ 2 levels &quot;F&quot;,&quot;M&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Age                  : num  21.9 21.9 21.9 21.9 21.9 ...
+##  $ TrialNum             : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ Trial                : Factor w/ 6 levels &quot;FamiliarBird&quot;,..: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ TimeFromTrialOnset   : int  0 17 33 50 67 83 100 117 133 150 ...
+##  $ Subphase             : Factor w/ 3 levels &quot;Preview&quot;,&quot;Test&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ TimeFromSubphaseOnset: int  0 17 33 50 67 83 100 117 133 150 ...
+##  $ AOI                  : Factor w/ 4 levels &quot;&quot;,&quot;Animate&quot;,&quot;Inanimate&quot;,..: 4 4 4 4 4 4 4 4 4 4 ...
+##  $ Animate              : logi  NA NA NA NA NA NA ...
+##  $ Inanimate            : logi  NA NA NA NA NA NA ...
+##  $ TrackLoss            : logi  TRUE TRUE TRUE TRUE TRUE TRUE ...
+##  $ MCDI_Total           : int  47 47 47 47 47 47 47 47 47 47 ...
+##  $ MCDI_Nouns           : int  29 29 29 29 29 29 29 29 29 29 ...
+##  $ MCDI_Verbs           : int  8 8 8 8 8 8 8 8 8 8 ...</code></pre>
+<pre class="r"><code>summary(word_recognition)</code></pre>
+<pre><code>##  ParticipantName  Sex             Age           TrialNum    
+##  ANCAT90:  7590   F:106173   Min.   :18.02   Min.   :1.000  
+##  ANCAT81:  7589   M: 89739   1st Qu.:18.54   1st Qu.:2.000  
+##  ANCAT74:  7588              Median :19.40   Median :3.000  
+##  ANCAT79:  7588              Mean   :19.66   Mean   :3.465  
+##  ANCAT26:  7586              3rd Qu.:20.84   3rd Qu.:5.000  
+##  ANCAT77:  7585              Max.   :21.86   Max.   :6.000  
+##  (Other):150386                                             
+##             Trial       TimeFromTrialOnset       Subphase     
+##  FamiliarBird  :30332   Min.   :    0      Preview   :139500  
+##  FamiliarBottle:34128   1st Qu.: 5250      Test      :  4650  
+##  FamiliarCow   :32871   Median :10517      Word Onset: 51762  
+##  FamiliarDog   :31594   Mean   :10525                         
+##  FamiliarHorse :32863   3rd Qu.:15783                         
+##  FamiliarSpoon :34124   Max.   :21133                         
+##                                                               
+##  TimeFromSubphaseOnset        AOI         Animate        Inanimate      
+##  Min.   :    0                  :40003   Mode :logical   Mode :logical  
+##  1st Qu.: 2367         Animate  :82460   FALSE:49681     FALSE:82460    
+##  Median : 5000         Inanimate:49681   TRUE :82460     TRUE :49681    
+##  Mean   : 6073         TrackLoss:23768   NA&#39;s :63771     NA&#39;s :63771    
+##  3rd Qu.: 9733                                                          
+##  Max.   :14983                                                          
+##                                                                         
+##  TrackLoss         MCDI_Total      MCDI_Nouns     MCDI_Verbs   
+##  Mode :logical   Min.   : 7.00   Min.   : 3.0   Min.   :0.000  
+##  FALSE:132141    1st Qu.:21.00   1st Qu.:11.0   1st Qu.:0.000  
+##  TRUE :63771     Median :27.00   Median :17.0   Median :1.000  
+##                  Mean   :30.72   Mean   :18.4   Mean   :1.355  
+##                  3rd Qu.:41.00   3rd Qu.:24.0   3rd Qu.:2.000  
+##                  Max.   :59.00   Max.   :36.0   Max.   :8.000  
+## </code></pre>
+<p>Now, I will assume that the data does not include any lost eyes, and therefore I will set TrackLoss = FALSE for all columns.</p>
+<pre class="r"><code>VWdat2 = VWdat %&gt;% mutate(TrackLoss = FALSE, 
+                          Outside = ifelse(is.na(RIGHT_INTEREST_AREA_LABEL),TRUE, FALSE), 
+                          Target = ifelse(RIGHT_INTEREST_AREA_LABEL == &quot;Target&quot; &amp; !is.na(RIGHT_INTEREST_AREA_LABEL),TRUE, FALSE), 
+                          OnsetComp = ifelse(RIGHT_INTEREST_AREA_LABEL == &quot;OnsetComp&quot; &amp; !is.na(RIGHT_INTEREST_AREA_LABEL),TRUE, FALSE), 
+                          RhymeComp = ifelse(RIGHT_INTEREST_AREA_LABEL == &quot;RhymeComp&quot; &amp; !is.na(RIGHT_INTEREST_AREA_LABEL),TRUE, FALSE), 
+                          Distractor = ifelse(RIGHT_INTEREST_AREA_LABEL == &quot;Distractor&quot;&amp; !is.na(RIGHT_INTEREST_AREA_LABEL),TRUE, FALSE))
+
+head(VWdat2)</code></pre>
+<pre><code>##   RECORDING_SESSION_LABEL LEFT_GAZE_X LEFT_GAZE_Y LEFT_INTEREST_AREA_ID
+## 1                   14001          NA          NA                    NA
+## 2                   14001          NA          NA                    NA
+## 3                   14001          NA          NA                    NA
+## 4                   14001          NA          NA                    NA
+## 5                   14001          NA          NA                    NA
+## 6                   14001          NA          NA                    NA
+##   LEFT_INTEREST_AREA_LABEL RIGHT_GAZE_X RIGHT_GAZE_Y
+## 1                       NA        959.8        458.8
+## 2                       NA        959.9        458.9
+## 3                       NA        960.1        459.0
+## 4                       NA        960.0        458.7
+## 5                       NA        959.9        458.5
+## 6                       NA        959.7        458.2
+##   RIGHT_INTEREST_AREA_ID RIGHT_INTEREST_AREA_LABEL SAMPLE_MESSAGE
+## 1                     NA                      &lt;NA&gt;           &lt;NA&gt;
+## 2                     NA                      &lt;NA&gt;           &lt;NA&gt;
+## 3                     NA                      &lt;NA&gt;           &lt;NA&gt;
+## 4                     NA                      &lt;NA&gt;           &lt;NA&gt;
+## 5                     NA                      &lt;NA&gt;           &lt;NA&gt;
+## 6                     NA                      &lt;NA&gt;           &lt;NA&gt;
+##   TIMESTAMP TRIAL_INDEX target rhymecomp onsetcomp distractor talker cb
+## 1   1047304           1  booze      fuse       bun      leach    EN3  1
+## 2   1047305           1  booze      fuse       bun      leach    EN3  1
+## 3   1047306           1  booze      fuse       bun      leach    EN3  1
+## 4   1047307           1  booze      fuse       bun      leach    EN3  1
+## 5   1047308           1  booze      fuse       bun      leach    EN3  1
+## 6   1047309           1  booze      fuse       bun      leach    EN3  1
+##   Gender Age Rating InteractChinese  Exp itemid TrackLoss Outside Target
+## 1   Male  19    2.7              27 High    311     FALSE    TRUE  FALSE
+## 2   Male  19    2.7              27 High    311     FALSE    TRUE  FALSE
+## 3   Male  19    2.7              27 High    311     FALSE    TRUE  FALSE
+## 4   Male  19    2.7              27 High    311     FALSE    TRUE  FALSE
+## 5   Male  19    2.7              27 High    311     FALSE    TRUE  FALSE
+## 6   Male  19    2.7              27 High    311     FALSE    TRUE  FALSE
+##   OnsetComp RhymeComp Distractor
+## 1     FALSE     FALSE      FALSE
+## 2     FALSE     FALSE      FALSE
+## 3     FALSE     FALSE      FALSE
+## 4     FALSE     FALSE      FALSE
+## 5     FALSE     FALSE      FALSE
+## 6     FALSE     FALSE      FALSE</code></pre>
+<pre class="r"><code>str(VWdat2)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    410143 obs. of  30 variables:
+##  $ RECORDING_SESSION_LABEL  : int  14001 14001 14001 14001 14001 14001 14001 14001 14001 14001 ...
+##  $ LEFT_GAZE_X              : logi  NA NA NA NA NA NA ...
+##  $ LEFT_GAZE_Y              : logi  NA NA NA NA NA NA ...
+##  $ LEFT_INTEREST_AREA_ID    : logi  NA NA NA NA NA NA ...
+##  $ LEFT_INTEREST_AREA_LABEL : logi  NA NA NA NA NA NA ...
+##  $ RIGHT_GAZE_X             : num  960 960 960 960 960 ...
+##  $ RIGHT_GAZE_Y             : num  459 459 459 459 458 ...
+##  $ RIGHT_INTEREST_AREA_ID   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ RIGHT_INTEREST_AREA_LABEL: chr  NA NA NA NA ...
+##  $ SAMPLE_MESSAGE           : Factor w/ 4 levels &quot;Preview&quot;,&quot;TargetOnset&quot;,..: NA NA NA NA NA NA NA NA NA NA ...
+##  $ TIMESTAMP                : num  1047304 1047305 1047306 1047307 1047308 ...
+##  $ TRIAL_INDEX              : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ target                   : Factor w/ 40 levels &quot;bait&quot;,&quot;bat&quot;,&quot;bees&quot;,..: 11 11 11 11 11 11 11 11 11 11 ...
+##  $ rhymecomp                : Factor w/ 40 levels &quot;begs&quot;,&quot;breeze&quot;,..: 18 18 18 18 18 18 18 18 18 18 ...
+##  $ onsetcomp                : Factor w/ 40 levels &quot;bake&quot;,&quot;ball&quot;,..: 15 15 15 15 15 15 15 15 15 15 ...
+##  $ distractor               : Factor w/ 40 levels &quot;can&quot;,&quot;cat&quot;,&quot;club&quot;,..: 18 18 18 18 18 18 18 18 18 18 ...
+##  $ talker                   : Factor w/ 4 levels &quot;CH1&quot;,&quot;CH10&quot;,&quot;CH9&quot;,..: 4 4 4 4 4 4 4 4 4 4 ...
+##  $ cb                       : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ Gender                   : Factor w/ 2 levels &quot;Female&quot;,&quot;Male&quot;: 2 2 2 2 2 2 2 2 2 2 ...
+##  $ Age                      : int  19 19 19 19 19 19 19 19 19 19 ...
+##  $ Rating                   : num  2.7 2.7 2.7 2.7 2.7 2.7 2.7 2.7 2.7 2.7 ...
+##  $ InteractChinese          : num  27 27 27 27 27 27 27 27 27 27 ...
+##  $ Exp                      : Factor w/ 2 levels &quot;High&quot;,&quot;Low&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ itemid                   : int  311 311 311 311 311 311 311 311 311 311 ...
+##  $ TrackLoss                : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+##  $ Outside                  : logi  TRUE TRUE TRUE TRUE TRUE TRUE ...
+##  $ Target                   : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+##  $ OnsetComp                : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+##  $ RhymeComp                : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+##  $ Distractor               : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...</code></pre>
+<pre class="r"><code>summary(VWdat2)</code></pre>
+<pre><code>##  RECORDING_SESSION_LABEL LEFT_GAZE_X    LEFT_GAZE_Y   
+##  Min.   :14001           Mode:logical   Mode:logical  
+##  1st Qu.:14002           NA&#39;s:410143    NA&#39;s:410143   
+##  Median :14004                                        
+##  Mean   :14005                                        
+##  3rd Qu.:14007                                        
+##  Max.   :14010                                        
+##                                                       
+##  LEFT_INTEREST_AREA_ID LEFT_INTEREST_AREA_LABEL  RIGHT_GAZE_X   
+##  Mode:logical          Mode:logical             Min.   : 239.3  
+##  NA&#39;s:410143           NA&#39;s:410143              1st Qu.: 639.2  
+##                                                 Median : 945.9  
+##                                                 Mean   : 926.3  
+##                                                 3rd Qu.:1128.4  
+##                                                 Max.   :2701.9  
+##                                                 NA&#39;s   :3678    
+##   RIGHT_GAZE_Y    RIGHT_INTEREST_AREA_ID RIGHT_INTEREST_AREA_LABEL
+##  Min.   :  29.4   Min.   :1.00           Length:410143            
+##  1st Qu.: 242.9   1st Qu.:1.00           Class :character         
+##  Median : 535.5   Median :1.00           Mode  :character         
+##  Mean   : 513.6   Mean   :1.72                                    
+##  3rd Qu.: 650.2   3rd Qu.:3.00                                    
+##  Max.   :1655.0   Max.   :4.00                                    
+##  NA&#39;s   :3678     NA&#39;s   :187075                                  
+##       SAMPLE_MESSAGE     TIMESTAMP        TRIAL_INDEX       target      
+##  Preview     :   320   Min.   :1047304   Min.   : 1.0   bait   : 10256  
+##  TargetOnset :   320   1st Qu.:1607494   1st Qu.:10.0   bat    : 10256  
+##  TIMER_search:   320   Median :1875372   Median :21.0   bite   : 10256  
+##  VowelOnset  :   320   Mean   :3052611   Mean   :20.5   but    : 10256  
+##  NA&#39;s        :408863   3rd Qu.:3960783   3rd Qu.:31.0   boot   : 10255  
+##                        Max.   :8463334   Max.   :40.0   chop   : 10255  
+##                                                         (Other):348609  
+##    rhymecomp        onsetcomp        distractor      talker      
+##  chat   : 10256   bake   : 10256   can    : 10256   CH1 :102537  
+##  cut    : 10256   ball   : 10256   loop   : 10256   CH10:102535  
+##  height : 10256   bend   : 10256   mill   : 10256   CH9 :102534  
+##  mate   : 10256   bike   : 10256   noon   : 10256   EN3 :102537  
+##  cop    : 10255   bud    : 10255   jam    : 10255                
+##  dubbed : 10255   chore  : 10255   juice  : 10255                
+##  (Other):348609   (Other):348609   (Other):348609                
+##        cb         Gender            Age            Rating     
+##  Min.   :1.0   Female:358878   Min.   :18.00   Min.   :1.033  
+##  1st Qu.:2.0   Male  : 51265   1st Qu.:18.00   1st Qu.:2.800  
+##  Median :2.0                   Median :18.00   Median :4.133  
+##  Mean   :2.5                   Mean   :18.62   Mean   :4.361  
+##  3rd Qu.:3.5                   3rd Qu.:19.50   3rd Qu.:5.817  
+##  Max.   :4.0                   Max.   :20.00   Max.   :8.733  
+##                                                               
+##  InteractChinese   Exp             itemid       TrackLoss      
+##  Min.   : 0.00   High:307605   Min.   : 101.0   Mode :logical  
+##  1st Qu.: 0.20   Low :102538   1st Qu.: 140.0   FALSE:410143   
+##  Median :25.00                 Median : 340.0                  
+##  Mean   :23.46                 Mean   : 595.5                  
+##  3rd Qu.:27.00                 3rd Qu.: 940.0                  
+##  Max.   :60.00                 Max.   :1040.0                  
+##                                                                
+##   Outside          Target        OnsetComp       RhymeComp      
+##  Mode :logical   Mode :logical   Mode :logical   Mode :logical  
+##  FALSE:223068    FALSE:272545    FALSE:371826    FALSE:381235   
+##  TRUE :187075    TRUE :137598    TRUE :38317     TRUE :28908    
+##                                                                 
+##                                                                 
+##                                                                 
+##                                                                 
+##  Distractor     
+##  Mode :logical  
+##  FALSE:391898   
+##  TRUE :18245    
+##                 
+##                 
+##                 
+## </code></pre>
+<pre class="r"><code>table(VWdat$RIGHT_INTEREST_AREA_LABEL)</code></pre>
+<pre><code>## 
+## Distractor  OnsetComp  RhymeComp     Target 
+##      18245      38317      28908     137598</code></pre>
+<p>Now, we will use the <em>make_eyetrackingr_data()</em> function, which makes sure the data is in the correct format.</p>
+<p>Note that I am setting treat_non_aoi_looks_as_missing to False. The two options (TRUE or FALSE) depend on the analysis you are interested in. Setting this argument to TRUE assumes that any looks outside of the IA as “trackloss”. In this case, you can make comparisons between all AOIs directly. Thus, proportion looking to an IA will be calculated as “time looking to that IA divided by time looking to all other IAs.” Setting the argument to FALSE allows you to look at overall attention to IAs across conditions. In this case, proportion of looks is calculated as “time looking at a particular IA divided by total looking time, excluding actual trackloss.”</p>
+<pre class="r"><code>etRdata &lt;- make_eyetrackingr_data(VWdat2, 
+                               participant_column = &quot;RECORDING_SESSION_LABEL&quot;,
+                               trial_column = &quot;TRIAL_INDEX&quot;,
+                               time_column = &quot;TIMESTAMP&quot;,
+                               aoi_columns = c(&quot;Target&quot;,&quot;OnsetComp&quot;, &quot;RhymeComp&quot;, &quot;Distractor&quot;),
+                               treat_non_aoi_looks_as_missing = FALSE,trackloss_column = &quot;TrackLoss&quot;)</code></pre>
+<pre><code>## Converting Participants to proper type.</code></pre>
+<pre><code>## Converting Trial to proper type.</code></pre>
+<p>Next, we are going to align the data to a particular message, as we did above. The function is <em>subset_by_window()</em>. Here, rezero = TRUE aligns the message (“TargetOnset”) to time = 0. remove = FALSE does not remove any data behind the 0 mark (rather, anything before the TargetOnset message is coded as negative time).</p>
+<pre class="r"><code>etRdata2 &lt;- subset_by_window(etRdata, window_start_msg = &quot;TargetOnset&quot;, msg_col = &quot;SAMPLE_MESSAGE&quot;, rezero= TRUE, remove = FALSE)</code></pre>
+<p>Similar to above, <em>make_time_sequence_data()</em> will bin the data based on time and get proportions of looks into each AOI.</p>
+<p>Here, I aim to do the same binning as above - every 20 milliseconds will be considered a bin. I also specify the IAs (or, AOIs). The data will be a slightly different size than the data processed above because while above, the data is in a wide format (i.e., each IA has a column for proportions, counts of looks, elogits, etc.), in this case the data is in long format (i.e., there is a single column that specifies IA (and includes all levels of IA), and then a single column for counts, a single column for proportions, a single column for elogits, etc.)</p>
+<p>Here, I both include the ‘outside’ looks and exclude them in two different datasets, to show you the difference in plotting.</p>
+<pre class="r"><code>etRdata3  = make_time_sequence_data(etRdata2, time_bin_size = 20, predictor_columns = c(&quot;talker&quot;, &quot;Exp&quot;), aois = c(&quot;Target&quot;,&quot;OnsetComp&quot;, &quot;RhymeComp&quot;, &quot;Distractor&quot;)) %&gt;% arrange(RECORDING_SESSION_LABEL, TRIAL_INDEX)</code></pre>
+<pre><code>## Analyzing Target...</code></pre>
+<pre><code>## Warning in make_time_sequence_data(data = data, time_bin_size =
+## time_bin_size, : With the current time-bin size, the final time-bin has a
+## much smaller number of distinct samples than the other time-bins. Consider
+## choosing a different time-bin size or using &#39;subset_by_window&#39; to remove
+## this portion of the trial.</code></pre>
+<pre><code>## Analyzing OnsetComp...</code></pre>
+<pre><code>## Warning in make_time_sequence_data(data = data, time_bin_size =
+## time_bin_size, : With the current time-bin size, the final time-bin has a
+## much smaller number of distinct samples than the other time-bins. Consider
+## choosing a different time-bin size or using &#39;subset_by_window&#39; to remove
+## this portion of the trial.</code></pre>
+<pre><code>## Analyzing RhymeComp...</code></pre>
+<pre><code>## Warning in make_time_sequence_data(data = data, time_bin_size =
+## time_bin_size, : With the current time-bin size, the final time-bin has a
+## much smaller number of distinct samples than the other time-bins. Consider
+## choosing a different time-bin size or using &#39;subset_by_window&#39; to remove
+## this portion of the trial.</code></pre>
+<pre><code>## Analyzing Distractor...</code></pre>
+<pre><code>## Warning in make_time_sequence_data(data = data, time_bin_size =
+## time_bin_size, : With the current time-bin size, the final time-bin has a
+## much smaller number of distinct samples than the other time-bins. Consider
+## choosing a different time-bin size or using &#39;subset_by_window&#39; to remove
+## this portion of the trial.</code></pre>
+<pre class="r"><code>head(etRdata3, 30)</code></pre>
+<pre><code>## # A tibble: 30 x 21
+##    RECORDING_SESSI… TRIAL_INDEX talker Exp   TimeBin SamplesInAOI
+##    &lt;fct&gt;            &lt;fct&gt;       &lt;fct&gt;  &lt;fct&gt;   &lt;dbl&gt;        &lt;int&gt;
+##  1 14001            1           EN3    High       -5            0
+##  2 14001            1           EN3    High       -4            0
+##  3 14001            1           EN3    High       -3            0
+##  4 14001            1           EN3    High       -2            0
+##  5 14001            1           EN3    High       -1            0
+##  6 14001            1           EN3    High        0            0
+##  7 14001            1           EN3    High        1            0
+##  8 14001            1           EN3    High        2            0
+##  9 14001            1           EN3    High        3            0
+## 10 14001            1           EN3    High        4            0
+## # … with 20 more rows, and 15 more variables: SamplesTotal &lt;int&gt;,
+## #   AOI &lt;chr&gt;, Elog &lt;dbl&gt;, Weights &lt;dbl&gt;, Prop &lt;dbl&gt;, LogitAdjusted &lt;dbl&gt;,
+## #   ArcSin &lt;dbl&gt;, Time &lt;dbl&gt;, ot1 &lt;dbl&gt;, ot2 &lt;dbl&gt;, ot3 &lt;dbl&gt;, ot4 &lt;dbl&gt;,
+## #   ot5 &lt;dbl&gt;, ot6 &lt;dbl&gt;, ot7 &lt;dbl&gt;</code></pre>
+<pre class="r"><code>etRdata3a  = make_time_sequence_data(etRdata2, time_bin_size = 20,  predictor_columns = c(&quot;talker&quot;, &quot;Exp&quot;), aois = c(&quot;Target&quot;,&quot;OnsetComp&quot;, &quot;RhymeComp&quot;, &quot;Distractor&quot;, &quot;Outside&quot;)) %&gt;% arrange(RECORDING_SESSION_LABEL, TRIAL_INDEX)</code></pre>
+<pre><code>## Analyzing Target...</code></pre>
+<pre><code>## Warning in make_time_sequence_data(data = data, time_bin_size =
+## time_bin_size, : With the current time-bin size, the final time-bin has a
+## much smaller number of distinct samples than the other time-bins. Consider
+## choosing a different time-bin size or using &#39;subset_by_window&#39; to remove
+## this portion of the trial.</code></pre>
+<pre><code>## Analyzing OnsetComp...</code></pre>
+<pre><code>## Warning in make_time_sequence_data(data = data, time_bin_size =
+## time_bin_size, : With the current time-bin size, the final time-bin has a
+## much smaller number of distinct samples than the other time-bins. Consider
+## choosing a different time-bin size or using &#39;subset_by_window&#39; to remove
+## this portion of the trial.</code></pre>
+<pre><code>## Analyzing RhymeComp...</code></pre>
+<pre><code>## Warning in make_time_sequence_data(data = data, time_bin_size =
+## time_bin_size, : With the current time-bin size, the final time-bin has a
+## much smaller number of distinct samples than the other time-bins. Consider
+## choosing a different time-bin size or using &#39;subset_by_window&#39; to remove
+## this portion of the trial.</code></pre>
+<pre><code>## Analyzing Distractor...</code></pre>
+<pre><code>## Warning in make_time_sequence_data(data = data, time_bin_size =
+## time_bin_size, : With the current time-bin size, the final time-bin has a
+## much smaller number of distinct samples than the other time-bins. Consider
+## choosing a different time-bin size or using &#39;subset_by_window&#39; to remove
+## this portion of the trial.</code></pre>
+<pre><code>## Analyzing Outside...</code></pre>
+<pre><code>## Warning in make_time_sequence_data(data = data, time_bin_size =
+## time_bin_size, : With the current time-bin size, the final time-bin has a
+## much smaller number of distinct samples than the other time-bins. Consider
+## choosing a different time-bin size or using &#39;subset_by_window&#39; to remove
+## this portion of the trial.</code></pre>
+</div>
+</div>
+<div id="data-plotting" class="section level1">
+<h1>Data plotting</h1>
+<p>Each of these packages includes a built-in function that allows for plotting proportion of looks over time. Both are based in ggplot2 syntax, so you can further customize the plot on your own.</p>
+<div id="vwpre" class="section level2">
+<h2>VWPre</h2>
+<p>The plot_avg() function plots the grand mean of proportion over time. Here, I specified three different plots - one with ‘outside’ looks included, one with ‘outside’ looks excluded, and one with just target vs. other proportions. I am setting VWPreTheme = FALSE to use other ggplot2 themes. Note that I am leaving condition1 and condition2 = NULL for now. These are included as ways to facet the data - more on that in a moment.</p>
+<pre class="r"><code>plot_avg(data = FinalDat, type = &quot;proportion&quot;, xlim = c(-100, 1000), IAColumns = c(IA_0_P = &quot;Outside&quot;, IA_1_P = &quot;Target&quot;, IA_2_P = &quot;Rhyme&quot;, IA_3_P = &quot;OnsetComp&quot;, IA_4_P = &quot;Distractor&quot;),Condition1 = NULL, Condition2 = NULL, Cond1Labels = NA, Cond2Labels = NA, ErrorBar = TRUE, VWPreTheme = FALSE) + theme_minimal() + scale_color_manual(values = cbPalette, labels = c(&quot;Outside&quot;, &quot;Target&quot;, &quot;Rhyme&quot;, &quot;OnsetComp&quot;, &quot;Distractor&quot;))</code></pre>
+<pre><code>## Grand average of Proportion Looks calculated using Event means.</code></pre>
+<pre><code>## Scale for &#39;colour&#39; is already present. Adding another scale for
+## &#39;colour&#39;, which will replace the existing scale.</code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-15-1.png" width="576" /></p>
+<pre class="r"><code>plot_avg(data = FinalDat, type = &quot;proportion&quot;, xlim = c(-100, 1000), IAColumns = c(IA_1_P = &quot;Target&quot;, IA_2_P = &quot;Rhyme&quot;, IA_3_P = &quot;OnsetComp&quot;, IA_4_P = &quot;Distractor&quot;),Condition1 = NULL, Condition2 = NULL, Cond1Labels = NA, Cond2Labels = NA, ErrorBar = TRUE, VWPreTheme = FALSE) + theme_minimal() + scale_color_manual(values = cbPalette, labels = c(&quot;Target&quot;, &quot;Rhyme&quot;, &quot;OnsetComp&quot;, &quot;Distractor&quot;))</code></pre>
+<pre><code>## Grand average of Proportion Looks calculated using Event means.
+## Scale for &#39;colour&#39; is already present. Adding another scale for
+## &#39;colour&#39;, which will replace the existing scale.</code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-15-2.png" width="576" /></p>
+<pre class="r"><code>FinalDat2 = mutate(FinalDat, IA_234_P = IA_2_P + IA_3_P + IA_4_P)
+plot_avg(data = FinalDat2, type = &quot;proportion&quot;, xlim = c(-100, 1000), IAColumns = c(IA_1_P = &quot;Target&quot;, IA_234_P = &quot;Non-Targets&quot;),Condition1 = NULL, Condition2 = NULL, Cond1Labels = NA, Cond2Labels = NA, ErrorBar = TRUE, VWPreTheme = FALSE) + theme_minimal() + scale_color_manual(values = cbPalette, labels = c(&quot;Target&quot;, &quot;Non-Target&quot;))</code></pre>
+<pre><code>## Grand average of Proportion Looks calculated using Event means.
+## Scale for &#39;colour&#39; is already present. Adding another scale for
+## &#39;colour&#39;, which will replace the existing scale.</code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-15-3.png" width="576" /></p>
+</div>
+<div id="eyetrackingr" class="section level2">
+<h2>eyetrackingR</h2>
+<p>In eyetrackingR, the data is given to the <em>plot()</em> function, which passes into the <em>plot.time_sequence_data()</em> function. This is also built based on ggplot2 syntax.</p>
+<p>However, one downfall of this function is that it automatically facets based on the predictor column given. (This is useful if you have two or more types of target and your IAs in the visual world paradigm do not change. For example, you have animate vs. inanimate targets, and you are comparing looks to inanimate images vs. animate images vs, distractors, the proportion of looks will depend on whether the target image is inanimate or animate.)</p>
+<p>You can recreate the plot on your own without faceting, however, using ggplot2. Here, I do so both with the outside looks included and excluded.</p>
+<pre class="r"><code>plot(etRdata3, predictor_column=NULL) + theme_minimal() +coord_cartesian(ylim = c(0,1), xlim = c(-100,1200)) </code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-16-1.png" width="576" /></p>
+<pre class="r"><code>ggplot(etRdata3, aes(x= Time, y = Prop, color = AOI)) + geom_smooth() + theme_minimal() + scale_color_manual(values = cbPalette) + ylab(&quot;Proportion of looks&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-16-2.png" width="576" /></p>
+<pre class="r"><code>ggplot(etRdata3, aes(x= Time, y = Prop, color = AOI)) + stat_summary(geom = &quot;point&quot;, fun.y = &quot;mean&quot;) +  stat_summary(geom = &quot;line&quot;, fun.y = &quot;mean&quot;) +  stat_summary(fun.data = mean_se , geom = &quot;errorbar&quot;, width = 0)+ theme_minimal() + scale_color_manual(values = cbPalette)+ ylab(&quot;Proportion of looks&quot;)</code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-16-3.png" width="576" /></p>
+<pre class="r"><code>ggplot(etRdata3a, aes(x= Time, y = Prop, color = AOI)) + geom_smooth() + theme_minimal() + scale_color_manual(values = cbPalette)+ ylab(&quot;Proportion of looks&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-16-4.png" width="576" /></p>
+<pre class="r"><code>ggplot(etRdata3a, aes(x= Time, y = Prop, color = AOI)) + stat_summary(geom = &quot;point&quot;, fun.y = &quot;mean&quot;) +  stat_summary(geom = &quot;line&quot;, fun.y = &quot;mean&quot;) +  stat_summary(fun.data = mean_se , geom = &quot;errorbar&quot;, width = 0)+ theme_minimal() + scale_color_manual(values = cbPalette)+ ylab(&quot;Proportion of looks&quot;)+coord_cartesian(ylim = c(0,1), xlim = c(-100,1200)) </code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-16-5.png" width="576" /></p>
+<p>Note the difference if we had set treat_non_aoi_looks_as_missing to TRUE:</p>
+<pre class="r"><code>etRdatab &lt;- make_eyetrackingr_data(VWdat2, 
+                               participant_column = &quot;RECORDING_SESSION_LABEL&quot;,
+                               trial_column = &quot;TRIAL_INDEX&quot;,
+                               time_column = &quot;TIMESTAMP&quot;,
+                               aoi_columns = c(&quot;Target&quot;,&quot;OnsetComp&quot;, &quot;RhymeComp&quot;, &quot;Distractor&quot;),
+                               treat_non_aoi_looks_as_missing = TRUE, trackloss_column = &quot;TrackLoss&quot;)</code></pre>
+<pre><code>## Converting Participants to proper type.</code></pre>
+<pre><code>## Converting Trial to proper type.</code></pre>
+<pre class="r"><code>etRdata2b &lt;- subset_by_window(etRdatab, window_start_msg = &quot;TargetOnset&quot;, msg_col = &quot;SAMPLE_MESSAGE&quot;, rezero= TRUE, remove = FALSE)
+
+etRdata3b  = make_time_sequence_data(etRdata2b, time_bin_size = 20, predictor_columns = c(&quot;talker&quot;, &quot;Exp&quot;), aois = c(&quot;Target&quot;,&quot;OnsetComp&quot;, &quot;RhymeComp&quot;, &quot;Distractor&quot;)) %&gt;% arrange(RECORDING_SESSION_LABEL, TRIAL_INDEX)</code></pre>
+<pre><code>## Analyzing Target...</code></pre>
+<pre><code>## Analyzing OnsetComp...</code></pre>
+<pre><code>## Analyzing RhymeComp...</code></pre>
+<pre><code>## Analyzing Distractor...</code></pre>
+<pre class="r"><code>ggplot(etRdata3b, aes(x= Time, y = Prop, color = AOI)) + stat_summary(geom = &quot;point&quot;, fun.y = &quot;mean&quot;) +  stat_summary(geom = &quot;line&quot;, fun.y = &quot;mean&quot;) +  stat_summary(fun.data = mean_se , geom = &quot;errorbar&quot;, width = 0)+ theme_minimal() + scale_color_manual(values = cbPalette)+ ylab(&quot;Proportion of looks&quot;) +coord_cartesian(ylim = c(0,1), xlim = c(-100,1200)) </code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-17-1.png" width="576" /></p>
+</div>
+</div>
+<div id="data-analysis" class="section level1">
+<h1>Data analysis</h1>
+<p>There are a few different methods I have seen in the literature regarding how to analyze this data. I will go through a few of them here. Note that while the VWPre package is aimed at doing preprocessing of data, the eyetrackingR package has built in capabilities for running these analyses, so I will be showing you how to run the first two analyses using this package.</p>
+<div id="linear-mixed-effects-regression" class="section level2">
+<h2>Linear mixed effects regression</h2>
+<p>Linear mixed effects regression (LMER) is a commonly-used methodology for doing eye-tracking analysis. However, with LMER, time has to be removed as a factor. In this case, looks within a specific window are generally averaged. (This is the method used in Ryskin et al., 2016).</p>
+<p>The eyetrackingR package has a function, <em>make_time_window_data()</em>, which collapses time across a window and returns the data frame for LMER analysis. This should be used on the subsetted data, which we will create using subset_by_window(). Here, I am splitting the data into 3 windows of 400 ms each.</p>
+<pre class="r"><code>etRdata4a &lt;- subset_by_window(etRdata2, window_start_time = 0, window_end_time = 400, rezero= FALSE, remove =TRUE)</code></pre>
+<pre><code>## Avg. window length in new data will be 400</code></pre>
+<pre class="r"><code>etRdata4b &lt;- subset_by_window(etRdata2, window_start_time = 400, window_end_time = 800, rezero= FALSE, remove =TRUE)</code></pre>
+<pre><code>## Avg. window length in new data will be 400</code></pre>
+<pre class="r"><code>etRdata4c &lt;- subset_by_window(etRdata2, window_start_time = 800, window_end_time = 1200, rezero= FALSE, remove =TRUE)</code></pre>
+<pre><code>## Avg. window length in new data will be 400</code></pre>
+<pre class="r"><code>etRdata5a = make_time_window_data(etRdata4a, aois = c(&quot;Target&quot;,&quot;OnsetComp&quot;, &quot;RhymeComp&quot;, &quot;Distractor&quot;), predictor_columns = c(&quot;talker&quot;,&quot;Exp&quot;))</code></pre>
+<pre><code>## Analyzing Target...</code></pre>
+<pre><code>## Analyzing OnsetComp...</code></pre>
+<pre><code>## Analyzing RhymeComp...</code></pre>
+<pre><code>## Analyzing Distractor...</code></pre>
+<pre class="r"><code>etRdata5b = make_time_window_data(etRdata4b, aois = c(&quot;Target&quot;,&quot;OnsetComp&quot;, &quot;RhymeComp&quot;, &quot;Distractor&quot;), predictor_columns = c(&quot;talker&quot;,&quot;Exp&quot;))</code></pre>
+<pre><code>## Analyzing Target...</code></pre>
+<pre><code>## Analyzing OnsetComp...</code></pre>
+<pre><code>## Analyzing RhymeComp...</code></pre>
+<pre><code>## Analyzing Distractor...</code></pre>
+<pre class="r"><code>etRdata5c = make_time_window_data(etRdata4c, aois = c(&quot;Target&quot;,&quot;OnsetComp&quot;, &quot;RhymeComp&quot;, &quot;Distractor&quot;), predictor_columns = c(&quot;talker&quot;,&quot;Exp&quot;))</code></pre>
+<pre><code>## Analyzing Target...</code></pre>
+<pre><code>## Analyzing OnsetComp...</code></pre>
+<pre><code>## Analyzing RhymeComp...</code></pre>
+<pre><code>## Analyzing Distractor...</code></pre>
+<pre class="r"><code>head(etRdata5a)</code></pre>
+<pre><code>##   RECORDING_SESSION_LABEL TRIAL_INDEX talker  Exp SamplesInAOI
+## 1                   14001           1    EN3 High            0
+## 2                   14001           2    EN3 High            0
+## 3                   14001           3    EN3 High            0
+## 4                   14001           4    EN3 High            0
+## 5                   14001           5    EN3 High            0
+## 6                   14001           6    EN3 High            0
+##   SamplesTotal    AOI      Elog     Weights Prop LogitAdjusted ArcSin
+## 1          400 Target -6.685861 0.001248439    0     -5.582242      0
+## 2          400 Target -6.685861 0.001248439    0     -5.582242      0
+## 3          400 Target -6.685861 0.001248439    0     -5.582242      0
+## 4          400 Target -6.685861 0.001248439    0     -5.582242      0
+## 5          400 Target -6.685861 0.001248439    0     -5.582242      0
+## 6          400 Target -6.685861 0.001248439    0     -5.582242      0</code></pre>
+<pre class="r"><code>head(etRdata5b)</code></pre>
+<pre><code>##   RECORDING_SESSION_LABEL TRIAL_INDEX talker  Exp SamplesInAOI
+## 1                   14001           1    EN3 High           74
+## 2                   14001           2    EN3 High            0
+## 3                   14001           3    EN3 High          194
+## 4                   14001           4    EN3 High          177
+## 5                   14001           5    EN3 High          209
+## 6                   14001           6    EN3 High          226
+##   SamplesTotal    AOI        Elog     Weights   Prop LogitAdjusted
+## 1          400 Target -1.47763082 0.228177642 0.1850   -1.48283229
+## 2          400 Target -6.68586095 0.001248439 0.0000   -4.72991307
+## 3          400 Target -0.05986825 0.941888620 0.4850   -0.06001801
+## 4          400 Target -0.23044081 0.794183445 0.4425   -0.23102204
+## 5          400 Target  0.08983593 1.093994778 0.5225    0.09006082
+## 6          400 Target  0.26082020 1.297994269 0.5650    0.26147970
+##      ArcSin
+## 1 0.4446216
+## 2 0.0000000
+## 3 0.7703959
+## 4 0.7277707
+## 5 0.8079058
+## 6 0.8505827</code></pre>
+<pre class="r"><code>head(etRdata5c)</code></pre>
+<pre><code>##   RECORDING_SESSION_LABEL TRIAL_INDEX talker  Exp SamplesInAOI
+## 1                   14001           1    EN3 High          382
+## 2                   14001           2    EN3 High          377
+## 3                   14001           3    EN3 High          232
+## 4                   14001           4    EN3 High          226
+## 5                   14001           5    EN3 High          381
+## 6                   14001           6    EN3 High          382
+##   SamplesTotal    AOI      Elog    Weights      Prop LogitAdjusted
+## 1          382 Target 6.6398758 765.000000 1.0000000     5.0225639
+## 2          382 Target 4.2288225  68.636364 0.9869110     4.3228073
+## 3          382 Target 0.4349271   1.544850 0.6073298     0.4361021
+## 4          381 Target 0.3760992   1.456592 0.5931759     0.3771099
+## 5          381 Target 6.6372580 763.000000 1.0000000     5.0225639
+## 6          382 Target 6.6398758 765.000000 1.0000000     5.0225639
+##      ArcSin
+## 1 1.5707963
+## 2 1.4561381
+## 3 0.8935699
+## 4 0.8791219
+## 5 1.5707963
+## 6 1.5707963</code></pre>
+<p>Now, we can run a linear model using <em>lmer()</em>. Here, I will see if the talker and listener experience has an influence on proportion of looks to the target word in each of the three time windows. There are 4 talkers (CH3, lowest proficiency in English, CH9 and CH10 (higher proficiency in English), and EN3, a native speaker) and 2 levels of listener experience (high, low).</p>
+<pre class="r"><code>library(lme4)</code></pre>
+<pre><code>## Loading required package: Matrix</code></pre>
+<pre><code>## 
+## Attaching package: &#39;Matrix&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:tidyr&#39;:
+## 
+##     expand</code></pre>
+<pre class="r"><code>library(lmerTest)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;lmerTest&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:lme4&#39;:
+## 
+##     lmer</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     step</code></pre>
+<pre class="r"><code>etRlmera = lmer(Prop~talker*Exp + (1|RECORDING_SESSION_LABEL), data = subset(etRdata5a, AOI ==&quot;Target&quot;))
+summary(etRlmera)</code></pre>
+<pre><code>## Linear mixed model fit by REML. t-tests use Satterthwaite&#39;s method [
+## lmerModLmerTest]
+## Formula: Prop ~ talker * Exp + (1 | RECORDING_SESSION_LABEL)
+##    Data: subset(etRdata5a, AOI == &quot;Target&quot;)
+## 
+## REML criterion at convergence: -146.4
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -0.7803 -0.4430 -0.2774 -0.0683  5.0419 
+## 
+## Random effects:
+##  Groups                  Name        Variance Std.Dev.
+##  RECORDING_SESSION_LABEL (Intercept) 0.001638 0.04047 
+##  Residual                            0.032741 0.18094 
+## Number of obs: 320, groups:  RECORDING_SESSION_LABEL, 8
+## 
+## Fixed effects:
+##                     Estimate Std. Error         df t value Pr(&gt;|t|)  
+## (Intercept)         0.057250   0.028613  23.529512   2.001   0.0571 .
+## talkerCH10          0.028208   0.033036 306.000000   0.854   0.3938  
+## talkerCH9          -0.015167   0.033036 306.000000  -0.459   0.6465  
+## talkerEN3          -0.026917   0.033036 306.000000  -0.815   0.4158  
+## ExpLow              0.034375   0.057225  23.529512   0.601   0.5538  
+## talkerCH10:ExpLow  -0.025208   0.066071 306.000000  -0.382   0.7031  
+## talkerCH9:ExpLow   -0.004583   0.066071 306.000000  -0.069   0.9447  
+## talkerEN3:ExpLow    0.005417   0.066071 306.000000   0.082   0.9347  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr) tlCH10 tlkCH9 tlkEN3 ExpLow tCH10: tCH9:E
+## talkerCH10  -0.577                                          
+## talkerCH9   -0.577  0.500                                   
+## talkerEN3   -0.577  0.500  0.500                            
+## ExpLow      -0.500  0.289  0.289  0.289                     
+## tlkrCH10:EL  0.289 -0.500 -0.250 -0.250 -0.577              
+## tlkrCH9:ExL  0.289 -0.250 -0.500 -0.250 -0.577  0.500       
+## tlkrEN3:ExL  0.289 -0.250 -0.250 -0.500 -0.577  0.500  0.500</code></pre>
+<pre class="r"><code>etRlmerb = lmer(Prop~talker*Exp + (1|RECORDING_SESSION_LABEL), data = subset(etRdata5b, AOI ==&quot;Target&quot;))
+summary(etRlmerb)</code></pre>
+<pre><code>## Linear mixed model fit by REML. t-tests use Satterthwaite&#39;s method [
+## lmerModLmerTest]
+## Formula: Prop ~ talker * Exp + (1 | RECORDING_SESSION_LABEL)
+##    Data: subset(etRdata5b, AOI == &quot;Target&quot;)
+## 
+## REML criterion at convergence: 205.1
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -1.8733 -0.6437 -0.1993  0.7634  2.6107 
+## 
+## Random effects:
+##  Groups                  Name        Variance Std.Dev.
+##  RECORDING_SESSION_LABEL (Intercept) 0.01979  0.1407  
+##  Residual                            0.09889  0.3145  
+## Number of obs: 320, groups:  RECORDING_SESSION_LABEL, 8
+## 
+## Fixed effects:
+##                     Estimate Std. Error         df t value Pr(&gt;|t|)    
+## (Intercept)         0.336458   0.070327  10.641889   4.784 0.000623 ***
+## talkerCH10          0.037667   0.057415 306.000000   0.656 0.512291    
+## talkerCH9          -0.041542   0.057415 306.000000  -0.724 0.469906    
+## talkerEN3           0.009417   0.057415 306.000000   0.164 0.869831    
+## ExpLow             -0.139833   0.140654  10.641889  -0.994 0.342209    
+## talkerCH10:ExpLow   0.337208   0.114830 306.000000   2.937 0.003570 ** 
+## talkerCH9:ExpLow    0.263167   0.114830 306.000000   2.292 0.022597 *  
+## talkerEN3:ExpLow    0.120583   0.114830 306.000000   1.050 0.294500    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr) tlCH10 tlkCH9 tlkEN3 ExpLow tCH10: tCH9:E
+## talkerCH10  -0.408                                          
+## talkerCH9   -0.408  0.500                                   
+## talkerEN3   -0.408  0.500  0.500                            
+## ExpLow      -0.500  0.204  0.204  0.204                     
+## tlkrCH10:EL  0.204 -0.500 -0.250 -0.250 -0.408              
+## tlkrCH9:ExL  0.204 -0.250 -0.500 -0.250 -0.408  0.500       
+## tlkrEN3:ExL  0.204 -0.250 -0.250 -0.500 -0.408  0.500  0.500</code></pre>
+<pre class="r"><code>etRlmerc = lmer(Prop~talker*Exp+ (1|RECORDING_SESSION_LABEL), data = subset(etRdata5c, AOI ==&quot;Target&quot;))
+ 
+summary(etRlmerc)</code></pre>
+<pre><code>## Linear mixed model fit by REML. t-tests use Satterthwaite&#39;s method [
+## lmerModLmerTest]
+## Formula: Prop ~ talker * Exp + (1 | RECORDING_SESSION_LABEL)
+##    Data: subset(etRdata5c, AOI == &quot;Target&quot;)
+## 
+## REML criterion at convergence: 253.6
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -2.5042 -0.8372  0.3751  0.7373  1.8611 
+## 
+## Random effects:
+##  Groups                  Name        Variance Std.Dev.
+##  RECORDING_SESSION_LABEL (Intercept) 0.02383  0.1544  
+##  Residual                            0.11549  0.3398  
+## Number of obs: 320, groups:  RECORDING_SESSION_LABEL, 8
+## 
+## Fixed effects:
+##                    Estimate Std. Error        df t value Pr(&gt;|t|)    
+## (Intercept)         0.57687    0.07678  10.49990   7.513 1.54e-05 ***
+## talkerCH10          0.09377    0.06204 306.00000   1.511  0.13174    
+## talkerCH9           0.18693    0.06204 306.00000   3.013  0.00280 ** 
+## talkerEN3           0.19529    0.06204 306.00000   3.148  0.00181 ** 
+## ExpLow              0.08558    0.15357  10.49990   0.557  0.58902    
+## talkerCH10:ExpLow  -0.07757    0.12409 306.00000  -0.625  0.53236    
+## talkerCH9:ExpLow   -0.07676    0.12409 306.00000  -0.619  0.53664    
+## talkerEN3:ExpLow   -0.15770    0.12409 306.00000  -1.271  0.20476    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Correlation of Fixed Effects:
+##             (Intr) tlCH10 tlkCH9 tlkEN3 ExpLow tCH10: tCH9:E
+## talkerCH10  -0.404                                          
+## talkerCH9   -0.404  0.500                                   
+## talkerEN3   -0.404  0.500  0.500                            
+## ExpLow      -0.500  0.202  0.202  0.202                     
+## tlkrCH10:EL  0.202 -0.500 -0.250 -0.250 -0.404              
+## tlkrCH9:ExL  0.202 -0.250 -0.500 -0.250 -0.404  0.500       
+## tlkrEN3:ExL  0.202 -0.250 -0.250 -0.500 -0.404  0.500  0.500</code></pre>
+</div>
+<div id="growth-curve-analysis" class="section level2">
+<h2>Growth curve analysis</h2>
+<p>Growth Curve Analysis (GCA) attempts to address the issue of taking time out of the equation by including it as an unaveraged predictor using polynomial functions. The eyetrackingR package actually includes these unaveraged polynomial predictors when it creates the time series data.</p>
+<pre class="r"><code>head(etRdata3)</code></pre>
+<pre><code>## # A tibble: 6 x 21
+##   RECORDING_SESSI… TRIAL_INDEX talker Exp   TimeBin SamplesInAOI
+##   &lt;fct&gt;            &lt;fct&gt;       &lt;fct&gt;  &lt;fct&gt;   &lt;dbl&gt;        &lt;int&gt;
+## 1 14001            1           EN3    High       -5            0
+## 2 14001            1           EN3    High       -4            0
+## 3 14001            1           EN3    High       -3            0
+## 4 14001            1           EN3    High       -2            0
+## 5 14001            1           EN3    High       -1            0
+## 6 14001            1           EN3    High        0            0
+## # … with 15 more variables: SamplesTotal &lt;int&gt;, AOI &lt;chr&gt;, Elog &lt;dbl&gt;,
+## #   Weights &lt;dbl&gt;, Prop &lt;dbl&gt;, LogitAdjusted &lt;dbl&gt;, ArcSin &lt;dbl&gt;,
+## #   Time &lt;dbl&gt;, ot1 &lt;dbl&gt;, ot2 &lt;dbl&gt;, ot3 &lt;dbl&gt;, ot4 &lt;dbl&gt;, ot5 &lt;dbl&gt;,
+## #   ot6 &lt;dbl&gt;, ot7 &lt;dbl&gt;</code></pre>
+<pre class="r"><code>timecodes &lt;- unique(etRdata3[, c(&#39;ot1&#39;,&#39;ot2&#39;,&#39;ot3&#39;,&#39;ot4&#39;,&#39;ot5&#39;,&#39;ot6&#39;,&#39;ot7&#39;)])
+timecodes$num &lt;- 1:nrow(timecodes)
+
+ggplot(timecodes, aes(x=num, y=ot1)) +
+               geom_line() +
+               geom_line(aes(y=ot2), color=&#39;red&#39;) +    # quadratic
+               geom_line(aes(y=ot3), color=&#39;blue&#39;) +   # cubic
+               geom_line(aes(y=ot4), color=&#39;green&#39;) +  # quartic
+               geom_line(aes(y=ot5), color=&#39;purple&#39;) + # quintic 
+               geom_line(aes(y=ot6), color=&#39;yellow&#39;) + # sextic
+               geom_line(aes(y=ot7), color=&#39;pink&#39;) +   # septic
+               scale_x_continuous(name=&quot;&quot;) +
+               scale_y_continuous(name=&quot;&quot;) + theme_minimal()</code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-20-1.png" width="576" /></p>
+<pre class="r"><code>etRlmerGCA = lmer(Prop~talker*Exp*(ot1 + ot2 + ot3 + ot4)+ (1|RECORDING_SESSION_LABEL), data = subset(etRdata3, AOI ==&quot;Target&quot;))
+summary(etRlmerGCA)</code></pre>
+<pre><code>## Linear mixed model fit by REML. t-tests use Satterthwaite&#39;s method [
+## lmerModLmerTest]
+## Formula: 
+## Prop ~ talker * Exp * (ot1 + ot2 + ot3 + ot4) + (1 | RECORDING_SESSION_LABEL)
+##    Data: subset(etRdata3, AOI == &quot;Target&quot;)
+## 
+## REML criterion at convergence: 17010
+## 
+## Scaled residuals: 
+##     Min      1Q  Median      3Q     Max 
+## -2.6677 -0.5585 -0.1530  0.6708  3.0711 
+## 
+## Random effects:
+##  Groups                  Name        Variance Std.Dev.
+##  RECORDING_SESSION_LABEL (Intercept) 0.01002  0.1001  
+##  Residual                            0.13153  0.3627  
+## Number of obs: 20800, groups:  RECORDING_SESSION_LABEL, 8
+## 
+## Fixed effects:
+##                         Estimate Std. Error         df t value Pr(&gt;|t|)
+## (Intercept)            2.986e-01  4.127e-02  6.182e+00   7.235 0.000309
+## talkerCH10             4.988e-02  8.213e-03  2.075e+04   6.074 1.27e-09
+## talkerCH9              4.178e-02  8.213e-03  2.075e+04   5.087 3.66e-07
+## talkerEN3              5.588e-02  8.213e-03  2.075e+04   6.804 1.04e-11
+## ExpLow                -6.231e-03  8.253e-02  6.182e+00  -0.075 0.942205
+## ot1                    1.796e+00  4.682e-02  2.075e+04  38.361  &lt; 2e-16
+## ot2                    1.454e-02  4.682e-02  2.075e+04   0.311 0.756172
+## ot3                   -4.001e-01  4.682e-02  2.075e+04  -8.546  &lt; 2e-16
+## ot4                   -4.846e-02  4.682e-02  2.075e+04  -1.035 0.300727
+## talkerCH10:ExpLow      7.185e-02  1.643e-02  2.075e+04   4.374 1.23e-05
+## talkerCH9:ExpLow       5.553e-02  1.643e-02  2.075e+04   3.380 0.000725
+## talkerEN3:ExpLow      -7.269e-03  1.643e-02  2.075e+04  -0.443 0.658101
+## talkerCH10:ot1         2.573e-01  6.622e-02  2.075e+04   3.886 0.000102
+## talkerCH9:ot1          6.631e-01  6.622e-02  2.075e+04  10.014  &lt; 2e-16
+## talkerEN3:ot1          7.338e-01  6.622e-02  2.075e+04  11.081  &lt; 2e-16
+## talkerCH10:ot2         1.061e-01  6.622e-02  2.075e+04   1.602 0.109257
+## talkerCH9:ot2          5.941e-01  6.622e-02  2.075e+04   8.973  &lt; 2e-16
+## talkerEN3:ot2          4.142e-01  6.622e-02  2.075e+04   6.256 4.03e-10
+## talkerCH10:ot3         1.414e-01  6.622e-02  2.075e+04   2.135 0.032769
+## talkerCH9:ot3          5.577e-02  6.622e-02  2.075e+04   0.842 0.399638
+## talkerEN3:ot3         -4.141e-02  6.622e-02  2.075e+04  -0.625 0.531757
+## talkerCH10:ot4        -1.265e-03  6.622e-02  2.075e+04  -0.019 0.984761
+## talkerCH9:ot4         -2.149e-01  6.622e-02  2.075e+04  -3.245 0.001175
+## talkerEN3:ot4         -9.239e-02  6.622e-02  2.075e+04  -1.395 0.162947
+## ExpLow:ot1             1.372e-01  9.364e-02  2.075e+04   1.465 0.142940
+## ExpLow:ot2             5.617e-01  9.364e-02  2.075e+04   5.998 2.03e-09
+## ExpLow:ot3             3.420e-01  9.364e-02  2.075e+04   3.652 0.000261
+## ExpLow:ot4            -4.196e-01  9.364e-02  2.075e+04  -4.481 7.46e-06
+## talkerCH10:ExpLow:ot1 -4.443e-02  1.324e-01  2.075e+04  -0.335 0.737275
+## talkerCH9:ExpLow:ot1  -1.327e-01  1.324e-01  2.075e+04  -1.002 0.316378
+## talkerEN3:ExpLow:ot1  -3.859e-01  1.324e-01  2.075e+04  -2.914 0.003574
+## talkerCH10:ExpLow:ot2 -1.086e+00  1.324e-01  2.075e+04  -8.203 2.48e-16
+## talkerCH9:ExpLow:ot2  -9.892e-01  1.324e-01  2.075e+04  -7.470 8.35e-14
+## talkerEN3:ExpLow:ot2  -5.222e-01  1.324e-01  2.075e+04  -3.943 8.06e-05
+## talkerCH10:ExpLow:ot3 -6.965e-01  1.324e-01  2.075e+04  -5.259 1.46e-07
+## talkerCH9:ExpLow:ot3  -4.116e-01  1.324e-01  2.075e+04  -3.108 0.001886
+## talkerEN3:ExpLow:ot3  -1.872e-02  1.324e-01  2.075e+04  -0.141 0.887571
+## talkerCH10:ExpLow:ot4  6.843e-01  1.324e-01  2.075e+04   5.167 2.40e-07
+## talkerCH9:ExpLow:ot4   5.842e-01  1.324e-01  2.075e+04   4.411 1.03e-05
+## talkerEN3:ExpLow:ot4   5.785e-01  1.324e-01  2.075e+04   4.368 1.26e-05
+##                          
+## (Intercept)           ***
+## talkerCH10            ***
+## talkerCH9             ***
+## talkerEN3             ***
+## ExpLow                   
+## ot1                   ***
+## ot2                      
+## ot3                   ***
+## ot4                      
+## talkerCH10:ExpLow     ***
+## talkerCH9:ExpLow      ***
+## talkerEN3:ExpLow         
+## talkerCH10:ot1        ***
+## talkerCH9:ot1         ***
+## talkerEN3:ot1         ***
+## talkerCH10:ot2           
+## talkerCH9:ot2         ***
+## talkerEN3:ot2         ***
+## talkerCH10:ot3        *  
+## talkerCH9:ot3            
+## talkerEN3:ot3            
+## talkerCH10:ot4           
+## talkerCH9:ot4         ** 
+## talkerEN3:ot4            
+## ExpLow:ot1               
+## ExpLow:ot2            ***
+## ExpLow:ot3            ***
+## ExpLow:ot4            ***
+## talkerCH10:ExpLow:ot1    
+## talkerCH9:ExpLow:ot1     
+## talkerEN3:ExpLow:ot1  ** 
+## talkerCH10:ExpLow:ot2 ***
+## talkerCH9:ExpLow:ot2  ***
+## talkerEN3:ExpLow:ot2  ***
+## talkerCH10:ExpLow:ot3 ***
+## talkerCH9:ExpLow:ot3  ** 
+## talkerEN3:ExpLow:ot3     
+## talkerCH10:ExpLow:ot4 ***
+## talkerCH9:ExpLow:ot4  ***
+## talkerEN3:ExpLow:ot4  ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre><code>## 
+## Correlation matrix not shown by default, as p = 40 &gt; 12.
+## Use print(x, correlation=TRUE)  or
+##     vcov(x)        if you need it</code></pre>
+<pre class="r"><code>plot(subset(etRdata3, AOI == &quot;Target&quot;), predictor_column = c(&quot;Exp&quot;), model = etRlmerGCA) + theme_minimal()</code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-21-1.png" width="576" /></p>
+<pre class="r"><code>plot(subset(etRdata3, AOI == &quot;Target&quot;), predictor_column = c(&quot;talker&quot;), model = etRlmerGCA) + theme_minimal()</code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-21-2.png" width="576" /></p>
+<p>GCA can tell you that your conditions had some predictive value (i.e., changed differently) over time, and how those conditions changed by way of seeing which order polynomial has a significant effect on the model. However, they can’t tell you at what time these predictors had an effect. This is where GAM comes into play.</p>
+</div>
+<div id="generalized-additive-modeling" class="section level2">
+<h2>Generalized additive modeling</h2>
+<p>Generalized additive modeling (GAM) is a new nonlinear regression method, which relaxies the assumption of a linear relationship between predictors and predicted values. It has an advantage over growth curve analysis in that you can account for autocorrelation. I will not get into the nitty gritty details of GAM now, but I will show you the possible use of a GAM for this data.</p>
+<pre class="r"><code>library(mgcv)</code></pre>
+<pre><code>## Loading required package: nlme</code></pre>
+<pre><code>## 
+## Attaching package: &#39;nlme&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:lme4&#39;:
+## 
+##     lmList</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     collapse</code></pre>
+<pre><code>## This is mgcv 1.8-26. For overview type &#39;help(&quot;mgcv-package&quot;)&#39;.</code></pre>
+<pre class="r"><code>library(itsadug)</code></pre>
+<pre><code>## Loading required package: plotfunctions</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotfunctions&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     alpha</code></pre>
+<pre><code>## Loaded package itsadug 2.3 (see &#39;help(&quot;itsadug&quot;)&#39; ).</code></pre>
+<pre class="r"><code>etRdata3$AOI = as.factor(etRdata3$AOI)
+etRdata3$Exp = as.factor(etRdata3$Exp)
+etRdata3$talker = as.factor(etRdata3$talker)
+
+etRgam = bam(Prop~talker*Exp + s(Time, by = AOI) + s(Time, by = Exp)+ s(Time, by = talker) + s(RECORDING_SESSION_LABEL, Time, by = AOI, bs = &quot;fs&quot;, m=1), data = etRdata3)</code></pre>
+<pre><code>## Warning in gam.side(sm, X, tol = .Machine$double.eps^0.5): model has
+## repeated 1-d smooths of same variable.</code></pre>
+<pre class="r"><code>summary(etRgam)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## Prop ~ talker * Exp + s(Time, by = AOI) + s(Time, by = Exp) + 
+##     s(Time, by = talker) + s(RECORDING_SESSION_LABEL, Time, by = AOI, 
+##     bs = &quot;fs&quot;, m = 1)
+## 
+## Parametric coefficients:
+##                     Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        3.884e-02  6.528e-03   5.950 2.69e-09 ***
+## talkerCH10         6.727e-03  3.131e-03   2.149   0.0317 *  
+## talkerCH9         -8.492e-04  3.131e-03  -0.271   0.7862    
+## talkerEN3          6.532e-03  3.131e-03   2.086   0.0370 *  
+## ExpLow             3.186e-02  1.441e-02   2.211   0.0270 *  
+## talkerCH10:ExpLow -6.410e-06  6.260e-03  -0.001   0.9992    
+## talkerCH9:ExpLow   1.112e-02  6.260e-03   1.777   0.0756 .  
+## talkerEN3:ExpLow  -6.141e-03  6.260e-03  -0.981   0.3266    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                                                   edf Ref.df      F
+## s(Time):AOIDistractor                          1.3066  1.598  0.747
+## s(Time):AOIOnsetComp                           1.0009  1.001  0.119
+## s(Time):AOIRhymeComp                           1.0001  1.000  0.139
+## s(Time):AOITarget                              6.7350  7.265 21.075
+## s(Time):ExpHigh                                1.4362  1.523  1.274
+## s(Time):ExpLow                                 3.5690  4.008  3.705
+## s(Time):talkerCH1                              2.7758  3.439  1.355
+## s(Time):talkerCH10                             0.8606  1.305  0.269
+## s(Time):talkerCH9                              1.0000  1.000  0.467
+## s(Time):talkerEN3                              3.1282  3.870  1.562
+## s(RECORDING_SESSION_LABEL,Time):AOIDistractor 34.8339 72.000  3.481
+## s(RECORDING_SESSION_LABEL,Time):AOIOnsetComp  56.4618 72.000 12.292
+## s(RECORDING_SESSION_LABEL,Time):AOIRhymeComp  53.7207 72.000  6.914
+## s(RECORDING_SESSION_LABEL,Time):AOITarget     55.3846 72.000 76.799
+##                                               p-value    
+## s(Time):AOIDistractor                         0.30354    
+## s(Time):AOIOnsetComp                          0.73028    
+## s(Time):AOIRhymeComp                          0.70918    
+## s(Time):AOITarget                             &lt; 2e-16 ***
+## s(Time):ExpHigh                               0.38410    
+## s(Time):ExpLow                                0.00497 ** 
+## s(Time):talkerCH1                             0.24264    
+## s(Time):talkerCH10                            0.54723    
+## s(Time):talkerCH9                             0.49438    
+## s(Time):talkerEN3                             0.17190    
+## s(RECORDING_SESSION_LABEL,Time):AOIDistractor &lt; 2e-16 ***
+## s(RECORDING_SESSION_LABEL,Time):AOIOnsetComp  &lt; 2e-16 ***
+## s(RECORDING_SESSION_LABEL,Time):AOIRhymeComp  &lt; 2e-16 ***
+## s(RECORDING_SESSION_LABEL,Time):AOITarget     &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Rank: 384/386
+## R-sq.(adj) =  0.342   Deviance explained = 34.4%
+## fREML =  11451  Scale est. = 0.076411  n = 83200</code></pre>
+<pre class="r"><code>plot_smooth(etRgam, view = &quot;Time&quot;, plot_all = &quot;AOI&quot;, cond = list(talker = &quot;CH1&quot;, Exp = &quot;Low&quot;))</code></pre>
+<pre><code>## Summary:
+##  * talker : factor; set to the value(s): CH1. 
+##  * Exp : factor; set to the value(s): Low. 
+##  * Time : numeric predictor; with 30 values ranging from -100.000000 to 1180.000000. 
+##  * AOI : factor; set to the value(s): Distractor, OnsetComp, RhymeComp, Target. 
+##  * RECORDING_SESSION_LABEL : factor; set to the value(s): 14001.</code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-22-1.png" width="576" /></p>
+<pre class="r"><code>plot_smooth(etRgam, view = &quot;Time&quot;, plot_all = &quot;AOI&quot;, cond = list(talker = &quot;CH10&quot;, Exp = &quot;High&quot;))</code></pre>
+<pre><code>## Summary:
+##  * talker : factor; set to the value(s): CH10. 
+##  * Exp : factor; set to the value(s): High. 
+##  * Time : numeric predictor; with 30 values ranging from -100.000000 to 1180.000000. 
+##  * AOI : factor; set to the value(s): Distractor, OnsetComp, RhymeComp, Target. 
+##  * RECORDING_SESSION_LABEL : factor; set to the value(s): 14001.</code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-22-2.png" width="576" /></p>
+<pre class="r"><code>plot_smooth(etRgam, view = &quot;Time&quot;, plot_all = &quot;AOI&quot;, cond = list(talker = &quot;CH10&quot;, Exp = &quot;Low&quot;))</code></pre>
+<pre><code>## Summary:
+##  * talker : factor; set to the value(s): CH10. 
+##  * Exp : factor; set to the value(s): Low. 
+##  * Time : numeric predictor; with 30 values ranging from -100.000000 to 1180.000000. 
+##  * AOI : factor; set to the value(s): Distractor, OnsetComp, RhymeComp, Target. 
+##  * RECORDING_SESSION_LABEL : factor; set to the value(s): 14001.</code></pre>
+<p><img src="/portfolio/EyeTracking_files/figure-html/unnamed-chunk-22-3.png" width="576" /></p>
+</div>
+</div>
+<div id="conclusions-and-references" class="section level1">
+<h1>Conclusions and references</h1>
+<p>In short, there’s a lot you can do with eyetracking data. If you want to learn more about the eyetracking processing packages, here are some resources:</p>
+<ul>
+<li>VWPre: (<a href="https://cran.r-project.org/web/packages/VWPre/index.html" class="uri">https://cran.r-project.org/web/packages/VWPre/index.html</a>)[<a href="https://cran.r-project.org/web/packages/VWPre/index.html" class="uri">https://cran.r-project.org/web/packages/VWPre/index.html</a>] (go to the vignettes)</li>
+<li>eyetrackingR: (<a href="http://www.eyetracking-r.com/" class="uri">http://www.eyetracking-r.com/</a>)[<a href="http://www.eyetracking-r.com/" class="uri">http://www.eyetracking-r.com/</a>]</li>
+<li>GAM: (Wieling 2018)[<a href="https://www.sciencedirect.com/science/article/pii/S0095447017301377" class="uri">https://www.sciencedirect.com/science/article/pii/S0095447017301377</a>] (this is an excellent tutorial on how to use GAM for linguistic research, focused on phonological research but easily extended to any other time-series data)</li>
+<li>GAM with eyetracking: (Porretta et al. 2017)[<a href="https://link.springer.com/chapter/10.1007/978-3-319-59424-8_25#Sec2" class="uri">https://link.springer.com/chapter/10.1007/978-3-319-59424-8_25#Sec2</a>] (this is a proceedings chapter by the authors of the VWPre package, introducing how to use VWP data in a GAM setting)</li>
+<li>GAM with eyetracking: (Porretta et al. 2016)[<a href="https://www.sciencedirect.com/science/article/pii/S0095447016300146" class="uri">https://www.sciencedirect.com/science/article/pii/S0095447016300146</a>] (this is the paper the VWPre example data comes from, and it utilizes GAM for eyetracking in more detail. There is a lot of overlap between this paper and the previous proceedings paper.)</li>
+</ul>
+</div>
+
+         
+      </div>
+    </div>
+  </div>
+</div>
+
+          </div>
+      </div>
+  </div>
+  <script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.cookie.js"> </script>
+<script src="/js/ekko-lightbox.js"></script>
+<script src="/js/jquery.scrollTo.min.js"></script>
+<script src="/js/masonry.pkgd.min.js"></script>
+<script src="/js/imagesloaded.pkgd.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/front.js"></script>
+
+</body>
+</html>

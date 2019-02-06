@@ -1,0 +1,358 @@
+---
+title: "Eye Tracking Analysis"
+author: "Marissa Barlaz"
+image: "img/eye-tracking.jpg"
+showonlyimage: false
+weight: 5
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+description: "This workshop is geared towards implementing eye tracking analysis methods in R, specifically for the visual world paradigm."
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+library(VWPre)
+library(eyetrackingR)
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cbPalette10 = c('#543005','#8c510a','#bf812d','#dfc27d','#f6e8c3','#c7eae5','#80cdc1','#35978f','#01665e','#003c30')
+```
+
+
+# What is the visual world paradigm?
+
+> The basic set-up in a comprehension visual world experiment is simple: On each trial the participants hear an utterance while looking at an experimental display. The participants' eye movements are recorded for later analyses. In one popular version of the paradigm the visual input consists of line drawings of semi-realistic scenes shown on a computer screen and sentences that describe or comment upon the scenes (e.g., “The boy will eat the cake”, Altmann & Kamide, 1999; see Fig. 1i). Typically, the display includes objects mentioned in the utterance (i.e., a boy and a cake for the previous example) and distractor objects that are not mentioned. In another version the displays are sets of objects, either laid out on a workspace (e.g., Tanenhaus et al., 1995) or shown as line drawings on a computer screen (e.g., Allopenna et al., 1998; see Fig. 1ii). The use of semi-realistic scenes allows researchers to assess, among other things, how the listeners' perception of the scene and/or their world knowledge about scenes and events affect their understanding of the spoken utterances (for further discussion see Henderson & Ferreira, 2004). When arrays of objects are used, the impact of such knowledge is minimized, which renders arrays well suited for studying the activation of conceptual and lexical knowledge associated with individual words.
+
+- [Huettig, Rommers, and Meyer, 2011](https://www.sciencedirect.com/science/article/pii/S0001691810002180)
+
+# How to process eye tracking data in R
+I found two packages in R to process eye tracking data. I will show you how to use both of them. The packages are VWPre, which is used for preprocessing Visual World Paradigm data collected with the SR Eyelink system. The second package is eyetrackingR, which is used for preprocessing and analyzing eyetracking data. It is not as intuitive but allows for other systems to be used. You can install both packages using *install.packages()*:
+
+```{r eval = FALSE}
+install.packages(c("eyetrackingR", "VWPre"))
+library(eyetrackingR)
+library(VWPre)
+```
+
+I will demonstrate the versitility of these packages using the example data from the VWPre package. The data is a subset of the data presented in [Porretta, Tucker, and Järvikivi, 2016](https://www.sciencedirect.com/science/article/pii/S0095447016300146), which examines the effect of foreign accentedness on word recognition using native and Chinese-accented English. In this version of the VWP, participants heard an accented token and found its written form among four options.
+
+# Data preparation
+```{r}
+data("VWdat")
+head(VWdat)
+str(VWdat)
+summary(VWdat)
+```
+
+
+## VWPre method
+The VWPre package assumes the data to be in a specific format (hence why it requires the data to be collected with the SR Eyelink system). The data needs to have the following columns: **LEFT_INTEREST_AREA_ID, RIGHT_INTEREST_AREA_ID, LEFT_INTEREST_AREA_LABEL, RIGHT_INTEREST_AREA_LABEL, TIMESTAMP, and TRIAL_INDEX**. The functions also checks for the columns **SAMPLE_MESSAGE, RIGHT_GAZE_X, RIGHT_GAZE_Y, LEFT_GAZE_X, and LEFT_GAZE_Y**. These columns are not needed in the data, but are needed if you need to align the dataset to a particular message (i.e., onset of a target sound), or if you would like to redefine interest areas based on coordinates on the screen.
+
+The prep_data() function makes sure all of the correct data columns exist, and converts them to the correct form if necessary. It also requires you to specify which column includes Subject (often listed as RECORDING_SESSION_LABEL) and item.
+
+```{r}
+dat0 <- prep_data(data = VWdat, Subject = "RECORDING_SESSION_LABEL", Item = "itemid")
+
+
+head(dat0)
+```
+
+When the data is read by the SR Eyelink system, samples that are outside of the interest areas are automatically labeled as NA. The *relabel_na()* function takes the number of interest areas, and relabels anything that falls outside of this number of interest areas as 0/Outside. The *check_ia()* function makes sure the interest area IDs are labeled and numbered appropriately.
+```{r}
+dat1 <- relabel_na(data = dat0, NoIA = 4)
+head(dat1)
+check_ia(data = dat1)
+
+```
+
+Next, the *create_time_series()* function creates a new column for time, which allows for doing time series analyses, If an adjustment is needed, specify it in the Adjust parameter. This subtracts the given value from all time points. 
+
+If you would like to do this based on a message give in the system, you can use the check_msg_time() and align_dat() functions.
+
+
+```{r}
+#Hard coding the alignment adjustment, if you know what it is
+check_msg_time(data = dat1, Msg = "TargetOnset")
+dat2 <- create_time_series(data = dat1, Adjust = 100)
+check_msg_time(data = dat2, Msg = "TargetOnset")
+
+
+#Or, to align based on a messge
+dat1a = align_msg(data = dat1, Msg = "TargetOnset")
+check_msg_time(data = dat1a, Msg = "TargetOnset")
+dat2a = create_time_series(dat1a, Adjust = 0)
+check_msg_time(data = dat2a, Msg = "TargetOnset")
+
+
+
+check_time_series(data = dat2)
+check_time_series(data = dat2a)
+
+```
+
+Next, we need to check which eye was recorded, and select the correct columns. Here, the WhenLandR setting is not necessary - it is just a precaution, set to use only the right eye data in case there is some data from both.
+```{r}
+check_eye_recording(data = dat2)
+dat3 <- select_recorded_eye(data = dat2, Recording = "R", WhenLandR = "Right")
+
+```
+
+
+Next, in order to get proportional data, we need to bin the samples into chunks of time, count the number of samples per chunk for each IA, and then calculate proportions of samples. Here, we can check the sampling rate of the data, as the sampling rate is necessary for the *bin_prop()* function. The *ds_options()* function will give options for how many items per bin will give a particular downsampled rate for the time course of the eyetracking data.
+
+```{r}
+check_samplingrate(dat3)
+ds_options(SamplingRate = 1000)
+dat4 <- bin_prop(dat3, NoIA = 4, BinSize = 20, SamplingRate = 1000)
+
+check_samplingrate(dat4)
+check_samples_per_bin(dat4)
+
+```
+
+While most journal articles I have read include proportions in graphs or mixed effects models, there are some that prefer using logits (log odds ratios). This next line transforms the data into elogits, or empirical (i.e., based on your data, not on a model) log odds ratios.
+```{r}
+dat5 <- transform_to_elogit(dat4, NoIA = 4, ObsPerBin = 20)
+
+```
+
+And finally, we create our final dataset by selecting out the columns we want to keep.
+```{r}
+FinalDat <- dat5 %>% 
+  # Select just the columns you want
+  select(., Subject, Item, Time, starts_with("IA"), Event, TRIAL_INDEX, Rating, talker, Exp,
+         InteractChinese, Exp, target, rhymecomp, onsetcomp, distractor) %>%
+  # Order the data by Subject, Trial, and Time
+  arrange(., Subject, TRIAL_INDEX, Time)
+
+head(FinalDat)
+str(FinalDat)
+summary(FinalDat)
+```
+
+## eyetrackingR method
+The eyetrackingR package requires data to be in a slightly different format. It requires a column for which IA is being looked at at that particular time point, as well as a column for each IA that includes a TRUE or FALSE value for whether that is the IA being looked at that that point. It also requires a column called TrackLoss, which includes a TRUE if the eyetracking system lost the eyes for that system. This is used for cleaning the data and removing unreliable trials.
+
+Before I go into how to transform the SR Eyelink data from VWPre into this format, I will show you an example dataset from the eyetrackingR package in the right format.
+
+```{r}
+data("word_recognition")
+head(word_recognition)
+str(word_recognition)
+summary(word_recognition)
+```
+
+Now, I will assume that the data does not include any lost eyes, and therefore I will set TrackLoss = FALSE for all columns.
+```{r}
+VWdat2 = VWdat %>% mutate(TrackLoss = FALSE, 
+                          Outside = ifelse(is.na(RIGHT_INTEREST_AREA_LABEL),TRUE, FALSE), 
+                          Target = ifelse(RIGHT_INTEREST_AREA_LABEL == "Target" & !is.na(RIGHT_INTEREST_AREA_LABEL),TRUE, FALSE), 
+                          OnsetComp = ifelse(RIGHT_INTEREST_AREA_LABEL == "OnsetComp" & !is.na(RIGHT_INTEREST_AREA_LABEL),TRUE, FALSE), 
+                          RhymeComp = ifelse(RIGHT_INTEREST_AREA_LABEL == "RhymeComp" & !is.na(RIGHT_INTEREST_AREA_LABEL),TRUE, FALSE), 
+                          Distractor = ifelse(RIGHT_INTEREST_AREA_LABEL == "Distractor"& !is.na(RIGHT_INTEREST_AREA_LABEL),TRUE, FALSE))
+
+head(VWdat2)
+str(VWdat2)
+summary(VWdat2)
+table(VWdat$RIGHT_INTEREST_AREA_LABEL)
+
+```
+
+Now, we will use the *make_eyetrackingr_data()* function, which makes sure the data is in the correct format.
+
+Note that I am setting treat_non_aoi_looks_as_missing to False. The two options (TRUE or FALSE) depend on the analysis you are interested in. Setting this argument to TRUE assumes that any looks outside of the IA as "trackloss". In this case, you can make comparisons between all AOIs directly. Thus, proportion looking to an IA will be calculated as "time looking to that IA divided by time looking to all other IAs." Setting the argument to FALSE allows you to look at overall attention to IAs across conditions. In this case, proportion of looks is calculated as "time looking at a particular IA divided by total looking time, excluding actual trackloss."
+
+```{r}
+etRdata <- make_eyetrackingr_data(VWdat2, 
+                               participant_column = "RECORDING_SESSION_LABEL",
+                               trial_column = "TRIAL_INDEX",
+                               time_column = "TIMESTAMP",
+                               aoi_columns = c("Target","OnsetComp", "RhymeComp", "Distractor"),
+                               treat_non_aoi_looks_as_missing = FALSE,trackloss_column = "TrackLoss")
+
+```
+
+Next, we are going to align the data to a particular message, as we did above. The function is *subset_by_window()*. Here, rezero = TRUE aligns the message ("TargetOnset") to time = 0. remove = FALSE does not remove any data behind the 0 mark (rather, anything before the TargetOnset message is coded as negative time). 
+```{r}
+etRdata2 <- subset_by_window(etRdata, window_start_msg = "TargetOnset", msg_col = "SAMPLE_MESSAGE", rezero= TRUE, remove = FALSE)
+```
+
+Similar to above, *make_time_sequence_data()* will bin the data based on time and get proportions of looks into each AOI.
+
+Here, I aim to do the same binning as above - every 20 milliseconds will be considered a bin. I also specify the IAs (or, AOIs). The data will be a slightly different size than the data processed above because while above, the data is in a wide format (i.e., each IA has a column for proportions, counts of looks, elogits, etc.), in this case the data is in long format (i.e., there is a single column that specifies IA (and includes all levels of IA), and then a single column for counts, a single column for proportions, a  single column for elogits, etc.)
+
+Here, I both include the 'outside' looks and exclude them in two different datasets, to show you the difference in plotting.
+```{r}
+etRdata3  = make_time_sequence_data(etRdata2, time_bin_size = 20, predictor_columns = c("talker", "Exp"), aois = c("Target","OnsetComp", "RhymeComp", "Distractor")) %>% arrange(RECORDING_SESSION_LABEL, TRIAL_INDEX)
+
+head(etRdata3, 30)
+
+etRdata3a  = make_time_sequence_data(etRdata2, time_bin_size = 20,  predictor_columns = c("talker", "Exp"), aois = c("Target","OnsetComp", "RhymeComp", "Distractor", "Outside")) %>% arrange(RECORDING_SESSION_LABEL, TRIAL_INDEX)
+
+```
+
+
+# Data plotting
+Each of these packages includes a built-in function that allows for plotting proportion of looks over time. Both are based in ggplot2 syntax, so you can further customize the plot on your own.
+
+## VWPre
+
+The plot_avg() function plots the grand mean of proportion over time. Here, I specified three different plots - one with 'outside' looks included, one with 'outside' looks excluded, and one with just target vs. other proportions. I am setting VWPreTheme = FALSE to use other ggplot2 themes. Note that I am leaving condition1 and condition2 = NULL for now. These are included as ways to facet the data - more on that in a moment.
+
+```{r}
+plot_avg(data = FinalDat, type = "proportion", xlim = c(-100, 1000), IAColumns = c(IA_0_P = "Outside", IA_1_P = "Target", IA_2_P = "Rhyme", IA_3_P = "OnsetComp", IA_4_P = "Distractor"),Condition1 = NULL, Condition2 = NULL, Cond1Labels = NA, Cond2Labels = NA, ErrorBar = TRUE, VWPreTheme = FALSE) + theme_minimal() + scale_color_manual(values = cbPalette, labels = c("Outside", "Target", "Rhyme", "OnsetComp", "Distractor"))
+
+plot_avg(data = FinalDat, type = "proportion", xlim = c(-100, 1000), IAColumns = c(IA_1_P = "Target", IA_2_P = "Rhyme", IA_3_P = "OnsetComp", IA_4_P = "Distractor"),Condition1 = NULL, Condition2 = NULL, Cond1Labels = NA, Cond2Labels = NA, ErrorBar = TRUE, VWPreTheme = FALSE) + theme_minimal() + scale_color_manual(values = cbPalette, labels = c("Target", "Rhyme", "OnsetComp", "Distractor"))
+
+FinalDat2 = mutate(FinalDat, IA_234_P = IA_2_P + IA_3_P + IA_4_P)
+plot_avg(data = FinalDat2, type = "proportion", xlim = c(-100, 1000), IAColumns = c(IA_1_P = "Target", IA_234_P = "Non-Targets"),Condition1 = NULL, Condition2 = NULL, Cond1Labels = NA, Cond2Labels = NA, ErrorBar = TRUE, VWPreTheme = FALSE) + theme_minimal() + scale_color_manual(values = cbPalette, labels = c("Target", "Non-Target"))
+
+```
+
+## eyetrackingR
+In eyetrackingR, the data is given to the *plot()* function, which passes into the *plot.time_sequence_data()* function. This is also built based on ggplot2 syntax.
+
+However, one downfall of this function is that it automatically facets based on the predictor column given. (This is useful if you have two or more types of target and your IAs in the visual world paradigm do not change. For example, you have animate vs. inanimate targets, and you are comparing looks to inanimate images vs. animate images vs, distractors, the proportion of looks will depend on whether the target image is inanimate or animate.)
+
+You can recreate the plot on your own without faceting, however, using ggplot2. Here, I do so both with the outside looks included and excluded.
+```{r}
+plot(etRdata3, predictor_column=NULL) + theme_minimal() +coord_cartesian(ylim = c(0,1), xlim = c(-100,1200)) 
+
+ggplot(etRdata3, aes(x= Time, y = Prop, color = AOI)) + geom_smooth() + theme_minimal() + scale_color_manual(values = cbPalette) + ylab("Proportion of looks")
+
+ggplot(etRdata3, aes(x= Time, y = Prop, color = AOI)) + stat_summary(geom = "point", fun.y = "mean") +  stat_summary(geom = "line", fun.y = "mean") +  stat_summary(fun.data = mean_se , geom = "errorbar", width = 0)+ theme_minimal() + scale_color_manual(values = cbPalette)+ ylab("Proportion of looks")
+
+ggplot(etRdata3a, aes(x= Time, y = Prop, color = AOI)) + geom_smooth() + theme_minimal() + scale_color_manual(values = cbPalette)+ ylab("Proportion of looks")
+
+ggplot(etRdata3a, aes(x= Time, y = Prop, color = AOI)) + stat_summary(geom = "point", fun.y = "mean") +  stat_summary(geom = "line", fun.y = "mean") +  stat_summary(fun.data = mean_se , geom = "errorbar", width = 0)+ theme_minimal() + scale_color_manual(values = cbPalette)+ ylab("Proportion of looks")+coord_cartesian(ylim = c(0,1), xlim = c(-100,1200)) 
+```
+
+
+Note the difference if we had set treat_non_aoi_looks_as_missing to TRUE:
+
+
+```{r, warning = FALSE}
+etRdatab <- make_eyetrackingr_data(VWdat2, 
+                               participant_column = "RECORDING_SESSION_LABEL",
+                               trial_column = "TRIAL_INDEX",
+                               time_column = "TIMESTAMP",
+                               aoi_columns = c("Target","OnsetComp", "RhymeComp", "Distractor"),
+                               treat_non_aoi_looks_as_missing = TRUE, trackloss_column = "TrackLoss")
+etRdata2b <- subset_by_window(etRdatab, window_start_msg = "TargetOnset", msg_col = "SAMPLE_MESSAGE", rezero= TRUE, remove = FALSE)
+
+etRdata3b  = make_time_sequence_data(etRdata2b, time_bin_size = 20, predictor_columns = c("talker", "Exp"), aois = c("Target","OnsetComp", "RhymeComp", "Distractor")) %>% arrange(RECORDING_SESSION_LABEL, TRIAL_INDEX)
+
+ggplot(etRdata3b, aes(x= Time, y = Prop, color = AOI)) + stat_summary(geom = "point", fun.y = "mean") +  stat_summary(geom = "line", fun.y = "mean") +  stat_summary(fun.data = mean_se , geom = "errorbar", width = 0)+ theme_minimal() + scale_color_manual(values = cbPalette)+ ylab("Proportion of looks") +coord_cartesian(ylim = c(0,1), xlim = c(-100,1200)) 
+
+```
+
+# Data analysis
+There are a few different methods I have seen in the literature regarding how to analyze this data. I will go through a few of them here. Note that while the VWPre package is aimed at doing preprocessing of data, the eyetrackingR package has built in capabilities for running these analyses, so I will be showing you how to run the first two analyses using this package.
+
+## Linear mixed effects regression
+Linear mixed effects regression (LMER) is a commonly-used methodology for doing eye-tracking analysis. However, with LMER, time has to be removed as a factor. In this case, looks within a specific window are generally averaged. (This is the method used in Ryskin et al., 2016). 
+
+The eyetrackingR package has a function, *make_time_window_data()*, which collapses time across a window and returns the data frame for LMER analysis. This should be used on the subsetted data, which we will create using subset_by_window(). Here, I am splitting the data into 3 windows of 400 ms each.
+
+```{r}
+etRdata4a <- subset_by_window(etRdata2, window_start_time = 0, window_end_time = 400, rezero= FALSE, remove =TRUE)
+etRdata4b <- subset_by_window(etRdata2, window_start_time = 400, window_end_time = 800, rezero= FALSE, remove =TRUE)
+etRdata4c <- subset_by_window(etRdata2, window_start_time = 800, window_end_time = 1200, rezero= FALSE, remove =TRUE)
+
+etRdata5a = make_time_window_data(etRdata4a, aois = c("Target","OnsetComp", "RhymeComp", "Distractor"), predictor_columns = c("talker","Exp"))
+etRdata5b = make_time_window_data(etRdata4b, aois = c("Target","OnsetComp", "RhymeComp", "Distractor"), predictor_columns = c("talker","Exp"))
+etRdata5c = make_time_window_data(etRdata4c, aois = c("Target","OnsetComp", "RhymeComp", "Distractor"), predictor_columns = c("talker","Exp"))
+
+
+head(etRdata5a)
+head(etRdata5b)
+head(etRdata5c)
+
+```
+
+Now, we can run a linear model using *lmer()*. Here, I will see if the talker and listener experience has an influence on proportion of looks to the target word in each of the three time windows. There are 4 talkers (CH3, lowest proficiency in English, CH9 and CH10 (higher proficiency in English), and EN3, a native speaker) and 2 levels of listener experience (high, low).
+
+```{r}
+library(lme4)
+library(lmerTest)
+
+etRlmera = lmer(Prop~talker*Exp + (1|RECORDING_SESSION_LABEL), data = subset(etRdata5a, AOI =="Target"))
+summary(etRlmera)
+
+etRlmerb = lmer(Prop~talker*Exp + (1|RECORDING_SESSION_LABEL), data = subset(etRdata5b, AOI =="Target"))
+summary(etRlmerb)
+
+etRlmerc = lmer(Prop~talker*Exp+ (1|RECORDING_SESSION_LABEL), data = subset(etRdata5c, AOI =="Target"))
+ 
+summary(etRlmerc)
+
+
+```
+
+## Growth curve analysis
+Growth Curve Analysis (GCA) attempts to address the issue of taking time out of the equation by including it as an unaveraged predictor using polynomial functions. The eyetrackingR package actually includes these unaveraged polynomial predictors when it creates the time series data.
+
+```{r}
+head(etRdata3)
+timecodes <- unique(etRdata3[, c('ot1','ot2','ot3','ot4','ot5','ot6','ot7')])
+timecodes$num <- 1:nrow(timecodes)
+
+ggplot(timecodes, aes(x=num, y=ot1)) +
+               geom_line() +
+               geom_line(aes(y=ot2), color='red') +    # quadratic
+               geom_line(aes(y=ot3), color='blue') +   # cubic
+               geom_line(aes(y=ot4), color='green') +  # quartic
+               geom_line(aes(y=ot5), color='purple') + # quintic 
+               geom_line(aes(y=ot6), color='yellow') + # sextic
+               geom_line(aes(y=ot7), color='pink') +   # septic
+               scale_x_continuous(name="") +
+               scale_y_continuous(name="") + theme_minimal()
+```
+
+```{r}
+etRlmerGCA = lmer(Prop~talker*Exp*(ot1 + ot2 + ot3 + ot4)+ (1|RECORDING_SESSION_LABEL), data = subset(etRdata3, AOI =="Target"))
+summary(etRlmerGCA)
+
+plot(subset(etRdata3, AOI == "Target"), predictor_column = c("Exp"), model = etRlmerGCA) + theme_minimal()
+plot(subset(etRdata3, AOI == "Target"), predictor_column = c("talker"), model = etRlmerGCA) + theme_minimal()
+
+
+```
+
+GCA can tell you that your conditions had some predictive value (i.e., changed differently) over time, and how those conditions changed by way of seeing which order polynomial has a significant effect on the model. However, they can’t tell you at what time these predictors had an effect. This is where GAM comes into play.
+
+
+
+## Generalized additive modeling
+Generalized additive modeling (GAM) is a new nonlinear regression method, which relaxies the assumption of a linear relationship between predictors and predicted values. It has an advantage over growth curve analysis in that you can account for autocorrelation. I will not get into the nitty gritty details of GAM now, but I will show you the possible use of a GAM for this data.
+
+```{r}
+library(mgcv)
+library(itsadug)
+
+etRdata3$AOI = as.factor(etRdata3$AOI)
+etRdata3$Exp = as.factor(etRdata3$Exp)
+etRdata3$talker = as.factor(etRdata3$talker)
+
+etRgam = bam(Prop~talker*Exp + s(Time, by = AOI) + s(Time, by = Exp)+ s(Time, by = talker) + s(RECORDING_SESSION_LABEL, Time, by = AOI, bs = "fs", m=1), data = etRdata3)
+summary(etRgam)
+
+plot_smooth(etRgam, view = "Time", plot_all = "AOI", cond = list(talker = "CH1", Exp = "Low"))
+plot_smooth(etRgam, view = "Time", plot_all = "AOI", cond = list(talker = "CH10", Exp = "High"))
+plot_smooth(etRgam, view = "Time", plot_all = "AOI", cond = list(talker = "CH10", Exp = "Low"))
+
+```
+
+# Conclusions and references
+In short, there's a lot you can do with eyetracking data. If you want to learn more about the eyetracking processing packages, here are some resources:
+
+* VWPre: (https://cran.r-project.org/web/packages/VWPre/index.html)[https://cran.r-project.org/web/packages/VWPre/index.html] (go to the vignettes)
+* eyetrackingR: (http://www.eyetracking-r.com/)[http://www.eyetracking-r.com/]
+* GAM: (Wieling 2018)[https://www.sciencedirect.com/science/article/pii/S0095447017301377] (this is an excellent tutorial on how to use GAM for linguistic research, focused on phonological research but easily extended to any other time-series data)
+* GAM with eyetracking: (Porretta et al. 2017)[https://link.springer.com/chapter/10.1007/978-3-319-59424-8_25#Sec2] (this is a proceedings chapter by the authors of the VWPre package, introducing how to use VWP data in a GAM setting)
+* GAM with eyetracking: (Porretta et al. 2016)[https://www.sciencedirect.com/science/article/pii/S0095447016300146] (this is the paper the VWPre example data comes from, and it utilizes GAM for eyetracking in more detail. There is a lot of overlap between this paper and the previous proceedings paper.)

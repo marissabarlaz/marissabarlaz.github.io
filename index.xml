@@ -80,6 +80,15 @@ What is the point? When looking at data, we want to determine if there is a rela
     </item>
     
     <item>
+      <title>Eye Tracking Analysis</title>
+      <link>/portfolio/eyetracking/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/portfolio/eyetracking/</guid>
+      <description>What is the visual world paradigm? How to process eye tracking data in R Data preparation VWPre method eyetrackingR method  Data plotting VWPre eyetrackingR  Data analysis Linear mixed effects regression Growth curve analysis Generalized additive modeling  Conclusions and references   What is the visual world paradigm?  The basic set-up in a comprehension visual world experiment is simple: On each trial the participants hear an utterance while looking at an experimental display.</description>
+    </item>
+    
+    <item>
       <title>Vowel Normalization in R</title>
       <link>/portfolio/vowelnormalization/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

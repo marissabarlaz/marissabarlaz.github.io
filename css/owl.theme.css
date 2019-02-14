@@ -75,3 +75,8 @@
 	min-height: 150px;
 	background: url('../img/AjaxLoader.gif') no-repeat center center
 }
+
+code .MathJax {
+  color: black;
+  background-color: white;
+}

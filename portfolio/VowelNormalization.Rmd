@@ -188,7 +188,7 @@ ggplot(indolog, aes(x = f2log10,y = f1log10, color = vowel))  + stat_ellipse()+ 
 ### ERB
 ERB (or, equivalent rectangular bandwidth), tries to approximate the bandwidths of the filtering system used in human hearing.
 
-$ERB = 21.4 \times log_{10}(1+F \times 0.00437))$
+$ERB = 21.4 \times log\_{10}(1+F \times 0.00437))$
 
 The phonR function *normErb* converts a given formant into ERB scale.
 
@@ -242,7 +242,7 @@ ggplot(indobark, aes(x = f2bark, y = f1bark, color = vowel))  + stat_ellipse()+ 
 ### Mel
 The Mel scale was originally developed as a perceptual scale of pitches judged by listeners to be equal in distance from one another. It was originally developed as a musical perceptual scale, but was extended to f0 and other formants. 
 
-$Mel = 2595 \times log_{10}(1 + frac{F}{700})$
+$Mel = 2595 \times log\_{10}(1 + frac{F}{700})$
 
 ```{r}
 pb52mel = pb52 %>% mutate(f1mel = normMel(f1), f2mel = normMel(f2)) 
@@ -275,7 +275,7 @@ Speaker intrinsic and formant extrinsic methods use multiple formants in order t
 
 
 ### Bark distance model
-The Bark distance model was proposed by Syrdal and Gopal (1986). In this model, F0-F3 are transformed into bark scale. Following this, $F1\prime$ is calculated as the difference: $F1_{bark} - F0_{bark}$, and $F2\prime$ is calculated as the difference: $F3_{bark} - F2_{bark}$. Unfortunately, there is no function to do this calculation directly, so we will use the normBark function and calculate the differences ourselves. Note that the Peterson and Barney data has f0-F3 information, whereas the indo data only has F1-F2.
+The Bark distance model was proposed by Syrdal and Gopal (1986). In this model, F0-F3 are transformed into bark scale. Following this, $F1\prime$ is calculated as the difference: $F1\_{bark} - F0\_{bark}$, and $F2\prime$ is calculated as the difference: $F3\_{bark} - F2\_{bark}$. Unfortunately, there is no function to do this calculation directly, so we will use the normBark function and calculate the differences ourselves. Note that the Peterson and Barney data has f0-F3 information, whereas the indo data only has F1-F2.
 
 ```{r}
 pb52SG = pb52 %>% mutate(f0bark = normBark(f0), f1bark = normBark(f1), f2bark = normBark(f2), f3bark = normBark(f3), f1new = f1bark-f0bark, f2new = f3bark-f2bark) 
@@ -304,7 +304,7 @@ Vowel extrinsic, formant intrinsic models are often used for sociophonetic purpo
 ### Z-score/Lobanov normalization
 The use of z-score as a method of vowel normalization was first introduced by Lobanov (1971). In this method, each subject's formants are put on a scale of standard deviations.
 
-$F_i = \frac{F_i-\mu(F_i}{\sigma(F_i)}$
+$F\_i = \frac{F\_i-\mu(F\_i)}{\sigma(F\_i)}$
 
 This can be done using either the *normLobanov()* function from phonR or the *scale()* function in base R.
 ```{r}
@@ -334,7 +334,7 @@ ggplot(pb52lobanovsample, aes(x = f2lobanov, y = f1lobanov, color = vowel))  +th
 ### Individual log means (Nearey1)
 Note that Terrance Nearey, in his 1978 dissertation, created two methods for vowel normalization. Both are vowel extrinsic. This method is formant intrinsic. I will discuss the formant extrinsic method below. The method described here is useful for sociophonetic purposes, and has been considered by many to be the most successful in maintaining sociophonetic data during normalization.
 
-$F_n\prime = log_e(F_n) - \mu(log_e(F_n))$
+$F\_n\prime = log\_e(F\_n) - \mu(log\_e(F\_n))$
 
 Note that F1 and F2 are required for this method as an input.
 ```{r}
@@ -361,7 +361,7 @@ ggplot(pb52nearey1sample, aes(x = f2nearey1, y = f1nearey1, color = vowel))  +th
 ### Centroids (Watt-Fabricius)
 The Watt and Fabricius method is vowel extrinsic, but unlike other methods, the centroid used to calculate normalized values is based on points that represent the corners of the vowel space (/a/, /i/, and /u/).
 
-$<F1\prime, F2\prime> = <\frac{2\times F2}{min(\mu*F2_v) +max(\mu*F2_v)}, \frac{3\times F1}{2 \times min(\mu*F1_v) +max(\mu*F1_v)}>$
+$<F1\prime, F2\prime> = <\frac{2\times F2}{min(\mu*F2\_v) +max(\mu*F2\_v)}, \frac{3\times F1}{2 \times min(\mu*F1\_v) +max(\mu*F1\_v)}>$
 
 Note that the implementation of this method used in phonR calculates "which vowel has the highest mean F2 value and uses that to calculate the upper left corner, rather than expressly looking for the mean of the "point vowel" /i/. The upper right corner is, as in the original method, derived from the other two. If the vowels with the highest mean F1 and highest mean F2 are not the same pair of vowels for all members of group, normWattFabricius returns an error." (quote taken from the phonR help page)
 
@@ -396,7 +396,7 @@ ggplot(pb52WFsample, aes(x = f2, y = f1, color = vowel))  +theme_minimal() +scal
 ### Shared log-mean (Nearey2)
 This method is similar to the Nearey1 method above, except rather than calculating the logmean for an individual vowel formant, it calculates the logmean for all formants.
 
-$F_n = F_n - (\mu_0 + \mu_1 + \mu_2 + \mu_3)$ where $\mu_n$ is the log mean for f0-F3.
+$F\_n = F\_n - (\mu\_0 + \mu\_1 + \mu\_2 + \mu\_3)$ where $\mu\_n$ is the log mean for f0-F3.
 
 ```{r}
 pb52nearey2 = with(pb52, normNearey2(cbind(f0, f1, f2, f3), group = speaker))
@@ -428,8 +428,25 @@ This is the normalization method used by the phonological Atlas of North America
 > While it also uses a log-mean method to normalize the formant values, the primary difference is that it computes a single grand mean for all speakers included in the study (i.e. it's speaker-extrinsic, while Nearey is typically speaker-intrinsic). Also, unlike Nearey, it computes a scaling factor for each individual which is then used to modify each individual's vowel space rather than computing a set of non-Hertz-like values. In other words, since it is speaker-extrinsic, it is able to scale the original Hertz values as a part of its normalization process. 
 [source](http://lingtools.uoregon.edu/norm/package/html/norm.labov.html)
 
+Note that Labov said when writing about this method that it took up to 350 speakers before the sliding mean would change, so it is unlikely we will be using this method in our current research.
 
-Note that the *vowels* package is the only one that does this method, as far as I am aware. I tried really hard and could not get this method to work and give me meaningful results (I was getting F1 = 5000 Hz and F2 = 1000 Hz, so...). Note that Labov said when writing about this method that it took up to 350 speakers before the sliding mean would change, so it is unlikely we will be using this method in our current research.
+
+Note that the *vowels* package is the only one that does this method, as far as I am aware. The data needs to be in a very specific format in order to work properly:
+
+```{r}
+pb52ANAE = pb52 %>% mutate(F1_glide = NA, F2_glide = NA, F3_glide = NA, context = NA)
+head(pb52ANAE) 
+colnames(pb52ANAE)[c(3, 4, 6:9)] = c("speaker_id", "vowel_id", "F0", "F1", "F2", "F3")
+pb52ANAE = pb52ANAE %>% select(speaker_id, vowel_id, context, F1, F2, F3, F1_glide, F2_glide, F3_glide)
+
+pb52ANAE_out = norm.labov(pb52ANAE, use.f3 = TRUE)
+colnames(pb52ANAE_out)[4:9] = c("F1", "F2","F3", "F1glide", "F2glide", "F3glide")
+ggplot(pb52ANAE_out, aes(x = F2, y = F1, color = Vowel)) + geom_point(alpha = 0.4, size = 0.4) + stat_ellipse() + scale_colour_manual(values = cbPalette10) + scale_y_reverse() + scale_x_reverse() + theme_minimal()
+```
+
+
+
+
 
 
 # Which method is best?

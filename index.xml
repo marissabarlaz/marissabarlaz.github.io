@@ -89,6 +89,16 @@ What is the point? When looking at data, we want to determine if there is a rela
     </item>
     
     <item>
+      <title>Regular Expressions in R</title>
+      <link>/portfolio/regex/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/portfolio/regex/</guid>
+      <description>A brief introduction to the tidyverse Filter Arrange Select Mutate summarise and group_by  A brief introduction to strings Regular expressions Practice   The dataset I will use for this workshop is the set of lyrics to songs from the Broadway musical Les Mise&#39;rables. The data looks like this:
+head(lesmis, 30) ## # A tibble: 30 x 7 ## track_title track_n line lyric element element_artist title ## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; ## 1 Prologue (Ft.</description>
+    </item>
+    
+    <item>
       <title>Vowel Normalization in R</title>
       <link>/portfolio/vowelnormalization/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

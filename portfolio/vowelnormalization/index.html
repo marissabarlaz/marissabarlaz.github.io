@@ -104,7 +104,9 @@
     <div class="col-lg-8">
       <div class="content-column-content">
          <h1>Vowel Normalization in R</h1>
-         <div id="TOC">
+         
+
+<div id="TOC">
 <ul>
 <li><a href="#what-is-vowel-normalization">What is vowel normalization?</a></li>
 <li><a href="#types-of-vowel-normalization">Types of vowel normalization</a><ul>
@@ -489,7 +491,7 @@ ggplot(pb52nearey1sample, aes(x = f2nearey1, y = f1nearey1, color = vowel))  +th
 <div id="centroids-watt-fabricius" class="section level3">
 <h3>Centroids (Watt-Fabricius)</h3>
 <p>The Watt and Fabricius method is vowel extrinsic, but unlike other methods, the centroid used to calculate normalized values is based on points that represent the corners of the vowel space (/a/, /i/, and /u/).</p>
-<p><span class="math display">\[&lt;F1\prime, F2\prime&gt; = &lt;\frac{2\times F2}{min(\mu*F2\_v) +max(\mu*F2\_v)}, \frac{3\times F1}{2 \times min(\mu*F1\_v) +max(\mu*F1\_v)}&gt;\]</span></p>
+<p><span class="math display">\[&lt;F1\prime, F2\prime&gt; = &lt;\frac{2\times F2}{min(\mu\times F2\_v) +max(\mu\times F2\_v)}, \frac{3\times F1}{2 \times min(\mu\times F1\_v) +max(\mu\times F1\_v)}&gt;\]</span></p>
 <p>Note that the implementation of this method used in phonR calculates “which vowel has the highest mean F2 value and uses that to calculate the upper left corner, rather than expressly looking for the mean of the”point vowel&quot; /i/. The upper right corner is, as in the original method, derived from the other two. If the vowels with the highest mean F1 and highest mean F2 are not the same pair of vowels for all members of group, normWattFabricius returns an error.&quot; (quote taken from the phonR help page)</p>
 <pre class="r"><code>pb52WF = with(pb52, normWattFabricius(cbind(f1, f2), group = speaker, vowel = vowel))</code></pre>
 <pre><code>## [phonR]: The vowel with the lowest mean F1 value (usually /i/)does not match across all speakers/groups. You&#39;ll have to calculate s-centroid manually.</code></pre>

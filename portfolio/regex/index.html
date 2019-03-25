@@ -428,7 +428,7 @@ head(arrange(summarise(lesmis, nlines = n()), desc(nlines)), 20)</code></pre>
 </div>
 <div id="a-brief-introduction-to-strings" class="section level1">
 <h1>A brief introduction to strings</h1>
-<p><img src="stringtheory.jpg" /></p>
+<p><img src="/stringtheory.jpg" /></p>
 <p>Don’t worry, we aren’t going to be working on particle physics today! Strings in R are a sequence of characters, which usually (in linguistic work, at least) are text-based data. In the tidyverse, the <em>stringr</em> has been developed to work with strings. You need to load this package into R along with the tidyverse.</p>
 <p>There are seven main functions (tidyverse calls them <strong>verbs</strong>) that work with strings and patterns. I will go through five of them now:</p>
 <ul>
@@ -1426,8 +1426,8 @@ Javert</code></pre>
 <div id="regular-expressions" class="section level1">
 <h1>Regular expressions</h1>
 <p>Now that we’ve gotten through the basics of string manipulation in R, we need to think about how to best deal with strings in R. For example, what if we wanted to find all instances of the word “hey” in a set of text messages? Or, what if we want to search for words that have spelling alternations (i.e., gray vs. grey, color vs. colour)? Or if we want to see how many times any form of a verb is used (i.e., write, writes, wrote)?</p>
-<p><img src="heyyy.jpg" /></p>
-<p>One way to do this is to do a search for <em>hey</em>, then one for <em>heyy</em>, then one for <em>heyyy</em>, etc. But that gets really tiresome really quickly. Instead, we can use regular expressions (often called regex or regexp for short). Regular expressions are a concise and flexible tool for describing patterns in strings. They are used in just about every programming language you might come into contact with. From Hadley Wickham and Garrett’s <a href="https://r4ds.had.co.nz/">R For data science</a> (Ch 14):</p>
+<p><img src="/heyyy.jpg" /></p>
+<p>One way to do this is to do a search for <em>hey</em>, then one for <em>heyy</em>, then one for <em>heyyy</em>, etc. But that gets really tiresome really quickly. Instead, we can use regular expressions (often called regex or regexp for short). Regular expressions are a concise and flexible tool for describing patterns in strings. They are used in just about every programming language you might come into contact with. From Hadley Wickham and Garrett’s <a href="https://r4ds.had.co.nz/">R For Data Science</a> (Ch 14):</p>
 <blockquote>
 <p>Regular expressions are useful because strings usually contain unstructured or semi-structured data, and regexps are a concise language for describing patterns in strings. When you first look at a regexp, you’ll think a cat walked across your keyboard, but as your understanding improves they will soon start to make sense.</p>
 </blockquote>
@@ -3097,7 +3097,7 @@ head(lesmis)</code></pre>
 <h1>Practice</h1>
 <p>For more practice and reading on regular expressions, I encourage you to read the following:</p>
 <ul>
-<li><a href="https://r4ds.had.co.nz/">R For data science</a> - specifically chapter 14</li>
+<li><a href="https://r4ds.had.co.nz/">R For Data Science</a> - specifically chapter 14</li>
 <li><a href="https://www.gastonsanchez.com/r4strings/manip.html">Handling strings with R</a></li>
 <li><a href="https://www.rstudio.com/resources/cheatsheets/">R Studio cheat sheets</a> - there are printable cheat sheets for working with the tidyverse, stringr, and using regular expressions</li>
 <li><a href="https://www.tidytextmining.com/">Tidy text mining</a> - Once you’re familiar with R and how to wrangle strings, and want to begin analysis</li>

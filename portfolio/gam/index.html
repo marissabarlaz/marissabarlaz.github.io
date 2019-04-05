@@ -293,13 +293,13 @@ summary(BP02gam3)</code></pre>
 <h2>Visualizing GAM results</h2>
 <p>GAM interpretation relies heavily on visualization. There are a number of methods available for plotting GAM results. One is to use the plot function in R, which passes your model to plot.GAM. Note the difference between plotting the fits for these two models.</p>
 <pre class="r"><code>plot(BP02gam2)</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-7-1.png" width="480" /></p>
 <pre class="r"><code>plot(BP02gam3, pages = 1)</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-7-2.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-7-2.png" width="480" /></p>
 <p>Another method for plotting GAM results is the <em>mgcViz</em> package. This package utilizes ggplot2 as a plotting basis, which allows customization of plots. In order to utilize this package, the visualization of a model needs to be extracted, and then the model can be plotted.</p>
 <pre class="r"><code>BP02gam3viz = getViz(BP02gam3, nsim = 0)
 print(plot(BP02gam3viz), pages = 1)</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-8-1.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-8-1.png" width="480" /></p>
 <p>The method that has been adopted for plotting is using the <em>itsadug</em> package, which was actually developed in part by linguists. The <em>itsadug</em> package allows for plotting of different smooths, as well as differences between conditions.</p>
 <p>We will go through how to plot results of a gam using the plot_smooth and plot_diff functions. Note the difference between plotting the model without and with individual smooths by Nasality.</p>
 <p>We will begin by using the plot_smooth() function. This takes the following arguments:</p>
@@ -339,7 +339,7 @@ plot_smooth(BP02gam2, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;
 <pre><code>## Summary:
 ##  * Nasality : factor; set to the value(s): nasal, nasalized, oral. 
 ##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-9-1.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-9-1.png" width="480" /></p>
 <pre class="r"><code>#Model 3: With different smooths for nasality
 
 plot_smooth(BP02gam3, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), main = &quot;model 3, nasal&quot;)</code></pre>
@@ -358,12 +358,12 @@ plot_smooth(BP02gam3, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;
 <pre><code>## Summary:
 ##  * Nasality : factor; set to the value(s): nasal, nasalized, oral. 
 ##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-9-2.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-9-2.png" width="480" /></p>
 <pre class="r"><code>par(mfrow = c(1, 1))
 plot_diff(BP02gam3, view = &quot;NormTime&quot;, comp = list(Nasality = c(&quot;nasal&quot;, &quot;nasalized&quot;)), main = &quot;model 3, nasal minus nasalized&quot;)</code></pre>
 <pre><code>## Summary:
 ##  * NormTime : numeric predictor; with 100 values ranging from 0.100000 to 1.000000.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-9-3.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-9-3.png" width="480" /></p>
 <pre><code>## 
 ## NormTime window(s) of significant difference(s):
 ##  0.181818 - 1.000000</code></pre>
@@ -439,20 +439,20 @@ summary(BPgama1)</code></pre>
 <pre><code>## Summary:
 ##  * Nasality : factor; set to the value(s): nasal. 
 ##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-11-1.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-11-1.png" width="480" /></p>
 <pre class="r"><code>plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;))</code></pre>
 <pre><code>## Summary:
 ##  * Nasality : factor; set to the value(s): nasal. 
 ##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
 ##  * Speaker : factor; set to the value(s): BP04.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-11-2.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-11-2.png" width="480" /></p>
 <p>As you can see, the models look pretty similar, except for model <em>BPgama1</em>, the plot is set to Speaker = “BP04”. What if we wanted to see another speaker’s data?</p>
 <pre class="r"><code>plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;, Speaker = &quot;BP10&quot;))</code></pre>
 <pre><code>## Summary:
 ##  * Nasality : factor; set to the value(s): nasal. 
 ##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
 ##  * Speaker : factor; set to the value(s): BP10.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-12-1.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-12-1.png" width="480" /></p>
 <p>What if we wanted to plot the data for a few speakers? Or all of them? If you would like to plot only a subset of your speakers, you need to specify that you want to plot “all” speakers, then list the ones you want to plot specifically.</p>
 <p>Notice that the relationship between time and F1 is the same for all speakers - just the baseline has been moved up or down!</p>
 <pre class="r"><code>plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), plot_all = &quot;Speaker&quot;)</code></pre>
@@ -460,7 +460,7 @@ summary(BPgama1)</code></pre>
 ##  * Nasality : factor; set to the value(s): nasal. 
 ##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
 ##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-13-1.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-13-1.png" width="480" /></p>
 <pre class="r"><code>plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;,Speaker = c(&quot;BP02&quot;, &quot;BP05&quot;, &quot;BP10&quot;)), plot_all = &quot;Speaker&quot;)</code></pre>
 <pre><code>## Warning in plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality
 ## = &quot;nasal&quot;, : Speaker in cond and in plot_all. Not all levels are being
@@ -469,7 +469,7 @@ summary(BPgama1)</code></pre>
 ##  * Nasality : factor; set to the value(s): nasal. 
 ##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
 ##  * Speaker : factor; set to the value(s): BP02, BP05, BP10.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-13-2.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-13-2.png" width="480" /></p>
 <p>What if we wanted to see the overall trend, rather than a particular speaker’s data? In both plot_smooth() and plot_diff(), you can use rm.ranef = TRUE to show the overall shape of the model. Notice the difference in the size of the confidence intervals.</p>
 <pre class="r"><code>par(mfrow = c(1,2))
 plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;))</code></pre>
@@ -484,7 +484,7 @@ plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;n
 ##  * Speaker : factor; set to the value(s): BP04. (Might be canceled as random effect, check below.) 
 ##  * NOTE : The following random effects columns are canceled: s(Speaker)
 ## </code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-14-1.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-14-1.png" width="480" /></p>
 <pre class="r"><code>plot_diff(BPgama1, view = &quot;NormTime&quot;, comp = list(Nasality =c(&quot;oral&quot;, &quot;nasal&quot;)))</code></pre>
 <pre><code>## Summary:
 ##  * NormTime : numeric predictor; with 100 values ranging from 0.100000 to 1.000000. 
@@ -498,7 +498,7 @@ plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;n
 ##  * Speaker : factor; set to the value(s): BP04. (Might be canceled as random effect, check below.) 
 ##  * NOTE : The following random effects columns are canceled: s(Speaker)
 ## </code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-14-2.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-14-2.png" width="480" /></p>
 <pre><code>## 
 ## NormTime window(s) of significant difference(s):
 ##  0.100000 - 1.000000</code></pre>
@@ -602,19 +602,19 @@ summary(BPgama3)</code></pre>
 ##  * Nasality : factor; set to the value(s): nasal. 
 ##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
 ##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-16-1.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-16-1.png" width="480" /></p>
 <pre class="r"><code>plot_smooth(BPgama2, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), plot_all = &quot;Speaker&quot;)</code></pre>
 <pre><code>## Summary:
 ##  * Nasality : factor; set to the value(s): nasal. 
 ##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
 ##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-16-2.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-16-2.png" width="480" /></p>
 <pre class="r"><code>plot_smooth(BPgama3, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), plot_all = &quot;Speaker&quot;)</code></pre>
 <pre><code>## Summary:
 ##  * Nasality : factor; set to the value(s): nasal. 
 ##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
 ##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-16-3.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-16-3.png" width="480" /></p>
 </div>
 <div id="random-factor-smooths" class="section level3">
 <h3>Random factor smooths</h3>
@@ -691,19 +691,19 @@ summary(BPgama4)</code></pre>
 ##  * Nasality : factor; set to the value(s): nasal. 
 ##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
 ##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-18-1.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-18-1.png" width="480" /></p>
 <pre class="r"><code>plot_smooth(BPgama4, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), plot_all = &quot;Speaker&quot;)</code></pre>
 <pre><code>## Summary:
 ##  * Nasality : factor; set to the value(s): nasal. 
 ##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
 ##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-18-2.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-18-2.png" width="480" /></p>
 <pre class="r"><code>plot_smooth(BPgama5, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), plot_all = &quot;Speaker&quot;)</code></pre>
 <pre><code>## Summary:
 ##  * Nasality : factor; set to the value(s): nasal. 
 ##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
 ##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
-<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-18-3.png" width="576" /></p>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-18-3.png" width="480" /></p>
 <p>You can use the plot_diff() function as well, in order to look at differences in categories across speakers.</p>
 </div>
 </div>

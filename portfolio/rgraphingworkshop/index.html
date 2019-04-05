@@ -109,6 +109,7 @@
 <div id="TOC">
 <ul>
 <li><a href="#data">Data</a></li>
+<li><a href="#introduction-to-ggplot">Introduction to ggplot</a></li>
 <li><a href="#aesthetics">Aesthetics</a></li>
 <li><a href="#faceting">Faceting</a></li>
 <li><a href="#statistical-transformations">Statistical Transformations</a></li>
@@ -122,9 +123,9 @@
 <p>The aim of this workshop is to teach you the ins and outs of using the <em>ggplot2</em> package in R.</p>
 <p>The materials for this workshop can be found <a href="https://github.com/marissabarlaz/Workshops/tree/master/Graphing">here</a>.</p>
 <p>A lot of the information in this workshop is based on workshops given at Harvard:
-<a href="https://dss.iq.harvard.edu/workshop-materials" class="uri">https://dss.iq.harvard.edu/workshop-materials</a></p>
+<a href="https://dss.iq.harvard.edu/workshop-materials">https://dss.iq.harvard.edu/workshop-materials</a></p>
 <p>Please make good use of the following cheat sheet!
-<a href="https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf" class="uri">https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf</a></p>
+<a href="https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf">https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf</a></p>
 <div id="data" class="section level2">
 <h2>Data</h2>
 <p>The data I will be using during this tutorial is from the University of Wisconsin’s X-Ray Microbeam Speech Production Database. The database has the following variables:</p>
@@ -137,9 +138,11 @@
 <li>t(1-4)x and t(1-4)y = x and y coordinates of the tongue at position (1-4)</li>
 <li>mnix and mniy = x and y coordinates of the mandibular incisor</li>
 <li>mnmx and mnmy = x and y coordinates of the mandibular molar</li>
-<li>I have artificially introduced 5 “speakers” randomly
-## Introduction to ggplot</li>
+<li>I have artificially introduced 5 “speakers” randomly</li>
 </ul>
+</div>
+<div id="introduction-to-ggplot" class="section level2">
+<h2>Introduction to ggplot</h2>
 <p>As linguists, we are often dealing with data. And dealing with data means that when we are presenting results, we need to both describe these results in words, and display these results using plots.</p>
 <p>R is very powerful when it comes to making graphics. There are a lot of functions in base R that can create these graphics:</p>
 <pre class="r"><code>hist(ubdb$f1)</code></pre>
@@ -217,8 +220,8 @@ ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(group = ubdb$v, color = ubdb$v)</code
 <pre class="r"><code>#This is the best method of doing it!
 ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(group = v, color = v))</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot3-1.png" width="576" /></p>
-<p>What about other aesthetics?
-For boxplots and barplots, as well as other geoms, we can include significance levels with the <em>ggsignif</em> package. The pairwise comparisons being made are included in a list. The significance levels can be manually given using the ‘annotations’ argument. The geom_signif function has many other possibilities for changing the style of the significance bars.</p>
+<p>What about other aesthetics?</p>
+<p>For boxplots and barplots, as well as other geoms, we can include significance levels with the <em>ggsignif</em> package. The pairwise comparisons being made are included in a list. The significance levels can be manually given using the ‘annotations’ argument. The geom_signif function has many other possibilities for changing the style of the significance bars.</p>
 <pre class="r"><code>ggplot(ubdb, aes(x=v, y=f1)) + geom_boxplot(aes(group = v))</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot33-1.png" width="576" /></p>
 <pre class="r"><code>mycomparisons = list(c(&quot;AA&quot;, &quot;AE&quot;), c(&quot;IH&quot;, &quot;IY&quot;), c(&quot;IH&quot;, &quot;UW&quot;))
@@ -253,10 +256,13 @@ ggplot(ubdb, aes(x=t1y, y=f1)) + geom_smooth(aes(color = v), method = &quot;gam&
 <p>What if we wanted to plot the average F1 for each vowel? This doesn’t do it…</p>
 <pre class="r"><code>ggplot(ubdb, aes(x=v, y = f1))+geom_bar(aes(color = v, fill = v), stat = &quot;identity&quot;)</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/unnamed-chunk-1-1.png" width="576" />
-What we need to do is create a summary function and pass that into ggplot.</p>
-<pre class="r"><code>ubdb %&gt;% group_by(v) %&gt;% summarise(meanF1 = mean(f1)) %&gt;% ggplot(aes(x=v, y = meanF1))+geom_bar(aes(color = v, fill = v), stat = &quot;identity&quot;)</code></pre>
+What we need to do is create a summary function and pass that into ggplot. This is a common thing to do for all sorts of data. In the summarise function, you can include standard error, SD, and many other summary statistics.</p>
+<pre class="r"><code>ubdbsummary = ubdb %&gt;% group_by(v) %&gt;% summarise(meanF1 = mean(f1), sdF1 = sd(f1))
+
+ggplot(ubdbsummary, aes(x=v, y = meanF1))+geom_bar(aes(color = v, fill = v), stat = &quot;identity&quot;)</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/unnamed-chunk-2-1.png" width="576" /></p>
-<p>```</p>
+<pre class="r"><code>ggplot(ubdbsummary, aes(x=v, y = meanF1))+geom_bar(aes(color = v, fill = v), stat = &quot;identity&quot;) + geom_errorbar(aes(ymin = meanF1-sdF1,ymax = meanF1+sdF1, group = v), width= 0.5)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/unnamed-chunk-2-2.png" width="576" /></p>
 </div>
 <div id="faceting" class="section level2">
 <h2>Faceting</h2>
@@ -324,7 +330,7 @@ ggplot(ubdb, aes(x=f2, y=f1))+geom_text(data = mymeans, aes(color = v, label = v
 ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v), alpha = 0.3)+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/colors-1.png" width="576" />
 There are many other ways to define and change colors, including changing hues, luminance, saturation, etc. If you have any questions about these things, please ask me! You can also find more information on color in R here:</p>
-<p><a href="http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/" class="uri">http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/</a></p>
+<p><a href="http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/">http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/</a></p>
 <p>###Labels, titles, and Axes
 If you want to relabel the axes, or give a title, you can use the <em>xlab()</em>, <em>ylab()</em>, and <em>ggtitle()</em> functions.</p>
 <p>To change limits of the x and y axes, you can use <em>xlim()</em> and <em>ylim()</em>.</p>
@@ -362,7 +368,7 @@ myplot</code></pre>
 <pre class="r"><code>#Not run = to save the plot!
 #ggsave(&quot;myplot.pdf&quot;, plot = myplot, height = 6, width = 10, units = &quot;in&quot;, device = cairo_pdf)</code></pre>
 <p>I highly recommend using the following reference whenever you need to find more information about a graphing mechanism in <em>ggplot</em>:
-<a href="http://ggplot2.tidyverse.org/reference/" class="uri">http://ggplot2.tidyverse.org/reference/</a></p>
+<a href="http://ggplot2.tidyverse.org/reference/">http://ggplot2.tidyverse.org/reference/</a></p>
 </div>
 
          

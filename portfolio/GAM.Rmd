@@ -7,7 +7,7 @@ weight: 4
 output:
   blogdown::html_page:
     toc: true
-    fig_width: 6
+    fig_width: 5
 description: "This workshop aims to teach you the basics of generalized additive models in R."
 editor_options: 
   chunk_output_type: console

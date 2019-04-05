@@ -1,0 +1,515 @@
+---
+title: "Bayesian Analysis in R"
+author: "Marissa Barlaz"
+image: "img/bayes.jpg"
+showonlyimage: false
+weight: 1
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+description: "This workshop is an introduction to Bayesian statistics in R."
+editor_options: 
+  chunk_output_type: console
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(Rling)
+library(RePsychLing)
+library(ggpubr)
+library(brms)
+library(ggridges)
+library(shinystan)
+library(bayesplot)
+library(tidybayes)
+library(ggmcmc)
+library(modelr)
+theme_set(theme_minimal())
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+data("time_training")
+data("time_exper")
+head(time_exper)
+time_all = rbind(time_training, time_exper)
+BP = read_csv("/Users/goldrch2/Desktop/Teaching/SPAN 588/Course Data/normtimedata.csv") 
+
+normtimeBP = BP%>% filter(F1>=200 & F1 <=800, Nasality!="nasal_final", NormTime ==0.5)%>% mutate(label = str_replace_all(label, "~", "s")) %>% mutate_at(.vars = c(1:5, 7:8), .funs = as.factor) %>% group_by(Speaker)  %>% select(-Word, -Type, -label, -Time)
+```
+
+
+The packages I will be using for this workshop include:
+
+
+```{r, eval = FALSE}
+library(tidyverse)
+library(brms)
+library(ggridges)
+library(shinystan)
+library(bayesplot)
+library(tidybayes)
+library(ggmcmc)
+```
+
+The data I will be using is a subset of my dissertation data, which looks like this:
+
+```{r}
+head(normtimeBP)
+str(normtimeBP, give.attr = FALSE)
+summary(normtimeBP)
+```
+
+# What is Bayesian analysis?
+
+The majority of experimental linguistic research has been analyzed using frequentist statistics - that is, we draw conclusions from our sample data based on the frequency or proportion of groups within the data, and then we attempt to extrapolate to the larger community based on this sample. In these cases, we are often comparing our data to a null hypothesis - is our data compatible with this "no difference" hypothesis? We obtain a p-value, which measures the (in)compatibility of our data with this hypothesis. These methods rely heavily on point values, such as means and medians.
+
+Bayesian inference is an entirely different ballgame. Instead of relying on single points such as means or medians, it is a probability-based system. In this system there is a relationship between previously known information and your current dataset. The output of the analysis includes credible intervals - that is, based on previous information plus your current model, what is the most probable range of values for your variable of interest?
+
+Informally, Bayes' theorem is: Posterior ∝ Prior × Likelihood.
+
+
+## A simple Bayesian analysis
+
+```{r echo = FALSE, message = FALSE}
+
+prop_model <- function(data = c(), prior_prop = c(1, 1), n_draws = 10000) {
+  library(tidyverse)
+  cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+  data <- as.logical(data)
+  # data_indices decides what densities to plot between the prior and the posterior
+  # For 20 datapoints and less we're plotting all of them.
+  data_indices <- round(seq(0, length(data), length.out = min(length(data) + 1, 20)))
+
+  # dens_curves will be a data frame with the x & y coordinates for the 
+  # denities to plot where x = proportion_success and y = probability
+  proportion_success <- c(0, seq(0, 1, length.out = 100), 1)
+  dens_curves <- map_dfr(data_indices, function(i) {
+    value <- ifelse(i == 0, "Prior", ifelse(data[i], "Success", "Failure"))
+    label <- paste0("n=", i)
+    probability <- dbeta(proportion_success,
+                         prior_prop[1] + sum(data[seq_len(i)]),
+                         prior_prop[2] + sum(!data[seq_len(i)]))
+    probability <- probability / max(probability)
+    data_frame(value, label, proportion_success, probability)
+  })
+  # Turning label and value into factors with the right ordering for the plot
+  dens_curves$label <- fct_rev(factor(dens_curves$label, levels =  paste0("n=", data_indices )))
+  dens_curves$value <- factor(dens_curves$value, levels = c("Prior", "Success", "Failure"))
+
+  p <- ggplot(dens_curves, aes(x = proportion_success, y = label,
+                               height = probability, fill = value)) +
+    ggridges::geom_density_ridges(stat="identity", color = "white", alpha = 0.8,
+                                  panel_scaling = TRUE, size = 1) +
+    scale_y_discrete("", expand = c(0.01, 0)) +
+    scale_x_continuous("Underlying proportion of success") +
+#    scale_fill_manual(values = hcl(120 * 2:0 + 15, 100, 65), name = "", drop = FALSE,
+    scale_fill_manual(values = cbPalette, name = "", drop = FALSE,
+labels =  c("Prior   ", "Success   ", "Failure   ")) +
+    ggtitle(paste0(
+      "Binomial model - Data: ", sum(data),  " successes, " , sum(!data), " failures")) +
+    theme_light() +
+    theme(legend.position = "top")
+  print(p)
+
+  # Returning a sample from the posterior distribution that can be further 
+  # manipulated and inspected
+  posterior_sample <- rbeta(n_draws, prior_prop[1] + sum(data), prior_prop[2] + sum(!data))
+  invisible(posterior_sample)
+}
+
+prop_model(c(FALSE, TRUE, FALSE, FALSE, FALSE, TRUE))
+prop_model(c(FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE))
+
+set.seed(126)
+big_data <- sample(c(TRUE, FALSE), prob = c(0.75, 0.25),
+                   size = 100, replace = TRUE)
+
+prop_model(big_data)
+
+big_data2 <- sample(c(TRUE, FALSE), prob = c(0.25, 0.75),
+                   size = 100, replace = TRUE)
+prop_model(big_data2)
+
+
+
+big_data3 <- sample(c(TRUE, FALSE), prob = c(0.5, 0.5),
+                   size = 100, replace = TRUE)
+prop_model(big_data3)
+
+```
+
+## Why use Bayesian analysis?
+
+There are many reasons to use Bayesian analysis instead of frequentist analytics. Bayesian analysis is really flexible in that:
+
+1. You can include information sources in addition to the data.
+
+  * this includes background information given in textbooks or previous studies, common knowledge, etc.
+
+2. You can make any comparisons between groups or data sets.
+
+  * This is especially important for linguistic research.
+
+3. Bayesian methods allow us to directly the question we are interested in: How *plausible* is our hypothesis given the data?
+
+  * This allows us to quantify uncertainty about the data and avoid terms such as "prove".
+
+4. Models are more easily defined and are more flexible, and not susceptible to things such as separation.
+
+# How to run a Bayesian analysis in R
+
+There are a bunch of different packages availble for doing Bayesian analysis in R. These include *RJAGS* and *rstanarm*, among others. The development of the programming language Stan has made doing Bayesian analysis easier for social sciences. We will use the package *brms*, which is written to communicate with Stan, and allows us to use syntax analogous to the lme4 package. Note that previous tutorials written for linguistic research use the *rstan* and *rstanarm* packages (such as Sorensen, Hohenstein and Vasishth, 2016 and Nicenbolm and Vasishth, 2016). A more recent tutorial (Vasishth et al., 2018) utilizes the *brms* package.
+
+![](stanmarsh.png)
+
+Vasishth et al. (2018) identify five steps in carrying out an analysis in a Bayesian framework. They are:
+
+1. Explore the data using graphical tools; visualize the relationships between variables of interest.
+2. Define model(s) and priors.
+3. Fit model(s) to data.
+4. Check for convergence.
+5. Carry out inference by:
+
+  a. summarizing and displaying posterior distributions
+  b. computing Bayes factors with several different priors for theparameter being tested
+  c. evaluating predictive performance of competing models using k-fold cross-validation or approximations of leave-one-out cross-validation.
+
+
+## Step 1: Data exploration
+
+```{r}
+summary(normtimeBP)
+ggplot(normtimeBP, aes(x = F1, y = F2, color = Vowel, shape = Nasality)) + geom_point(alpha = 0.2) + scale_color_manual(values = cbPalette) + stat_ellipse(aes(linetype = Nasality))
+
+ggplot(normtimeBP, aes(x = F1, color = Nasality, fill = Nasality)) + geom_density(alpha = 0.2) + scale_color_manual(values = cbPalette)+scale_fill_manual(values = cbPalette) +facet_wrap(~Vowel)
+
+```
+
+## Step 2: Define the model and priors
+
+Here, I am going to run three models for F1: one null model, one simple model, and one complex model.
+
+Null model: F1~1 (i.e., no categorical differences)
+Simple model: F1~ Vowel
+Complex model: F1~ Vowel\*Nasality + (Vowel\*Nasality|Speaker)
+
+### Determining priors
+
+The information we give the model from the past is called a *prior*. There are a few different types of priors, all of which are given based on reasonable ideas of what these variables can be.
+
+For example, when we look at formant values, we have a reasonable idea of where our phonemes should lie - even including individual differences. F1 falls within about $200-1000 Hz$ - so its mean is about $600 Hz$, with a standard deviation of $200 Hz$. In R we can represent this with the normal distribution. Recall that with normally distributed data, 95\% of the data falls within 2 standard deviations of the mean, so we are effectively saying that we expect with 95\% certainty for a value of F1 to fall in this distribution.
+
+An uninformative prior is when there is no information available on the prior distribution of the model. In this case, we can consider implicitly the prior to be a uniform distribution - that is, there is an even distribution of probability for each value of RT. Graphing this (in orange below) against the original data (in blue below) gives a high weight to the data in determining the posterior probability of the model (in black below)
+
+
+```{r, echo = FALSE , message= FALSE, results='hide'}
+ml4 = brm(rt~Prime * Lang + (1|Subj), data = time_all, family = gaussian(), iter = 2000, chains = 4, warmup = 1000, control = list(adapt_delta = 0.99))
+```
+
+```{r, echo = FALSE}
+posteriorml4 = posterior_samples(ml4)
+
+ungg = ggplot(data = posteriorml4, aes(x = b_Intercept)) + geom_density(aes(color = "Posterior", fill = "Posterior"), alpha = 0.2)+ geom_density(data = time_all, aes(x = rt, color = "Likelihood", fill = "Likelihood"), alpha = 0.2) + geom_density(data = data.frame(uni = runif(1000,1000,4000)), aes(x = uni,color = "Prior", fill = "Prior"), alpha = 0.2) + scale_color_manual(guide = "legend", name = "Distribution", values = c("Posterior" = cbPalette[4], "Prior" = cbPalette[2], "Likelihood" = cbPalette[3]))  + scale_fill_manual(guide = "legend", name = "Distribution", values = c("Posterior" = cbPalette[4], "Prior" = cbPalette[2], "Likelihood" = cbPalette[3])) + ggtitle("Uninformative prior")
+ungg
+```
+
+A weakly informative prior is one that helps support prior information, but still has a relatively wide distribution. In this case, the prior does somewhat affect the posterior, but its shape is still dominated by the data (aka likelihood).
+
+To show you the effects of weakly informative priors on a model I will run a model with priors but not show you its specifications - we'll look at the models in a bit.
+
+```{r, echo = FALSE , message= FALSE, results='hide'}
+ml4weakprior =  set_prior("normal(3000,500)", class = "Intercept")
+ml4weak = brm(rt~Prime * Lang + (1|Subj), data = time_all, family = gaussian(), prior = ml4weakprior, iter = 2000, chains = 4, warmup = 1000, control = list(adapt_delta = 0.99), save_all_pars = TRUE)
+```
+
+```{r, echo=FALSE}
+
+posteriorml4weak = posterior_samples(ml4weak)
+
+wigg = ggplot(data = posteriorml4weak, aes(x = b_Intercept)) + geom_density(aes(color = "Posterior", fill = "Posterior"), alpha = 0.2)+ geom_density(data = time_all, aes(x = rt, color = "Likelihood", fill = "Likelihood"), alpha = 0.2) + geom_density(data = data.frame(uni = rnorm(1000,3000,500)), aes(x = uni,color = "Prior", fill = "Prior"), alpha = 0.2) + scale_color_manual(guide = "legend", name = "Distribution", values = c("Posterior" = cbPalette[4], "Prior" = cbPalette[2], "Likelihood" = cbPalette[3]))  + scale_fill_manual(guide = "legend", name = "Distribution", values = c("Posterior" = cbPalette[4], "Prior" = cbPalette[2], "Likelihood" = cbPalette[3])) + ggtitle("Weakly informative prior")
+wigg
+```
+
+
+A highly informative prior (or just informative prior) is one with a strong influence on the posterior. This is becase it has a much narrower range of its distribution, given a smaller standard deviation. In this case, the prior "pulls" the posterior in its direction, even though there is still the likelihood to influence the model as well.
+
+```{r, echo = FALSE, message= FALSE, results='hide'}
+ml4strongprior =  set_prior("normal(3000,100)", class = "Intercept")
+ml4strong = brm(rt~Prime * Lang + (1|Subj), data = time_all, family = gaussian(), prior = ml4strongprior, iter = 2000, chains = 4, warmup = 1000, control = list(adapt_delta = 0.99), save_all_pars = TRUE)
+
+
+```
+
+```{r, echo = FALSE}
+posteriorml4strong = posterior_samples(ml4strong)
+
+higg = ggplot(data = posteriorml4strong, aes(x = b_Intercept)) + geom_density(aes(color = "Posterior", fill = "Posterior"), alpha = 0.2)+ geom_density(data = time_all, aes(x = rt, color = "Likelihood", fill = "Likelihood"), alpha = 0.2) + geom_density(data = data.frame(uni = rnorm(1000,3000,100)), aes(x = uni,color = "Prior", fill = "Prior"), alpha = 0.2) + scale_color_manual(guide = "legend", name = "Distribution", values = c("Posterior" = cbPalette[4], "Prior" = cbPalette[2], "Likelihood" = cbPalette[3]))  + scale_fill_manual(guide = "legend", name = "Distribution", values = c("Posterior" = cbPalette[4], "Prior" = cbPalette[2], "Likelihood" = cbPalette[3])) + ggtitle("Informative prior")
+higg
+```
+
+
+So, to directly compare these types of prior and their influence on the models:
+
+```{r, echo = FALSE}
+ggarrange(ungg, wigg, higg, ncol=3, common.legend = TRUE, legend="bottom")
+```
+
+So, in short - which type of prior do we choose? Generally for continuous variables, they will have a normal distribution. We need to choose something "reasonable" - one way of doing so is pooling the literature and textbooks and deciding on a mean and standard deviation based on that. How precisely to do so still seems to be a little subjective, but if appropriate values from reputable sources are cited when making a decision, you generally should be safe.
+
+
+## How to set priors in brms
+
+For each coefficient in your model, you have the option of specifying a prior. Note that when using dummy coding, we get an intercept (i.e., the baseline) and then for each level of a factor we get the "difference" estimate - how much do we expect this level to differ from the baseline? We need to specify the priors for that difference coefficient as well.
+
+In order to get the list of priors we can specify, we can use the *get_prior()* function:
+
+```{r}
+get_prior(F1~Nasality* Vowel + (1|Speaker), data = normtimeBP, family = gaussian())
+```
+
+This gives the class and coefficient type for each variable. Class *b* (or, $\beta$) is a fixed effect coefficient parameter. Class *sd* (or, $\sigma$), is the standard deviation of the random effects. Class *sigma* is the standard deviation of the residual error. R automatically constrains *sd* and *sigma* to not have coefficients lower than 0 (since by definition standard deviations are always positive.)
+
+To set a list of priors, we can use the *set_prior()* function. We need to do this for each prior we set, so it is easiest to create a list of priors and save that as a variable, then use that as the prior specification in the model.
+
+Let's say based on prior research we know the following with 95\% certainty:
+
+* F1 ranges from 200 to 800 Hz with an average of 500 Hz.
+* The difference between nasal and oral vowels is anywhere from -100 to -100 Hz (average of 0 Hz), and the difference between nasal and nasalized vowels is anywhere from -50 to -50 Hz (average of 0 Hz).
+* The difference between a and i is around 200 to 600 Hz with an average of 400 Hz.
+* The difference between a and u is around 200 to 600 Hz.
+* Individuals can differ by 0 to 500 Hz in their F1 range.
+
+RECALL that when we use distributions to set up our standard deviations to be half of what the difference is, since with 95\% confidence we say that our values are falling within 2 standard deviations of the mean. Therefore, for reaction time (as an example), if we are pretty sure the "true value" is $500 \pm 300$, we are saying we are 95\% certain that our value falls within $\mu \pm 2*\sigma = 500 \pm 300$, so here $\mu = 500$ and $2\sigma = 300$, so $\sigma=150$.
+
+```{r}
+modelpriors0 = set_prior("normal(2500,150)", class = "Intercept")
+
+modelpriors1 = c(set_prior("normal(2500,150)", class = "Intercept"),
+              set_prior("normal(400,100)", class = "b", coef = "Voweli"),
+              set_prior("normal(400,100)", class = "b", coef = "Vowelu"),              
+              set_prior("normal(0,250)", class = "sigma"))
+
+
+modelpriors2 = c(set_prior("normal(2500,150)", class = "Intercept"),
+              set_prior("normal(400,100)", class = "b", coef = "Voweli"),
+              set_prior("normal(400,100)", class = "b", coef = "Vowelu"),              
+              set_prior("normal(0,50)", class = "b", coef = "Nasalityoral"),
+              set_prior("normal(0,25)", class = "b", coef = "Nasalitynasalized"),
+              set_prior("normal(0,250)", class = "sd"),
+              set_prior("normal(0,250)", class = "sigma"))
+
+```
+
+
+## Step 3: Fit models to data
+
+These models can take a bit of time to run, so be patient! Imagine an experimental dataset with thousands of lines. What the *brm()* function does is create code in Stan, which then runs in C++.
+
+With each model, we need to define the following:
+
+* formula (same as in lme4 syntax)
+* dataset
+* family (gaussian, binomial, multinomial, etc.)
+* priors (more on this later!)
+* number of iterations sampled from the posterior distribution per chain (defaults to 2000)
+* number of (Markov) chains - random values are sequentially generated in each chain, where each sample depends on the previous one. Different chains are independent of each other such that running a model with four chains is equivalent to running four models with one chain each. 
+* number of warmup iterations, which are used for settling on a posterior distribution but then are discarted (defaults to half of the number of iterations)
+* control (list of of parameters to control the sampler's behavior)
+
+  * Adapt_delta: Increasing adapt_delta will slow down the sampler but will decrease the number of divergent transitions threatening the validity of your posterior samples. If you see warnings in your model about "x divergent transitions", you should increase delta to between 0.8 and 1.
+
+
+```{r}
+f1modelnull = brm(F1~1, data = normtimeBP, family = gaussian(), prior = modelpriors0, iter = 2000, chains = 4, warmup = 1000, control = list(adapt_delta = 0.99))
+
+f1modelsimple = brm(F1~Vowel, data = normtimeBP,prior = modelpriors1, family = gaussian(), iter = 2000, chains = 4, warmup = 1000, control = list(adapt_delta = 0.99))
+
+f1modelcomplex = brm(F1~Nasality* Vowel + (1|Speaker), data = normtimeBP, family = gaussian(), prior = modelpriors2,  iter = 2000, chains = 4, warmup = 1000, control = list(adapt_delta = 0.99))
+
+
+```
+
+
+
+
+## Step 4: Check model convergence
+
+Like with frequentist mixed effects models, it is important to check whether or not a model has converged. One metric for convergence is the $\widehat{R}$ (R-hat) statistic, which is the ratio of between-chain to within-chain variance. We expect the $\widehat{R}$ to be around 1, meaning there is a comparable amount of within-chain and between-chain variance.
+
+To get the $\widehat{R}$ value, use summary to look at the model. You can also plot the $\widehat{R}$ values for each parameter using the *mcmc_rhat()* function from the *bayesplot* package.
+
+
+```{r}
+summary(f1modelnull)
+mcmc_rhat(rhat(f1modelnull))+ yaxis_text(hjust = 1)
+
+summary(f1modelsimple)
+mcmc_rhat(rhat(f1modelsimple))+ yaxis_text(hjust = 1)
+
+summary(f1modelcomplex)
+mcmc_rhat(rhat(f1modelcomplex))+ yaxis_text(hjust = 1)
+
+```
+In addition, we can look at the chains - when they are plotted, they should overlap and not deviate from one another wildly. This indicates that the chains are doing more or less the same thing. We can plot the chains using the *stanplot()* function from *brms*, or the *ggs_traceplot()* function from *ggmcmc*.
+
+
+```{r}
+
+plot(f1modelnull)
+plot(f1modelsimple)
+plot(f1modelcomplex)
+
+
+
+ggs_traceplot(ggs(f1modelcomplex))+ scale_color_manual(values = cbPalette)
+
+
+
+
+#here I am only lookng for the fixed effects parameters, or beta parameters. Otherwise we would end up with plots for every participant's intercept.
+
+ggsf1modelcomplex = ggs(f1modelcomplex) %>% dplyr::filter(str_detect(Parameter, "^b"))
+
+ggs_traceplot(ggsf1modelcomplex, original_burnin = FALSE)+ scale_color_manual(values = cbPalette)  + xlim(c(1000,2000)) + ggtitle("Model 4")
+
+```
+
+
+## Step 5: Carry out inference
+I'm going to take this a little out of order and first do some model comparison, then plot posterior distributions and do some hypothesis testing.
+
+
+### Evaluate predictive performance of competing models
+
+Like with linear mixed effects models and many other analytical methods we have talked about, we need to make sure our model is fit well to our data. 
+
+There are a few different methods for doing model comparison. The first is whether your model fits the data. You can use the *pp_check()* function, which plots your model's prediction against *nsamples* random samples, as below:
+
+```{r}
+pp_check(f1modelcomplex, nsamples = 100)
+```
+
+Of course, this is a bit biased, since we are plotting our data against a model which was built on said data.
+
+A better way of looking at the model is to look at the predictive power of the model against either new data or a subset of "held-out" data. One method of this is called leave-one-out (LOO) validation. In this method (similar to cross-validation), you leave out a data point, run the model, use the model to predict that data point, and calculate the difference between the predicted and actual value. We can then compare the loo value between different models, with the model having a lower loo value considered to have the better performance.
+
+The *brms* package has a built-in function, *loo()*, which can be used to calculate this value. The output of interest for this model is the LOOIC value.
+
+```{r}
+brms::loo(f1modelnull)
+```
+
+In order to compare multiple models, you used to be able to include multiple into the model and say compare = TRUE, but this seems to be deprecated and doesn't show you $\Delta$LOOIC values.
+```{r}
+brms::loo(f1modelnull, f1modelsimple, f1modelcomplex, compare = T)
+
+```
+
+
+Another method we can use is to we can add the loo comparison criteria to each model (it doesn't change the model itself!) and use *loo_compare()*. Unfortunately, this doesn't seem to give $\Delta$LOOIC values either - but it does give ELPD-loo (expected log pointwise predictive density) differences. In this case, the model at the top "wins", as when elpd_diff is positive then the expected predictive accuracy for the second model is higher. A negative elpd_diff favors the first model.
+
+
+```{r}
+f1modelnull = add_criterion(f1modelnull, "loo")
+f1modelsimple = add_criterion(f1modelsimple, "loo")
+f1modelcomplex = add_criterion(f1modelcomplex, "loo")
+
+loo_compare(f1modelnull, f1modelsimple, f1modelcomplex, criterion = "loo")
+
+```
+
+Other methods include Watanabe-Akaike information criterion (WAIC), kfold, marginal likelihood and R^2^. WE can add these validation criteria to the models simultaneously. Once again,a negative elpd_diff favors the first model.
+
+Note we cannot use loo_compare to compare R^2^ values - we need to extract those manually. Note that while this is technically possible to do, Bayesian analyses often do not include R^2^ in their writeups (see [this](https://www.r-bloggers.com/how-do-i-calculate-the-r-squared-metric-for-a-bayesian-model/) conversation.)
+```{r, error = TRUE}
+f1modelnull = add_criterion(f1modelnull, c("R2", "waic"))
+f1modelsimple = add_criterion(f1modelsimple, c("R2", "waic"))
+f1modelcomplex = add_criterion(f1modelcomplex, c("R2", "waic"))
+
+
+loo_compare(f1modelnull, f1modelsimple, f1modelcomplex,  criterion = "waic")
+loo_compare(f1modelnull, f1modelsimple, f1modelcomplex,  criterion = "R2")
+
+sapply(list(f1modelnull, f1modelsimple, f1modelcomplex), function(x) median(x$R2))
+sapply(list(f1modelnull, f1modelsimple, f1modelcomplex), function(x) round(median(x$R2)*100, 2))
+```
+
+In all of these cases, our most complex model, f1modelcomplex, is favored.
+
+
+
+### Summarize and display posterior distributions
+
+Now that we have a model and we know it converged, how do we interpret it?
+
+There are a few different ways of interpreting a model. The first, and most common, is to both plot and report the posterior distributions. When I say plot, I mean we literally plot the distribution, usually with a histogram. When I say report the posterior distributions, I mean plot the estimate of each parameter (aka the mode of the density plot), along with the 95\% credible interval (abbreviated as CrI, rather than CI). 
+
+First, to get the posterior distributions, we use *summary()* from base R and *posterior_summary()* from *brms*.
+
+
+```{r}
+
+summary(f1modelcomplex)
+```
+
+Note that here, we get similar results to a lme4 model in terms of estimate, except we also get the 95\% CrI. These are known as the $\beta$ (or b\_) coefficients, as they are changes in the fixed effects. For the mixed effects model, we are given the standard deviation for any group-level effects, meaning the varying intercept for subject. If we had included a random slope as well, we would get that sd also. 
+
+```{r}
+posterior_summary(f1modelcomplex)
+```
+
+Here, we get the estimate, error, and 95\% CrI for each of the beta coefficients, the sd of the random effect, the deviation for each level of the random effect, and sigma (which is the standard deviation of the residual error, and is automatically bounded to be a positive value by brms).
+
+To plot the results, we can use *stanplot()* from brms, and create a histogram or interval plot, or we can use the tidybayes function *add_fitted_draws()* to create interval plots. We can also use the brms function *marginal_effects()*.There are a number of other ways to do this, but these are (IMHO) the most straight forward. 
+```{r}
+stanplot(f1modelcomplex, pars = c("^b","sd","sigma"), type="hist")
+stanplot(f1modelcomplex, pars = c("^b","sd","sigma"), type="intervals")
+
+
+
+marginal_effects(f1modelcomplex)
+```
+
+Note that there is a great interactive way to explore your models, using the *shinystan* package (though this cannot be run through HTML, so you will have to bear with me while I open it in my browser during class):
+```{r, eval = FALSE}
+shinyml4 = launch_shinystan(f1modelcomplex)
+```
+
+### Hypothesis testing
+
+## Hypothesis testing using CrIs
+
+One way of doing hypothesis testing is to look at credible intervals: if the credible interval of a factor minus another factor crosses 0, it is unlikely that there are differences between those factors. We can do this in two ways: the first is taking the fitted values of the posterior for the data, and calculating the difference in the fitted values from the two factors. Since this will be a distribution, if the 95\% CrI crosses 0, there is likely no difference, but if it doesn't cross 0 there can be assumed to be a difference (with the difference being the mean).
+
+
+```{r}
+f1modelcomplexfit= as.data.frame(fitted(f1modelcomplex, newdata = expand.grid(Vowel = levels(normtimeBP$Vowel), Nasality = levels(normtimeBP$Nasality)), re_formula = NA, summary = FALSE))
+
+mylevels = expand.grid(Vowel = levels(normtimeBP$Vowel), Nasality = levels(normtimeBP$Nasality)) %>% mutate(PL = paste0(Vowel, Nasality))
+colnames(f1modelcomplexfit) = mylevels$PL
+
+
+head(f1modelcomplexfit)
+f1modelcomplexfit = f1modelcomplexfit %>% mutate(anasoraldiff = (anasal - aoral), inasaldiff = inasal - (ioral + inasalized)/2, uioraldiff = uoral - ioral)
+ggplot(f1modelcomplexfit, aes(x = anasoraldiff)) + geom_histogram()
+quantile(f1modelcomplexfit$anasoraldiff, c(0.5, 0.025, 0.975))
+
+ggplot(f1modelcomplexfit, aes(x = inasaldiff)) + geom_histogram()
+quantile(f1modelcomplexfit$inasaldiff, c(0.5, 0.025, 0.975))
+
+ggplot(f1modelcomplexfit, aes(x = uioraldiff)) + geom_histogram()
+quantile(f1modelcomplexfit$uioraldiff, c(0.5, 0.025, 0.975))
+
+```
+
+
+
+We can ask some research questions using the hypothesis function:
+
+```{r}
+hypothesis(f1modelcomplex, "Intercept - Voweli = 0")
+hypothesis(f1modelcomplex, "Intercept - Nasalitynasalized = 0")
+hypothesis(f1modelcomplex, "Intercept - Nasalityoral > 0")
+hypothesis(f1modelcomplex, "Voweli - Vowelu= 0")
+
+```
+

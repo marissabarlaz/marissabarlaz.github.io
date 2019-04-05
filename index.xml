@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>Bayesian Analysis in R</title>
+      <link>/portfolio/bayesian/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/portfolio/bayesian/</guid>
+      <description>What is Bayesian analysis? A simple Bayesian analysis Why use Bayesian analysis?  How to run a Bayesian analysis in R Step 1: Data exploration Step 2: Define the model and priors Determining priors  How to set priors in brms Step 3: Fit models to data Step 4: Check model convergence Step 5: Carry out inference Evaluate predictive performance of competing models Summarize and display posterior distributions Hypothesis testing  Hypothesis testing using CrIs    The packages I will be using for this workshop include:</description>
+    </item>
+    
+    <item>
       <title>Text Mining with R</title>
       <link>/portfolio/textminingr/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -26,7 +35,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/portfolio/rgraphingworkshop/</guid>
-      <description>Data Aesthetics Faceting Statistical Transformations Other Aspects of the graph Colors  Wrapping up   The aim of this workshop is to teach you the ins and outs of using the ggplot2 package in R.
+      <description>Data Introduction to ggplot Aesthetics Faceting Statistical Transformations Other Aspects of the graph Colors  Wrapping up   The aim of this workshop is to teach you the ins and outs of using the ggplot2 package in R.
 The materials for this workshop can be found here.
 A lot of the information in this workshop is based on workshops given at Harvard: https://dss.iq.harvard.edu/workshop-materials
 Please make good use of the following cheat sheet!</description>

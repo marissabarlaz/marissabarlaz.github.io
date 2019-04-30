@@ -159,7 +159,6 @@ There are many reasons to use Bayesian analysis instead of frequentist analytics
 
 There are a bunch of different packages availble for doing Bayesian analysis in R. These include *RJAGS* and *rstanarm*, among others. The development of the programming language Stan has made doing Bayesian analysis easier for social sciences. We will use the package *brms*, which is written to communicate with Stan, and allows us to use syntax analogous to the lme4 package. Note that previous tutorials written for linguistic research use the *rstan* and *rstanarm* packages (such as Sorensen, Hohenstein and Vasishth, 2016 and Nicenbolm and Vasishth, 2016). A more recent tutorial (Vasishth et al., 2018) utilizes the *brms* package.
 
-![](stanmarsh.png)
 
 Vasishth et al. (2018) identify five steps in carrying out an analysis in a Bayesian framework. They are:
 

@@ -1,0 +1,282 @@
+---
+title: "Contrast coding in R"
+author: "Marissa Barlaz"
+image: "img/dummy.jpg"
+showonlyimage: false
+weight: 4
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 5
+description: "This workshop aims to teach you the basics of different coding schemes in R."
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(car)
+library(nparcomp)
+library(Rling)
+normtimedata <- read.csv("/Users/goldrch2/Desktop/Teaching/SPAN 588/Course Data/normtimedata.csv", header = TRUE)
+```
+
+# Data processing
+For this tutorial, I am using my dissertation data. I am using one speaker's data so we don't have to account for individual differences, and I am only using the midpoint of the vowel.
+```{r}
+normtimeBP02 = normtimedata %>% filter(Speaker =="BP02", NormTime==0.5)
+head(normtimeBP02)
+```
+
+# What is a contrast?
+A contrast is a linear combination of variables that  allows comparison of different treatments. Categorical variables are entered into a regression analysis as a sequence of $n-1$ variables. Generally, these are dummy variables. There are four built-in contrast coding schemes in R. You can also build your own contrast coding scheme. No matter which coding scheme you use, you will always have $n−1$ columns for $n$ levels of a variable in your contrast coding scheme.
+
+Different contrasts can help answer different research questions. For example, sometimes it is not terribly informative to compare groups to a reference level. You might want to make a comparison between groups and the overall trend in your data. With ordinal data, the distance between groups might not be the same between subsequent groups. Therefore it would make more sense to make stepwise comparisons.
+
+
+By default, a variable does not have a contrast set in place - R will default to the dummy coding system when running a linear regression. In order to set a contrast in R, you can use the *contr._X_()* function for treatment, sum, and Helmert contrasts, or define any contrast manually. Be aware that this changes your dataset. You might want to consider creating a new variable as a copy of your original one, and set the contrasts on that variable. Alternatively, set the contrast back to 'treatment' when you’re done your analysis. Note that there is no inherent problem with leaving a contrast set, except it might surprise you when you run a different analysis on your data!
+
+Make sure to set all variables’ contrasts before starting.
+
+
+# Coding schemes
+
+## Dummy coding
+
+The coding scheme you are most familiar with is dummy coding, or treatment coding. It compares each level of a categorical variable to a reference level. By default, the reference level is the first level of the categorical variable, in alphabetical order.
+
+The contrast matrix for a categorical variable with four levels looks like this:
+
+
+```{r}
+contr.treatment(4)
+contrasts(normtimeBP02$Nasality)
+contrasts(normtimeBP02$Vowel)
+#if I wanted to change the contrast from a different setting to dummy coding:
+
+contrasts(normtimeBP02$Nasality) = contr.treatment(4)
+
+nasal_lm1 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm1)
+
+```
+Here, we are comparing each level of a factor to a reference level. In this case, the reference level is /a/ for Vowel, and nasal for Nasality. These are chosen because they are the first alphabetically.
+
+In order to change the reference level, you can either change the contrasts, or relevel the factor.
+
+
+```{r}
+#Change the contrast with a different base (i.e., reference) level
+contrasts(normtimeBP02$Nasality) = contr.treatment(4, base = 3)
+contrasts(normtimeBP02$Nasality)
+
+nasal_lm2 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm2)
+
+#Change the contrast by releveling the factor
+normtimeBP02$Nasality = relevel(normtimeBP02$Nasality, ref = "nasalized")
+contrasts(normtimeBP02$Nasality)
+
+nasal_lm3 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm3)
+
+
+```
+
+
+## Effects coding
+
+Other coding methods allow the researcher to ask specific questions about the relationship between variables. Basic contrast coding is sometimes called simple coding, though it can be difficult to wrap your head around.
+
+
+### Contrast coding
+
+Contrast coding in this case takes the grand mean as the intercept, and then each level of a factor is changed to be compared to a reference level.
+
+In the example below, group 4 is the reference group and the first comparison compares group 1 to group 4, the second comparison compares group 2 to group 4, and the third comparison compares group 3 to group 4.
+
+```{r}
+c<-contr.treatment(4)
+my.coding<-matrix(rep(1/4, 12), ncol=3)
+my.simple<-c-my.coding
+
+my.simple
+
+c2<-contr.treatment(3)
+my.coding2<-matrix(rep(1/3, 6), ncol=2)
+my.simple2<-c2-my.coding2
+my.simple2
+
+
+contrasts(normtimeBP02$Nasality) = my.simple
+contrasts(normtimeBP02$Vowel) = my.simple2
+
+nasal_lm4 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm4)
+
+
+```
+Here, vowel2 is the difference between /a/ and /u/, and vowel3 is the difference between /i/ and /u/.
+
+
+### Sum coding
+
+In sum coding, we compare the mean of a dependent variable for a given level to the overall mean of the dependent variable. 
+
+ This grand mean is not the mean of the dependent variable. Rather, it is the mean of means of the dependent variable at each level of the categorical variable. This does not take into account different group sizes.
+
+For example, the first column given below compares variable 1 to the grand mean, the second compares variable 2 to the grand mean, the third compares variable 3 to the grand mean.
+
+```{r}
+contr.sum(4)
+contrasts(normtimeBP02$Nasality) = contr.sum(4)
+contrasts(normtimeBP02$Vowel) =contr.sum(3)
+nasal_lm5 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm5)
+
+
+```
+In order to get the mean values for /u/ and 'oral vowels (aka the last levels of each contrast), we need to subtract all of the regression coefficients from the grand mean.
+
+/u/ = intercept - Vowel1 – Vowel2 = 398.253 - 132.525 – (-106.913) = 372.6416 
+Oral = intercept – Nasality1 – nasality2 –nasality3 = 398.253 - 33.993 – (- 90.267)- (-1.06) = 455.5928 
+
+
+## Helmert coding
+
+### Regular Helmert coding
+
+Helmert coding compares each level of a categorical variable to the mean of subsequent levels of the variable. 
+
+For the example below, Helmert coding would output the first regression coefficient as the mean of level 1 compared to the mean of levels 2, 3, and 4. The second regression coefficient would be the mean of level 2 compared to the mean of levels 3 and 4. The third regression coefficient would be the mean of level 3 minus the mean of level 4.
+
+Note that we need to define the contrasts ourselves here, as the contr.helmert() function actually employs reverse Helmert coding (below).
+```{r}
+myhelmert = matrix(c(3/4, -1/4, -1/4, -1/4, 0, 2/3, -1/3, -1/3, 0, 0, 1/
+	2, -1/2), ncol = 3)
+myhelmert
+myhelmert2 = matrix(c(2/3, -1/3, -1/3, 0, .5, -.5), ncol = 2)
+myhelmert2
+
+contrasts(normtimeBP02$Nasality) = myhelmert
+contrasts(normtimeBP02$Vowel) = myhelmert2
+
+nasal_lm6 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm6)
+```
+
+
+### Reverse Helmert coding
+
+Reverse Helmert coding compares each level of a categorical variable to the mean of previous levels of the variable. 
+
+In the example below, Reverse Helmert coding outputs the first regression coefficient as the mean of level 2 compared to the mean of level 1. The second regression coefficient would be the mean of level 3 compared to the mean of levels 1 and 2. The third regression coefficient would be the mean of level 4 minus the mean of levels 1, 2, and 3.
+
+
+
+
+```{r}
+contr.helmert(4)
+myrevhelmert = matrix(c(-1/2, 1/2, 0, 0, -1/3, -1/3, 2/3, 0, -1/4, -1/4,
+	-1/4, 3/4), ncol = 3)
+myrevhelmert2 = matrix(c(-.5, .5, 0, -1/3, -1/3, 2/3), ncol = 2)
+
+
+myrevhelmert
+myrevhelmert2
+
+contr.helmert(4)
+contr.helmert(3)
+
+
+contrasts(normtimeBP02$Nasality) = myrevhelmert
+contrasts(normtimeBP02$Vowel) = myrevhelmert2
+
+nasal_lm7 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm7)
+
+
+contrasts(normtimeBP02$Nasality) = contr.helmert(4)
+contrasts(normtimeBP02$Vowel) = contr.helmert(3)
+
+nasal_lm8 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm8)
+
+```
+
+Notice that the contr.helmert() function has different weights to it. This is fine to use, you just have to scale your data back down. 
+
+One has fractional contrasts, and second one has whole number contrasts. They have the same p values and t values, the only difference is in magnitude of estimates and errors. Using the fractional one ensures that one unit change in contrast is the difference between categories. (Using contr.helmert() means that one unit change is only a fraction of the difference between categories.)
+
+
+## User-defined contrasts
+
+It is possible to define your own contrasts, based on your personal research questions. Note that you still need to include *n-1* columns in your contrast matrix. If you do not, R will try to supply the most appropriate one it thinks is possible, but the weights of the contrast matrix might be a bit wonky.
+
+
+Another example of contrast coding would be, say we had three groups: English, Spanish, and French speakers, who participated in a lexical decision task. If we wanted to, we could compare between English and non-English (i.e., Spanish and French), and then between Spanish and French speakers.
+The contrast for that would look like this:
+
+```{r}
+matrix(c(1, -1/2, -1/2, 0, .5, -.5), ncol = 2)
+```
+
+The intercept would be the grand mean. The first coefficient the model would produce would be the difference between the intercept and English mean, and also would be twice the difference between the intercept and the average of Spanish and French means. The second coefficient would be the difference between the French and Spanish speakers, divided by 2. 
+
+
+
+```{r}
+mycontrasts = contrasts(normtimeBP02$Nasality)
+mycontrasts[,1] = c(-1/3, -1/3, -1/3, 1)
+mycontrasts[,2] = c(1, -1/2, -1/2, 0)
+mycontrasts[,3] = c(0, .5, -.5, 0)
+contrasts(normtimeBP02$Nasality) = mycontrasts
+
+mycontrasts2 = contrasts(normtimeBP02$Vowel)
+mycontrasts2[,1] = c(1, -1/2, -1/2)
+mycontrasts2[,2] = c(0,.5,-.5)
+contrasts(normtimeBP02$Vowel) = mycontrasts2
+
+nasal_lm9 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm9)
+
+```
+
+# Post-hoc tests
+What if we wanted to do comparisons between groups, beyond looking at coefficients of models?
+Estimated marginal means are a common way of looking at main effects and interactions, and can be used for both dummy coding and effects coding.
+
+If you have used the *lsmeans* package in the past, you are probably familiar with *emmeans*. The two packages are very similar, just with some back-end changes that won’t affect your analysis.
+
+
+
+## Dummy coding
+
+```{r, error=TRUE}
+library(emmeans)
+
+contrasts(normtimeBP02$Nasality) = contr.treatment(4)
+contrasts(normtimeBP02$Vowel) =contr.treatment(3)
+nasal_lm1 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm1)
+
+emmeans(nasal_lm1, "Vowel", by = "Nasality")
+
+pairs(emmeans(nasal_lm1, "Vowel", by = "Nasality"))
+
+```
+
+## Sum coding 
+
+```{r}
+contrasts(normtimeBP02$Nasality) = contr.sum(4)
+contrasts(normtimeBP02$Vowel) =contr.sum(3)
+nasal_lm5 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm5)
+emmeans(nasal_lm5, "Vowel", by = "Nasality")
+
+pairs(emmeans(nasal_lm5, "Vowel", by = "Nasality"))
+```
+
+

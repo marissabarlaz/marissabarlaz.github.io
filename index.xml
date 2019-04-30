@@ -71,6 +71,15 @@ What is the point? When looking at data, we want to determine if there is a rela
     </item>
     
     <item>
+      <title>Contrast coding in R</title>
+      <link>/portfolio/contrastcoding/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/portfolio/contrastcoding/</guid>
+      <description>Data processing What is a contrast? Coding schemes Dummy coding Effects coding Contrast coding Sum coding  Helmert coding Regular Helmert coding Reverse Helmert coding  User-defined contrasts  Post-hoc tests Dummy coding Sum coding    Data processing For this tutorial, I am using my dissertation data. I am using one speaker’s data so we don’t have to account for individual differences, and I am only using the midpoint of the vowel.</description>
+    </item>
+    
+    <item>
       <title>GAM in R</title>
       <link>/portfolio/gam/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

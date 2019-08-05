@@ -516,7 +516,7 @@ summary(nasal_lm8)</code></pre>
 </div>
 <div id="user-defined-contrasts" class="section level2">
 <h2>User-defined contrasts</h2>
-<p>It is possible to define your own contrasts, based on your personal research questions. Note that you still need to include <em>n-1</em> columns in your contrast matrix. If you do not, R will try to supply the most appropriate one it thinks is possible, but the weights of the contrast matrix might be a bit wonky.</p>
+<p>It is possible to define your own contrasts, based on your personal research questions. Note that you still need to include <span class="math inline">\(n-1\)</span> columns in your contrast matrix. If you do not, R will try to supply the most appropriate one it thinks is possible, but the weights of the contrast matrix might be a bit wonky.</p>
 <p>Another example of contrast coding would be, say we had three groups: English, Spanish, and French speakers, who participated in a lexical decision task. If we wanted to, we could compare between English and non-English (i.e., Spanish and French), and then between Spanish and French speakers.
 The contrast for that would look like this:</p>
 <pre class="r"><code>matrix(c(1, -1/2, -1/2, 0, .5, -.5), ncol = 2)</code></pre>

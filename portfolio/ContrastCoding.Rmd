@@ -22,6 +22,8 @@ library(Rling)
 normtimedata <- read.csv("/Users/goldrch2/Desktop/Teaching/SPAN 588/Course Data/normtimedata.csv", header = TRUE)
 ```
 
+
+
 # Data processing
 For this tutorial, I am using my dissertation data. I am using one speaker's data so we don't have to account for individual differences, and I am only using the midpoint of the vowel.
 ```{r}
@@ -30,7 +32,7 @@ head(normtimeBP02)
 ```
 
 # What is a contrast?
-A contrast is a linear combination of variables that  allows comparison of different treatments. Categorical variables are entered into a regression analysis as a sequence of \(n-1\) variables. Generally, these are dummy variables. There are four built-in contrast coding schemes in R. You can also build your own contrast coding scheme. No matter which coding scheme you use, you will always have \(n−1\) columns for \(n\) levels of a variable in your contrast coding scheme.
+A contrast is a linear combination of variables that  allows comparison of different treatments. Categorical variables are entered into a regression analysis as a sequence of $n-1$ variables. Generally, these are dummy variables. There are four built-in contrast coding schemes in R. You can also build your own contrast coding scheme. No matter which coding scheme you use, you will always have \(n−1\) columns for $n$ levels of a variable in your contrast coding scheme.
 
 Different contrasts can help answer different research questions. For example, sometimes it is not terribly informative to compare groups to a reference level. You might want to make a comparison between groups and the overall trend in your data. With ordinal data, the distance between groups might not be the same between subsequent groups. Therefore it would make more sense to make stepwise comparisons.
 

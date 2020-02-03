@@ -20,6 +20,15 @@
     </item>
     
     <item>
+      <title>Praat Functions in R</title>
+      <link>/portfolio/praatfns/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/portfolio/praatfns/</guid>
+      <description>Function setup Check for packages Create files on computer Get data from files  Utilizing the functions   The aim of this document is to automate acoustic data acquisition in R without having to directly use Praat scripting. Rather, these functions will interact with Praat for you. You will need to segment files in Praat manually. Given the absolute directory to a folder, the functions will loop through a folder that has a set of .</description>
+    </item>
+    
+    <item>
       <title>Text Mining with R</title>
       <link>/portfolio/textminingr/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

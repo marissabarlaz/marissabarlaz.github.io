@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Praat Functions in R</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/owl.carousel.css">
+<link rel="stylesheet" href="/css/owl.theme.css">
+
+
+  <link href="/css/style.default.css" rel="stylesheet" id="theme-stylesheet">
+
+ 
+
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+
+<link href="/css/custom.css" rel="stylesheet">
+<link rel="shortcut icon" href="/img/favicon.png">
+
+
+</head>
+<body>
+  <div id="all">
+      <div class="container-fluid">
+          <div class="row row-offcanvas row-offcanvas-left">
+              <div id="sidebar" class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+  <div class="sidebar-content">
+    <h1 class="sidebar-heading"><a href="/">Dr. Marissa Barlaz</a></h1>
+    
+      <p class="sidebar-p">I am the Linguistic Data Analytics Manager in the School of Literatures, Cultures, and Linguistics at the University of Illinois at Urbana-Champaign.</p>
+    
+    <ul class="sidebar-menu">
+      
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/about/">About</a></li>
+      
+        <li><a href="/contact/">Get in touch</a></li>
+      
+    </ul>
+    <p class="social">
+  
+  <a href="https://www.facebook.com/marissa.goldrich" data-animate-hover="pulse" class="external facebook">
+    <i class="fa fa-facebook"></i>
+  </a>
+  
+  
+  
+  
+  <a href="https://www.instagram.com/salem_samoyed/" title="" class="external instagram">
+    <i class="fa fa-instagram"></i>
+  </a>
+  
+  
+  <a href="mailto:marissa.barlaz@gmail.com" data-animate-hover="pulse" class="email">
+    <i class="fa fa-envelope"></i>
+  </a>
+  
+  
+  <a href="https://www.linkedin.com/in/marissa-barlaz-52801830/" data-animate-hover="pulse">
+    <i class="fa fa-linkedin"></i>
+  </a>
+  
+  
+  
+</p>
+
+
+    <div class="copyright">
+      <p class="credit">
+        
+          &copy;2019 Marissa Barlaz
+        
+        | Template by <a href="https://bootstrapious.com/free-templates" class="external">Bootstrapious.com</a>
+
+&amp; ported to Hugo by <a href="https://github.com/kishaningithub">Kishan B</a>
+
+      </p>
+    </div>
+  </div>
+</div>
+
+
+
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+    
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+            processEscapes: true,
+            processEnvironments: true
+        },
+        // Center justify equations in code and markdown cells. Elsewhere
+        // we use CSS to left justify single line equations in code cells.
+        displayAlign: 'center',
+        "HTML-CSS": {
+            styles: {'.MathJax_Display': {"margin": 0}},
+            linebreaks: { automatic: true }
+        }
+    });
+    </script>
+    
+              
+<div class="col-xs-12 col-sm-8 col-md-9 content-column white-background">
+  <div class="small-navbar visible-xs">
+  <button type="button" data-toggle="offcanvas" class="btn btn-ghost pull-left"> <i class="fa fa-align-left"> </i>Menu</button>
+  <h1 class="small-navbar-heading"><a href="/">Dr. Marissa Barlaz</a></h1>
+</div>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="content-column-content">
+         <h1>Praat Functions in R</h1>
+         <div id="TOC">
+<ul>
+<li><a href="#function-setup">Function setup</a><ul>
+<li><a href="#check-for-packages">Check for packages</a></li>
+<li><a href="#create-files-on-computer">Create files on computer</a></li>
+<li><a href="#get-data-from-files">Get data from files</a></li>
+</ul></li>
+<li><a href="#utilizing-the-functions">Utilizing the functions</a></li>
+</ul>
+</div>
+
+<p>The aim of this document is to automate acoustic data acquisition in R without having to directly use Praat scripting. Rather, these functions will interact with Praat for you. You will need to segment files in Praat manually. Given the absolute directory to a folder, the functions will loop through a folder that has a set of .WAV files and their associated segmented .TextGrid files. The extension can be .wav or .WAV.</p>
+<p>This file includes two functions. The first is create_praat_files, which interacts with Praat via the package PraatR, and creates the relevant files on your computer from the Praat environment. The second is get_acoustic_data, which can utilize these files to get time-dynamic acoustic data (with any number of time points you wish, including 1, which will get the midpoint value). Any combination of F0, intensity, or formant data can be collected. The output of get_acoustic_data is ready for use in analyses such as GAMM, with minimal further data processing required.</p>
+<p>More information on utilizing these functions are below. The packages PraatR, rPraat, and the tidyverse should be installed onto your computer. You also need to have Praat installed on your computer.</p>
+<div id="function-setup" class="section level1">
+<h1>Function setup</h1>
+<div id="check-for-packages" class="section level2">
+<h2>Check for packages</h2>
+<pre class="r"><code>if (!&quot;PraatR&quot; %in% installed.packages()) devtools:::install_github(&quot;usagi5886/PraatR&quot;)
+if (!&quot;rPraat&quot; %in% installed.packages()) install.packages(&quot;rPraat&quot;)
+if (!&quot;tidyverse&quot; %in% installed.packages()) install.packages(&quot;tidyverse&quot;)</code></pre>
+</div>
+<div id="create-files-on-computer" class="section level2">
+<h2>Create files on computer</h2>
+<pre class="r"><code>create_praat_files = function(absdir, pitch = TRUE, formant = TRUE, intensity = TRUE){
+  
+  library(PraatR)
+  library(tidyverse)
+mydir = list.files(absdir, &quot;*.WAV&quot;, ignore.case = T)
+mydir=paste0(absdir, mydir)
+mydirpitch=str_replace_all(mydir,fixed(&quot;.WAV&quot;, ignore_case = T), &quot;.Pitch&quot;)
+mydirpitchtier=str_replace_all(mydir,fixed(&quot;.WAV&quot;, ignore_case = T), &quot;.PitchTier&quot;)
+mydirformant=str_replace_all(mydir,fixed(&quot;.WAV&quot;, ignore_case = T), &quot;.Formant&quot;)
+mydirint=str_replace_all(mydir, fixed(&quot;.WAV&quot;, ignore_case = T), &quot;.Intensity&quot;)
+mydirinttier=str_replace_all(mydir,fixed(&quot;.WAV&quot;, ignore_case = T), &quot;.IntensityTier&quot;)
+mydirtable=str_replace_all(mydir,fixed(&quot;.WAV&quot;, ignore_case = T), &quot;.FormantTable&quot;)
+mydirall=cbind(mydir, mydirpitch, mydirpitchtier, mydirformant, mydirint, mydirinttier, mydirtable)
+  
+
+PitchArguments=list(0.001, #timestep
+                    75,    #pitch floor
+                    350)   #pitch ceiling
+
+#to Intensity...
+IntensityArguments=list(100, #Maximum Pitch
+                    0)    #TimeStep
+  
+#to Formant...  
+FormantArguments=list(0.001, #timestep
+                    5,    #Maximum number of formants
+                   5500,  #Maximum formant
+                   0.025,  #Window length 
+                   50)    #pre-emphasis from        
+
+#to table
+FormantTableArgs = list(&quot;no&quot;, #frame number
+                 &quot;yes&quot;, #include time
+                 6, #number of time decimals
+                 &quot;no&quot;, #include intensity
+                 3, #number of intnsity decimals
+                 &quot;yes&quot;, #include number of formants
+                 3, #number of frequency decimals
+                 &quot;yes&quot;)#include bandwidths
+
+
+if (pitch ==TRUE){
+  
+print(&quot;Creating all Pitch files, please wait patiently.&quot;)
+apply(mydirall, 1,
+     function(x) praat(&quot;To Pitch...&quot;, arguments = PitchArguments, input=x[1], 
+      output=x[2], overwrite=TRUE))
+  
+print(&quot;Creating all PitchTier files, please wait patiently.&quot;)
+apply(mydirall, 1, 
+      function(x) praat( &quot;Down to PitchTier&quot;, input=x[2], output=x[3], overwrite=TRUE, filetype=&quot;headerless spreadsheet&quot; ))
+}
+
+if(intensity ==TRUE){      
+print(&quot;Creating all Intensity files, please wait patiently.&quot;)
+  apply(mydirall, 1, 
+     function(x) praat(&quot;To Intensity...&quot;, arguments = IntensityArguments, input=x[1], 
+      output=x[5], overwrite=TRUE))
+
+  print(&quot;Creating all IntensityTier files, please wait patiently.&quot;)
+apply(mydirall, 1, 
+     function(x) praat(&quot;Down to IntensityTier&quot;, input=x[5], 
+      output=x[6], overwrite=TRUE, filetype=&quot;text&quot;))
+}
+if (formant ==TRUE){
+
+  print(&quot;Creating all Formant files, please wait patiently.&quot;)
+  apply(mydirall, 1, 
+     function(x) praat( &quot;To Formant (burg)...&quot;,arguments = FormantArguments,input = x[1], output = x[4], overwrite = TRUE)
+  )
+}
+
+print(&quot;Creating all FormantTable files, please wait patiently.&quot;)
+apply(mydirall, 1, function(x) praat( &quot;Down to Table...&quot;,
+       arguments = FormantTableArgs, 
+       input=x[4],
+       output=x[7],
+       filetype=&quot;comma-separated&quot;, 
+       overwrite = TRUE
+))
+
+
+}</code></pre>
+</div>
+<div id="get-data-from-files" class="section level2">
+<h2>Get data from files</h2>
+<pre class="r"><code>get_acoustic_data = function(absdir, tiername = &quot;segment&quot;, numpoints = 10, pitch = TRUE, formant = TRUE, intensity = TRUE, remove_files = FALSE){
+  library(rPraat)
+  library(tidyverse)
+  mydir = list.files(absdir, &quot;*.WAV&quot;, ignore.case = T)
+alltextgrids2 = list()
+  
+for (j in 1:length(mydir)){
+  
+  print(paste(&quot;Currently processing file&quot;, mydir[j], &quot;... Please wait patiently.&quot;))
+curwav = paste0(absdir, mydir[j])
+curtext = str_replace(curwav, fixed(&quot;.WAV&quot;, ignore_case = T), &quot;.TextGrid&quot;)
+curpitch= str_replace(curwav, fixed(&quot;.WAV&quot;, ignore_case = T), &quot;.Pitch&quot;)
+curpitchtier = str_replace(curwav, fixed(&quot;.WAV&quot;, ignore_case = T), &quot;.PitchTier&quot;)
+curint = str_replace(curwav, fixed(&quot;.WAV&quot;, ignore_case = T), &quot;.Intensity&quot;)
+curinttier = str_replace(curwav, fixed(&quot;.WAV&quot;, ignore_case = T), &quot;.IntensityTier&quot;)
+curformant = str_replace(curwav, fixed(&quot;.WAV&quot;, ignore_case = T), &quot;.Formant&quot;)
+
+curformanttable = str_replace(curwav, fixed(&quot;.WAV&quot;, ignore_case = T), &quot;.FormantTable&quot;)
+
+TextGridInfo = tg.read(curtext)
+CurTextGrid = data.frame(filename = mydir[j], tmin =TextGridInfo[[tiername]]$t1, tmax = TextGridInfo[[tiername]]$t2, label = TextGridInfo[[tiername]]$label) %&gt;% filter(label !=&quot;&quot;)
+
+if (numpoints ==1){
+  CurTextGrid = CurTextGrid %&gt;% mutate(normtime = 0.5, acttimenorm = (tmin+tmax)/2)
+} else{
+  
+CurTextGrid = CurTextGrid %&gt;% mutate(RepNo = as.numeric(as.factor(tmin))) %&gt;% group_by(tmin) %&gt;% 
+  mutate(normtime = list(seq(0.1,1.0,(1/numpoints))),
+         acttimenorm= list(seq(from = tmin, to = tmax, by = (tmax-tmin)/(numpoints-1)))) %&gt;%
+  unnest(cols = c(normtime, acttimenorm)) 
+}
+
+if (pitch ==TRUE){
+PitchTierInfo = pt.read(curpitchtier)
+
+mywhichptpitch = map_dbl(CurTextGrid$acttimenorm, function(x) which.min(abs(x - PitchTierInfo$t)))
+#CurTextGrid$F0Time = map_dbl(mywhichptpitch, function(x) PitchTierInfo$t[x])
+CurTextGrid$F0 = map_dbl(mywhichptpitch, function(x) PitchTierInfo$f[x])
+  
+CurTextGrid = CurTextGrid %&gt;% mutate(F0 = as.numeric(na_if(F0, &quot;--undefined--&quot;)))
+
+if (remove_files==TRUE) file.remove(curpitch, curpitchtier)
+}
+
+if (intensity ==TRUE){
+IntensityTierInfo = it.read(curinttier)
+
+mywhichptint = map_dbl(CurTextGrid$acttimenorm, function(x) which.min(abs(x - IntensityTierInfo$t)))
+CurTextGrid$Intensity = map_dbl(mywhichptint, function(x) IntensityTierInfo$i[x])
+if (remove_files==TRUE) file.remove(curint, curinttier)
+
+}
+
+
+if (formant ==TRUE){
+#FormantInfo = formant.read(curformant)
+
+FormantInfo = suppressMessages(read_delim(curformanttable, delim = &quot;,&quot;))
+
+
+mywhichptformant = map_dbl(CurTextGrid$acttimenorm, function(x) which.min(abs(x - FormantInfo$`time(s)`)))
+#CurTextGrid$FormantTime = map_dbl(mywhichptformant, function(x) FormantInfo$`time(s)`[x])
+CurTextGrid$F1 = map(mywhichptformant, function(x) FormantInfo$`F1(Hz)`[x])
+CurTextGrid$B1 = map(mywhichptformant, function(x) FormantInfo$`B1(Hz)`[x])
+CurTextGrid$F2 = map(mywhichptformant, function(x) FormantInfo$`F2(Hz)`[x])
+CurTextGrid$B2 = map(mywhichptformant, function(x) FormantInfo$`B2(Hz)`[x])
+CurTextGrid$F3 = map(mywhichptformant, function(x) FormantInfo$`F3(Hz)`[x])
+CurTextGrid$B3 = map(mywhichptformant, function(x) FormantInfo$`B3(Hz)`[x])
+CurTextGrid$F4 = map(mywhichptformant, function(x) FormantInfo$`F4(Hz)`[x])
+CurTextGrid$B4 = map(mywhichptformant, function(x) FormantInfo$`B4(Hz)`[x])
+CurTextGrid$F5 = map(mywhichptformant, function(x) FormantInfo$`F5(Hz)`[x])
+CurTextGrid$B5 = map(mywhichptformant, function(x) FormantInfo$`B5(Hz)`[x])
+
+
+CurTextGrid = CurTextGrid %&gt;% mutate_at(.vars = c(&quot;F1&quot;, &quot;B1&quot;,&quot;F2&quot;, &quot;B2&quot;,&quot;F3&quot;, &quot;B3&quot;,&quot;F4&quot;, &quot;B4&quot;,&quot;F5&quot;, &quot;B5&quot;), .funs = ~ as.numeric(na_if(., &quot;--undefined--&quot;)))
+if (remove_files==TRUE) file.remove(curformant, curformanttable)
+
+}
+
+
+
+
+alltextgrids2[[j]] = CurTextGrid
+#rm(CurTextGrid, curwav, curtable, curpitch, curtext, curpitchtier)
+}
+
+all_data_rPraat &lt;- do.call(&quot;rbind&quot;, alltextgrids2)
+return(all_data_rPraat)
+}</code></pre>
+</div>
+</div>
+<div id="utilizing-the-functions" class="section level1">
+<h1>Utilizing the functions</h1>
+<p>In order to use these functions, you need the following arguments:</p>
+<p>For create_praat_files, which creates the actual .Pitch, .Intensity, .Formant, etc. files on your computer, you need to specify the absolute directory (starting with /Users… on a Mac, and C:/ on a Windows computer). You also need to decide if you are going to analyze Pitch, Intensity, or Formants. The script will allow you to do all three, but it will take some time. For each of these three measurements, if you would like the files created, leave the values to their default (TRUE); if you would not like them created, change them to FALSE. Note that this will take some time to run (depending on how many measures you are running, how long your files are, how many files there are, and the power of your computer), after which the output in your R console will say NULL.</p>
+<p>For get_acoustic_data, you need the same absolute directory given above, the name of the tier you have segmented for which you want data, the number of normalized time points (numpoints, default is 10), and then which acoustic variable values you would like (TRUE/FALSE). The last argument is remove_files, which is by default set to FALSE. If you set this to TRUE, it will delete the files off of your computer <em>permanently</em> - this is only for the acoustic measures set to TRUE. (For example, if you create Pitch and Intensity files with create_praat_files, but only run get_acoustic_data for Pitch, it will only delete the pitch-related files.) If you want to redo an analysis for that acoustic measure, you would have to rerun create_praat_files.</p>
+<p>The output for get_acoustic_data is a dataframe which will have the following information:</p>
+<ul>
+<li>filename</li>
+<li>label</li>
+<li>start time of segment (tmin)</li>
+<li>end time of segment (tmax)</li>
+<li>Repetition Number (i.e., which segment number it is)</li>
+<li>Normalized time value (between 0 and 1, in however many steps you specified in numpoints)</li>
+<li>Actual time in the audio file where the normalized time is calculated</li>
+<li>If pitch = TRUE, F0 at that time</li>
+<li>If Intensity = TRUE, the intensity value at that time</li>
+<li>If Formant = TRUE, the values of F1-F5 and their bandwidths at that particular time (with any “–undefined–” replaced with NA)</li>
+</ul>
+<pre class="r"><code>absdir = &quot;/Users/goldrch2/Desktop/Research/FemaleBP/&quot;
+
+#create_praat_files(absdir, pitch = TRUE, formant = FALSE, intensity = FALSE)
+create_praat_files(absdir, pitch = TRUE, formant = TRUE, intensity = TRUE)</code></pre>
+<pre><code>## [1] &quot;Creating all Pitch files, please wait patiently.&quot;
+## [1] &quot;Creating all PitchTier files, please wait patiently.&quot;
+## [1] &quot;Creating all Intensity files, please wait patiently.&quot;
+## [1] &quot;Creating all IntensityTier files, please wait patiently.&quot;
+## [1] &quot;Creating all Formant files, please wait patiently.&quot;
+## [1] &quot;Creating all FormantTable files, please wait patiently.&quot;</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>#acoustic_pitch_output = get_acoustic_data(absdir, tiername = &quot;segment&quot;, numpoints = 10, pitch = TRUE, formant = FALSE, intensity = FALSE, remove_files = TRUE)
+
+acoustic_all_output = get_acoustic_data(absdir, tiername = &quot;segment&quot;, numpoints = 10, pitch = TRUE, formant = TRUE, intensity = TRUE, remove_files = FALSE)</code></pre>
+<pre><code>## [1] &quot;Currently processing file BP17-L-babado.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP17-L-cabido.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP17-L-tributo.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP18-L-babado.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP18-L-cabido.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP18-L-tributo.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP19-L-babado.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP19-L-cabido.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP19-L-tributo.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP20-L-babado.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP20-L-cabido.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP20-L-tributo.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP21-L-babado.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP21-L-cabido.WAV ... Please wait patiently.&quot;
+## [1] &quot;Currently processing file BP21-L-tributo.WAV ... Please wait patiently.&quot;</code></pre>
+<pre class="r"><code>head(acoustic_all_output)</code></pre>
+<pre><code>## # A tibble: 6 x 19
+## # Groups:   tmin [1]
+##   filename  tmin  tmax label RepNo normtime acttimenorm    F0 Intensity    F1
+##   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
+## 1 BP17-L-… 0.369 0.566 ao        1      0.1       0.369  204.      54.9  678.
+## 2 BP17-L-… 0.369 0.566 ao        1      0.2       0.391  210.      56.7  801.
+## 3 BP17-L-… 0.369 0.566 ao        1      0.3       0.412  211.      57.1  826.
+## 4 BP17-L-… 0.369 0.566 ao        1      0.4       0.434  209.      56.0  852.
+## 5 BP17-L-… 0.369 0.566 ao        1      0.5       0.456  207.      55.2  871.
+## 6 BP17-L-… 0.369 0.566 ao        1      0.6       0.478  205.      55.0  877.
+## # … with 9 more variables: B1 &lt;dbl&gt;, F2 &lt;dbl&gt;, B2 &lt;dbl&gt;, F3 &lt;dbl&gt;, B3 &lt;dbl&gt;,
+## #   F4 &lt;dbl&gt;, B4 &lt;dbl&gt;, F5 &lt;dbl&gt;, B5 &lt;dbl&gt;</code></pre>
+</div>
+
+         
+      </div>
+    </div>
+  </div>
+</div>
+
+          </div>
+      </div>
+  </div>
+  <script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.cookie.js"> </script>
+<script src="/js/ekko-lightbox.js"></script>
+<script src="/js/jquery.scrollTo.min.js"></script>
+<script src="/js/masonry.pkgd.min.js"></script>
+<script src="/js/imagesloaded.pkgd.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/front.js"></script>
+
+</body>
+</html>

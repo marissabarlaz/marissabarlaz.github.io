@@ -263,7 +263,7 @@ if (numpoints ==1){
 } else{
   
 CurTextGrid = CurTextGrid %&gt;% mutate(RepNo = as.numeric(as.factor(tmin))) %&gt;% group_by(tmin) %&gt;% 
-  mutate(normtime = list(seq(0.1,1.0,(1/numpoints))),
+  mutate(normtime = list(seq(0.1,1.0,length.out = numpoints)),
          acttimenorm= list(seq(from = tmin, to = tmax, by = (tmax-tmin)/(numpoints-1)))) %&gt;%
   unnest(cols = c(normtime, acttimenorm)) 
 }

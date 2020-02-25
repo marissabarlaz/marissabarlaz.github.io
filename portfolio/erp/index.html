@@ -145,6 +145,7 @@
 <li><a href="#gam">GAM</a><ul>
 <li><a href="#topo-plotting">topo plotting</a></li>
 <li><a href="#difference-plotting">Difference plotting</a></li>
+<li><a href="#making-a-movie">Making a movie</a></li>
 </ul></li>
 </ul>
 </div>
@@ -555,6 +556,23 @@ for (k in c(200,400,600,800)){
 ##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
 ##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000.</code></pre>
 <p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-14-3.png" width="576" /></p>
+</div>
+<div id="making-a-movie" class="section level2">
+<h2>Making a movie</h2>
+<pre class="r"><code>library(av)
+for (k in seq(from = 0,to = 800,by = 20)){
+  nameme = paste0(&quot;~/Desktop/twix_png/twix&quot;, sprintf(&quot;%03d&quot;, k), &quot;.png&quot;)
+  png(nameme)
+  plot_topo(gamtwix0101, view=c(&#39;X&#39;, &#39;Y&#39;), zlim = c(-8,8),
+            cond = list(time = k), comp=list(condition = c(&quot;S125&quot;, &quot;S115&quot;)),
+            fun=&#39;plot_diff2&#39;, main = paste0(&quot;Time: &quot;, k, &quot; ms&quot;), show.diff = T, col.diff = &quot;white&quot;) 
+  dev.off()
+  
+}
+
+
+png_files &lt;- sprintf(&quot;~/Desktop/twix_png/twix%03d.png&quot;, seq(0,800,20))
+av::av_encode_video(png_files, &#39;~/Desktop/twix_png/output.mp4&#39;, framerate = 10)</code></pre>
 </div>
 </div>
 

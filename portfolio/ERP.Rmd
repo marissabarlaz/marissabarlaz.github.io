@@ -259,6 +259,25 @@ for (k in c(200,400,600,800)){
 
 ```
 
+## Making a movie
+
+```{r, eval=FALSE}
+library(av)
+for (k in seq(from = 0,to = 800,by = 20)){
+  nameme = paste0("~/Desktop/twix_png/twix", sprintf("%03d", k), ".png")
+  png(nameme)
+  plot_topo(gamtwix0101, view=c('X', 'Y'), zlim = c(-8,8),
+            cond = list(time = k), comp=list(condition = c("S125", "S115")),
+            fun='plot_diff2', main = paste0("Time: ", k, " ms"), show.diff = T, col.diff = "white") 
+  dev.off()
+  
+}
+
+
+png_files <- sprintf("~/Desktop/twix_png/twix%03d.png", seq(0,800,20))
+av::av_encode_video(png_files, '~/Desktop/twix_png/output.mp4', framerate = 10)
+
+```
 
 
 

@@ -123,7 +123,7 @@ summary(aov(P600~Anteriority*condition*Hemisphere, data = twix_effects))
 
 # k means clustering
 
-Darren Tanner used k-means clustering in ![this](https://www.researchgate.net/publication/326979552_Individual_Differences_in_the_Real-Time_Neural_Dynamics_of_Language_Comprehension) paper. His use of k-means clustering was an exploratory analysis. He used this method to compare two test conditions to baseline.
+Darren Tanner used k-means clustering in [this](https://www.researchgate.net/publication/326979552_Individual_Differences_in_the_Real-Time_Neural_Dynamics_of_Language_Comprehension) paper. His use of k-means clustering was an exploratory analysis. He used this method to compare two test conditions to baseline.
 
 Here I am comparing conditions S125 and S135 each to baseline S115. The first steps are creating the data frames.
 
@@ -234,21 +234,21 @@ text(electrodes[['X']], electrodes[['Y']],
 For difference plotting, you need to specify a zlim in order to see the color bar on the bottom. zlim is the range of differences between two conditions. Figuring out an appropriate zlim takes some trial and error. If a value is outside of that zlim range, it shows up as white on the topo plot.
 
 ```{r}
-plot_topo(gamtwix0101, view=c('X', 'Y'), zlim = c(-8,1),
-     cond = list(time = 400), comp=list(condition = c("S125", "S115")),
+plot_topo(gamtwix0101, view=c('X', 'Y'), zlim = c(-1,8),
+     cond = list(time = 400), comp=list(condition = c("S115", "S125")),
     fun='plot_diff2')
 
 
-plot_topo(gamtwix0101, view=c('X', 'Y'), zlim = c(-8,1),
-     cond = list(time = 400), comp=list(condition = c("S125", "S115")),
+plot_topo(gamtwix0101, view=c('X', 'Y'), zlim = c(-1,8),
+     cond = list(time = 400), comp=list(condition = c("S115", "S125")),
     fun='plot_diff2', show.diff = T, col.diff = "white")
 
 
 par(mfrow = c(2,2))
 
 for (k in c(200,400,600,800)){
- plot_topo(gamtwix0101, view=c('X', 'Y'), zlim = c(-8,8),
-     cond = list(time = k), comp=list(condition = c("S125", "S115")),
+ plot_topo(gamtwix0101, view=c('X', 'Y'), zlim = c(-1,8),
+     cond = list(time = k), comp=list(condition = c("S115", "S125")),
     fun='plot_diff2', main = paste0("Time: ", k, " ms"), show.diff = T, col.diff = "white") 
   text(electrodes[['X']], electrodes[['Y']], 
     labels=electrodes[['Electrode']], cex=.75, 

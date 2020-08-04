@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Contrast coding in R</title>
+<meta name="description" content="Describe your website">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/owl.carousel.css">
+<link rel="stylesheet" href="/css/owl.theme.css">
+
+
+  <link href="/css/style.default.css" rel="stylesheet" id="theme-stylesheet">
+
+ 
+
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+
+<link href="/css/custom.css" rel="stylesheet">
+<link rel="shortcut icon" href="/img/favicon.png">
+
+
+</head>
+<body>
+  <div id="all">
+      <div class="container-fluid">
+          <div class="row row-offcanvas row-offcanvas-left">
+              <div id="sidebar" class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+  <div class="sidebar-content">
+    <h1 class="sidebar-heading"><a href="/">Marissa Barlaz, PhD</a></h1>
+    
+      <p class="sidebar-p">Until May 2020, I was the Linguistic Data Analytics Manager in the School of Literatures, Cultures, and Linguistics at the University of Illinois at Urbana-Champaign.</p>
+    
+    <ul class="sidebar-menu">
+      
+        <li><a href="/portfolio/">Home</a></li>
+      
+        <li><a href="/about/">About</a></li>
+      
+        <li><a href="/contact/">Get in touch</a></li>
+      
+    </ul>
+    <p class="social">
+  
+  
+  
+  
+  
+  <a href="mailto:marissa.barlaz@gmail.com" data-animate-hover="pulse" class="email">
+    <i class="fa fa-envelope"></i>
+  </a>
+  
+  
+  <a href="https://www.linkedin.com/in/marissa-barlaz-52801830/" data-animate-hover="pulse" class="external">
+    <i class="fa fa-linkedin"></i>
+  </a>
+  
+  
+  
+  <a href="https://github.com/marissabarlaz" data-animate-hover="pulse" class="external">
+    <i class="fa fa-github"></i>
+  </a>
+  
+  
+  
+</p>
+
+
+    <div class="copyright">
+      <p class="credit">
+        
+          &copy;2020 Marissa Barlaz |
+        
+        Template by <a href="https://bootstrapious.com/free-templates" class="external">Bootstrapious.com</a>
+
+&amp; ported to Hugo by <a href="https://github.com/kishaningithub">Kishan B</a>
+
+      </p>
+    </div>
+  </div>
+</div>
+
+              
+<div class="col-xs-12 col-sm-8 col-md-9 content-column white-background">
+  <div class="small-navbar visible-xs">
+  <button type="button" data-toggle="offcanvas" class="btn btn-ghost pull-left"> <i class="fa fa-align-left"> </i>Menu</button>
+  <h1 class="small-navbar-heading"><a href="/">Marissa Barlaz, PhD</a></h1>
+</div>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="content-column-content">
+         <h1>Contrast coding in R</h1>
+         
+
+<div id="TOC">
+<ul>
+<li><a href="#data-processing">Data processing</a></li>
+<li><a href="#what-is-a-contrast">What is a contrast?</a></li>
+<li><a href="#coding-schemes">Coding schemes</a><ul>
+<li><a href="#dummy-coding">Dummy coding</a></li>
+<li><a href="#effects-coding">Effects coding</a><ul>
+<li><a href="#contrast-coding">Contrast coding</a></li>
+<li><a href="#sum-coding">Sum coding</a></li>
+</ul></li>
+<li><a href="#helmert-coding">Helmert coding</a><ul>
+<li><a href="#regular-helmert-coding">Regular Helmert coding</a></li>
+<li><a href="#reverse-helmert-coding">Reverse Helmert coding</a></li>
+</ul></li>
+<li><a href="#user-defined-contrasts">User-defined contrasts</a></li>
+</ul></li>
+<li><a href="#post-hoc-tests">Post-hoc tests</a><ul>
+<li><a href="#dummy-coding-1">Dummy coding</a></li>
+<li><a href="#sum-coding-1">Sum coding</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="data-processing" class="section level1">
+<h1>Data processing</h1>
+<p>For this tutorial, I am using my dissertation data. I am using one speaker’s data so we don’t have to account for individual differences, and I am only using the midpoint of the vowel.</p>
+<pre class="r"><code>normtimeBP02 = normtimedata %&gt;% filter(Speaker ==&quot;BP02&quot;, NormTime==0.5)
+head(normtimeBP02)</code></pre>
+<pre><code>##   Speaker   Word Vowel Nasality RepNo NormTime  Type label      Time
+## 1    BP02 abunda     u    nasal     1      0.5 clean    un  3.482666
+## 2    BP02 abunda     u    nasal     2      0.5 clean    un  5.903856
+## 3    BP02 abunda     u    nasal     3      0.5 clean    un  8.508366
+## 4    BP02 abunda     u    nasal     4      0.5 clean    un 11.229561
+## 5    BP02 abunda     u    nasal     5      0.5 clean    un 14.017535
+## 6    BP02 abunda     u    nasal     6      0.5 clean    un 16.364416
+##         F1       F2       F3     F2_3
+## 1 415.2112 2247.165 2892.599 322.7169
+## 2 367.2511 2300.860 2897.852 298.4962
+## 3 314.8519 1507.593 2549.471 520.9387
+## 4 301.0646 1368.582 2373.538 502.4779
+## 5 335.9188 1251.865 2441.061 594.5982
+## 6 310.0842 2077.428 2695.539 309.0552</code></pre>
+</div>
+<div id="what-is-a-contrast" class="section level1">
+<h1>What is a contrast?</h1>
+<p>A contrast is a linear combination of variables that allows comparison of different treatments. Categorical variables are entered into a regression analysis as a sequence of <span class="math inline">\(n-1\)</span> variables. Generally, these are dummy variables. There are four built-in contrast coding schemes in R. You can also build your own contrast coding scheme. No matter which coding scheme you use, you will always have <span class="math inline">\(n−1\)</span> columns for <span class="math inline">\(n\)</span> levels of a variable in your contrast coding scheme.</p>
+<p>Different contrasts can help answer different research questions. For example, sometimes it is not terribly informative to compare groups to a reference level. You might want to make a comparison between groups and the overall trend in your data. With ordinal data, the distance between groups might not be the same between subsequent groups. Therefore it would make more sense to make stepwise comparisons.</p>
+<p>By default, a variable does not have a contrast set in place - R will default to the dummy coding system when running a linear regression. In order to set a contrast in R, you can use the <em>contr._X_()</em> function for treatment, sum, and Helmert contrasts, or define any contrast manually. Be aware that this changes your dataset. You might want to consider creating a new variable as a copy of your original one, and set the contrasts on that variable. Alternatively, set the contrast back to ‘treatment’ when you’re done your analysis. Note that there is no inherent problem with leaving a contrast set, except it might surprise you when you run a different analysis on your data!</p>
+<p>Make sure to set all variables’ contrasts before starting.</p>
+</div>
+<div id="coding-schemes" class="section level1">
+<h1>Coding schemes</h1>
+<div id="dummy-coding" class="section level2">
+<h2>Dummy coding</h2>
+<p>The coding scheme you are most familiar with is dummy coding, or treatment coding. It compares each level of a categorical variable to a reference level. By default, the reference level is the first level of the categorical variable, in alphabetical order.</p>
+<p>The contrast matrix for a categorical variable with four levels looks like this:</p>
+<pre class="r"><code>contr.treatment(4)</code></pre>
+<pre><code>##   2 3 4
+## 1 0 0 0
+## 2 1 0 0
+## 3 0 1 0
+## 4 0 0 1</code></pre>
+<pre class="r"><code>contrasts(normtimeBP02$Nasality)</code></pre>
+<pre><code>##             nasal_final nasalized oral
+## nasal                 0         0    0
+## nasal_final           1         0    0
+## nasalized             0         1    0
+## oral                  0         0    1</code></pre>
+<pre class="r"><code>contrasts(normtimeBP02$Vowel)</code></pre>
+<pre><code>##   i u
+## a 0 0
+## i 1 0
+## u 0 1</code></pre>
+<pre class="r"><code>#if I wanted to change the contrast from a different setting to dummy coding:
+
+contrasts(normtimeBP02$Nasality) = contr.treatment(4)
+
+nasal_lm1 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = F1 ~ Vowel + Nasality, data = normtimeBP02)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -282.70  -59.22   -7.81   61.11  741.99 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   440.51      11.90  37.023  &lt; 2e-16 ***
+## Voweli       -239.44      11.96 -20.017  &lt; 2e-16 ***
+## Vowelu       -158.14      11.87 -13.318  &lt; 2e-16 ***
+## Nasality2      89.20      13.65   6.535 1.94e-10 ***
+## Nasality3     124.26      13.72   9.059  &lt; 2e-16 ***
+## Nasality4     147.61      13.86  10.653  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 97.71 on 399 degrees of freedom
+## Multiple R-squared:  0.575,  Adjusted R-squared:  0.5697 
+## F-statistic:   108 on 5 and 399 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Here, we are comparing each level of a factor to a reference level. In this case, the reference level is /a/ for Vowel, and nasal for Nasality. These are chosen because they are the first alphabetically.</p>
+<p>In order to change the reference level, you can either change the contrasts, or relevel the factor.</p>
+<pre class="r"><code>#Change the contrast with a different base (i.e., reference) level
+contrasts(normtimeBP02$Nasality) = contr.treatment(4, base = 3)
+contrasts(normtimeBP02$Nasality)</code></pre>
+<pre><code>##             1 2 4
+## nasal       1 0 0
+## nasal_final 0 1 0
+## nasalized   0 0 0
+## oral        0 0 1</code></pre>
+<pre class="r"><code>nasal_lm2 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = F1 ~ Vowel + Nasality, data = normtimeBP02)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -282.70  -59.22   -7.81   61.11  741.99 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   564.77      11.94  47.306   &lt;2e-16 ***
+## Voweli       -239.44      11.96 -20.017   &lt;2e-16 ***
+## Vowelu       -158.14      11.87 -13.318   &lt;2e-16 ***
+## Nasality1    -124.26      13.72  -9.059   &lt;2e-16 ***
+## Nasality2     -35.06      13.62  -2.575   0.0104 *  
+## Nasality4      23.35      13.82   1.689   0.0920 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 97.71 on 399 degrees of freedom
+## Multiple R-squared:  0.575,  Adjusted R-squared:  0.5697 
+## F-statistic:   108 on 5 and 399 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>#Change the contrast by releveling the factor
+normtimeBP02$Nasality = relevel(normtimeBP02$Nasality, ref = &quot;nasalized&quot;)
+contrasts(normtimeBP02$Nasality)</code></pre>
+<pre><code>##             nasal nasal_final oral
+## nasalized       0           0    0
+## nasal           1           0    0
+## nasal_final     0           1    0
+## oral            0           0    1</code></pre>
+<pre class="r"><code>nasal_lm3 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm3)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = F1 ~ Vowel + Nasality, data = normtimeBP02)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -282.70  -59.22   -7.81   61.11  741.99 
+## 
+## Coefficients:
+##                     Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)           564.77      11.94  47.306   &lt;2e-16 ***
+## Voweli               -239.44      11.96 -20.017   &lt;2e-16 ***
+## Vowelu               -158.14      11.87 -13.318   &lt;2e-16 ***
+## Nasalitynasal        -124.26      13.72  -9.059   &lt;2e-16 ***
+## Nasalitynasal_final   -35.06      13.62  -2.575   0.0104 *  
+## Nasalityoral           23.35      13.82   1.689   0.0920 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 97.71 on 399 degrees of freedom
+## Multiple R-squared:  0.575,  Adjusted R-squared:  0.5697 
+## F-statistic:   108 on 5 and 399 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="effects-coding" class="section level2">
+<h2>Effects coding</h2>
+<p>Other coding methods allow the researcher to ask specific questions about the relationship between variables. Basic contrast coding is sometimes called simple coding, though it can be difficult to wrap your head around.</p>
+<div id="contrast-coding" class="section level3">
+<h3>Contrast coding</h3>
+<p>Contrast coding in this case takes the grand mean as the intercept, and then each level of a factor is changed to be compared to a reference level.</p>
+<p>In the example below, group 4 is the reference group and the first comparison compares group 1 to group 4, the second comparison compares group 2 to group 4, and the third comparison compares group 3 to group 4.</p>
+<pre class="r"><code>c&lt;-contr.treatment(4)
+my.coding&lt;-matrix(rep(1/4, 12), ncol=3)
+my.simple&lt;-c-my.coding
+
+my.simple</code></pre>
+<pre><code>##       2     3     4
+## 1 -0.25 -0.25 -0.25
+## 2  0.75 -0.25 -0.25
+## 3 -0.25  0.75 -0.25
+## 4 -0.25 -0.25  0.75</code></pre>
+<pre class="r"><code>c2&lt;-contr.treatment(3)
+my.coding2&lt;-matrix(rep(1/3, 6), ncol=2)
+my.simple2&lt;-c2-my.coding2
+my.simple2</code></pre>
+<pre><code>##            2          3
+## 1 -0.3333333 -0.3333333
+## 2  0.6666667 -0.3333333
+## 3 -0.3333333  0.6666667</code></pre>
+<pre class="r"><code>contrasts(normtimeBP02$Nasality) = my.simple
+contrasts(normtimeBP02$Vowel) = my.simple2
+
+nasal_lm4 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm4)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = F1 ~ Vowel + Nasality, data = normtimeBP02)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -282.70  -59.22   -7.81   61.11  741.99 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  398.253      4.857  81.999   &lt;2e-16 ***
+## Vowel2      -239.437     11.962 -20.017   &lt;2e-16 ***
+## Vowel3      -158.137     11.874 -13.318   &lt;2e-16 ***
+## Nasality2   -124.261     13.717  -9.059   &lt;2e-16 ***
+## Nasality3    -35.059     13.617  -2.575   0.0104 *  
+## Nasality4     23.346     13.823   1.689   0.0920 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 97.71 on 399 degrees of freedom
+## Multiple R-squared:  0.575,  Adjusted R-squared:  0.5697 
+## F-statistic:   108 on 5 and 399 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Here, vowel2 is the difference between /a/ and /u/, and vowel3 is the difference between /i/ and /u/.</p>
+</div>
+<div id="sum-coding" class="section level3">
+<h3>Sum coding</h3>
+<p>In sum coding, we compare the mean of a dependent variable for a given level to the overall mean of the dependent variable.</p>
+<p>This grand mean is not the mean of the dependent variable. Rather, it is the mean of means of the dependent variable at each level of the categorical variable. This does not take into account different group sizes.</p>
+<p>For example, the first column given below compares variable 1 to the grand mean, the second compares variable 2 to the grand mean, the third compares variable 3 to the grand mean.</p>
+<pre class="r"><code>contr.sum(4)</code></pre>
+<pre><code>##   [,1] [,2] [,3]
+## 1    1    0    0
+## 2    0    1    0
+## 3    0    0    1
+## 4   -1   -1   -1</code></pre>
+<pre class="r"><code>contrasts(normtimeBP02$Nasality) = contr.sum(4)
+contrasts(normtimeBP02$Vowel) =contr.sum(3)
+nasal_lm5 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm5)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = F1 ~ Vowel + Nasality, data = normtimeBP02)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -282.70  -59.22   -7.81   61.11  741.99 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  398.253      4.857  81.999  &lt; 2e-16 ***
+## Vowel1       132.525      6.894  19.225  &lt; 2e-16 ***
+## Vowel2      -106.913      6.881 -15.538  &lt; 2e-16 ***
+## Nasality1     33.993      8.390   4.052 6.12e-05 ***
+## Nasality2    -90.268      8.417 -10.724  &lt; 2e-16 ***
+## Nasality3     -1.065      8.336  -0.128    0.898    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 97.71 on 399 degrees of freedom
+## Multiple R-squared:  0.575,  Adjusted R-squared:  0.5697 
+## F-statistic:   108 on 5 and 399 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>In order to get the mean values for /u/ and ’oral vowels (aka the last levels of each contrast), we need to subtract all of the regression coefficients from the grand mean.</p>
+<p>/u/ = intercept - Vowel1 – Vowel2 = 398.253 - 132.525 – (-106.913) = 372.6416
+Oral = intercept – Nasality1 – nasality2 –nasality3 = 398.253 - 33.993 – (- 90.267)- (-1.06) = 455.5928</p>
+</div>
+</div>
+<div id="helmert-coding" class="section level2">
+<h2>Helmert coding</h2>
+<div id="regular-helmert-coding" class="section level3">
+<h3>Regular Helmert coding</h3>
+<p>Helmert coding compares each level of a categorical variable to the mean of subsequent levels of the variable.</p>
+<p>For the example below, Helmert coding would output the first regression coefficient as the mean of level 1 compared to the mean of levels 2, 3, and 4. The second regression coefficient would be the mean of level 2 compared to the mean of levels 3 and 4. The third regression coefficient would be the mean of level 3 minus the mean of level 4.</p>
+<p>Note that we need to define the contrasts ourselves here, as the contr.helmert() function actually employs reverse Helmert coding (below).</p>
+<pre class="r"><code>myhelmert = matrix(c(3/4, -1/4, -1/4, -1/4, 0, 2/3, -1/3, -1/3, 0, 0, 1/
+    2, -1/2), ncol = 3)
+myhelmert</code></pre>
+<pre><code>##       [,1]       [,2] [,3]
+## [1,]  0.75  0.0000000  0.0
+## [2,] -0.25  0.6666667  0.0
+## [3,] -0.25 -0.3333333  0.5
+## [4,] -0.25 -0.3333333 -0.5</code></pre>
+<pre class="r"><code>myhelmert2 = matrix(c(2/3, -1/3, -1/3, 0, .5, -.5), ncol = 2)
+myhelmert2</code></pre>
+<pre><code>##            [,1] [,2]
+## [1,]  0.6666667  0.0
+## [2,] -0.3333333  0.5
+## [3,] -0.3333333 -0.5</code></pre>
+<pre class="r"><code>contrasts(normtimeBP02$Nasality) = myhelmert
+contrasts(normtimeBP02$Vowel) = myhelmert2
+
+nasal_lm6 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm6)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = F1 ~ Vowel + Nasality, data = normtimeBP02)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -282.70  -59.22   -7.81   61.11  741.99 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  398.253      4.857  81.999  &lt; 2e-16 ***
+## Vowel1       198.787     10.340  19.225  &lt; 2e-16 ***
+## Vowel2       -81.301     11.852  -6.860 2.64e-11 ***
+## Nasality1     45.325     11.187   4.052 6.12e-05 ***
+## Nasality2   -118.405     11.910  -9.942  &lt; 2e-16 ***
+## Nasality3    -58.405     13.757  -4.245 2.72e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 97.71 on 399 degrees of freedom
+## Multiple R-squared:  0.575,  Adjusted R-squared:  0.5697 
+## F-statistic:   108 on 5 and 399 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="reverse-helmert-coding" class="section level3">
+<h3>Reverse Helmert coding</h3>
+<p>Reverse Helmert coding compares each level of a categorical variable to the mean of previous levels of the variable.</p>
+<p>In the example below, Reverse Helmert coding outputs the first regression coefficient as the mean of level 2 compared to the mean of level 1. The second regression coefficient would be the mean of level 3 compared to the mean of levels 1 and 2. The third regression coefficient would be the mean of level 4 minus the mean of levels 1, 2, and 3.</p>
+<pre class="r"><code>contr.helmert(4)</code></pre>
+<pre><code>##   [,1] [,2] [,3]
+## 1   -1   -1   -1
+## 2    1   -1   -1
+## 3    0    2   -1
+## 4    0    0    3</code></pre>
+<pre class="r"><code>myrevhelmert = matrix(c(-1/2, 1/2, 0, 0, -1/3, -1/3, 2/3, 0, -1/4, -1/4,
+    -1/4, 3/4), ncol = 3)
+myrevhelmert2 = matrix(c(-.5, .5, 0, -1/3, -1/3, 2/3), ncol = 2)
+
+
+myrevhelmert</code></pre>
+<pre><code>##      [,1]       [,2]  [,3]
+## [1,] -0.5 -0.3333333 -0.25
+## [2,]  0.5 -0.3333333 -0.25
+## [3,]  0.0  0.6666667 -0.25
+## [4,]  0.0  0.0000000  0.75</code></pre>
+<pre class="r"><code>myrevhelmert2</code></pre>
+<pre><code>##      [,1]       [,2]
+## [1,] -0.5 -0.3333333
+## [2,]  0.5 -0.3333333
+## [3,]  0.0  0.6666667</code></pre>
+<pre class="r"><code>contr.helmert(4)</code></pre>
+<pre><code>##   [,1] [,2] [,3]
+## 1   -1   -1   -1
+## 2    1   -1   -1
+## 3    0    2   -1
+## 4    0    0    3</code></pre>
+<pre class="r"><code>contr.helmert(3)</code></pre>
+<pre><code>##   [,1] [,2]
+## 1   -1   -1
+## 2    1   -1
+## 3    0    2</code></pre>
+<pre class="r"><code>contrasts(normtimeBP02$Nasality) = myrevhelmert
+contrasts(normtimeBP02$Vowel) = myrevhelmert2
+
+nasal_lm7 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm7)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = F1 ~ Vowel + Nasality, data = normtimeBP02)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -282.70  -59.22   -7.81   61.11  741.99 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  398.253      4.857  81.999  &lt; 2e-16 ***
+## Vowel1      -239.437     11.962 -20.017  &lt; 2e-16 ***
+## Vowel2       -38.418     10.245  -3.750 0.000203 ***
+## Nasality1   -124.261     13.717  -9.059  &lt; 2e-16 ***
+## Nasality2     27.072     11.783   2.298 0.022101 *  
+## Nasality3     76.453     11.339   6.743 5.47e-11 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 97.71 on 399 degrees of freedom
+## Multiple R-squared:  0.575,  Adjusted R-squared:  0.5697 
+## F-statistic:   108 on 5 and 399 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>contrasts(normtimeBP02$Nasality) = contr.helmert(4)
+contrasts(normtimeBP02$Vowel) = contr.helmert(3)
+
+nasal_lm8 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm8)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = F1 ~ Vowel + Nasality, data = normtimeBP02)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -282.70  -59.22   -7.81   61.11  741.99 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  398.253      4.857  81.999  &lt; 2e-16 ***
+## Vowel1      -119.719      5.981 -20.017  &lt; 2e-16 ***
+## Vowel2       -12.806      3.415  -3.750 0.000203 ***
+## Nasality1    -62.131      6.858  -9.059  &lt; 2e-16 ***
+## Nasality2      9.024      3.928   2.298 0.022101 *  
+## Nasality3     19.113      2.835   6.743 5.47e-11 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 97.71 on 399 degrees of freedom
+## Multiple R-squared:  0.575,  Adjusted R-squared:  0.5697 
+## F-statistic:   108 on 5 and 399 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Notice that the contr.helmert() function has different weights to it. This is fine to use, you just have to scale your data back down.</p>
+<p>One has fractional contrasts, and second one has whole number contrasts. They have the same p values and t values, the only difference is in magnitude of estimates and errors. Using the fractional one ensures that one unit change in contrast is the difference between categories. (Using contr.helmert() means that one unit change is only a fraction of the difference between categories.)</p>
+</div>
+</div>
+<div id="user-defined-contrasts" class="section level2">
+<h2>User-defined contrasts</h2>
+<p>It is possible to define your own contrasts, based on your personal research questions. Note that you still need to include <span class="math inline">\(n-1\)</span> columns in your contrast matrix. If you do not, R will try to supply the most appropriate one it thinks is possible, but the weights of the contrast matrix might be a bit wonky.</p>
+<p>Another example of contrast coding would be, say we had three groups: English, Spanish, and French speakers, who participated in a lexical decision task. If we wanted to, we could compare between English and non-English (i.e., Spanish and French), and then between Spanish and French speakers.
+The contrast for that would look like this:</p>
+<pre class="r"><code>matrix(c(1, -1/2, -1/2, 0, .5, -.5), ncol = 2)</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]  1.0  0.0
+## [2,] -0.5  0.5
+## [3,] -0.5 -0.5</code></pre>
+<p>The intercept would be the grand mean. The first coefficient the model would produce would be the difference between the intercept and English mean, and also would be twice the difference between the intercept and the average of Spanish and French means. The second coefficient would be the difference between the French and Spanish speakers, divided by 2.</p>
+<pre class="r"><code>mycontrasts = contrasts(normtimeBP02$Nasality)
+mycontrasts[,1] = c(-1/3, -1/3, -1/3, 1)
+mycontrasts[,2] = c(1, -1/2, -1/2, 0)
+mycontrasts[,3] = c(0, .5, -.5, 0)
+contrasts(normtimeBP02$Nasality) = mycontrasts
+
+mycontrasts2 = contrasts(normtimeBP02$Vowel)
+mycontrasts2[,1] = c(1, -1/2, -1/2)
+mycontrasts2[,2] = c(0,.5,-.5)
+contrasts(normtimeBP02$Vowel) = mycontrasts2
+
+nasal_lm9 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm9)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = F1 ~ Vowel + Nasality, data = normtimeBP02)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -282.70  -59.22   -7.81   61.11  741.99 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  398.253      4.857  81.999  &lt; 2e-16 ***
+## Vowel1       132.525      6.894  19.225  &lt; 2e-16 ***
+## Vowel2       -81.301     11.852  -6.860 2.64e-11 ***
+## Nasality1     57.339      8.504   6.743 5.47e-11 ***
+## Nasality2     53.107      7.894   6.728 6.00e-11 ***
+## Nasality3    -89.202     13.650  -6.535 1.94e-10 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 97.71 on 399 degrees of freedom
+## Multiple R-squared:  0.575,  Adjusted R-squared:  0.5697 
+## F-statistic:   108 on 5 and 399 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<div id="post-hoc-tests" class="section level1">
+<h1>Post-hoc tests</h1>
+<p>What if we wanted to do comparisons between groups, beyond looking at coefficients of models?
+Estimated marginal means are a common way of looking at main effects and interactions, and can be used for both dummy coding and effects coding.</p>
+<p>If you have used the <em>lsmeans</em> package in the past, you are probably familiar with <em>emmeans</em>. The two packages are very similar, just with some back-end changes that won’t affect your analysis.</p>
+<div id="dummy-coding-1" class="section level2">
+<h2>Dummy coding</h2>
+<pre class="r"><code>library(emmeans)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;emmeans&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:multcomp&#39;:
+## 
+##     cld</code></pre>
+<pre class="r"><code>contrasts(normtimeBP02$Nasality) = contr.treatment(4)
+contrasts(normtimeBP02$Vowel) =contr.treatment(3)
+nasal_lm1 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = F1 ~ Vowel + Nasality, data = normtimeBP02)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -282.70  -59.22   -7.81   61.11  741.99 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   564.77      11.94  47.306   &lt;2e-16 ***
+## Vowel2       -239.44      11.96 -20.017   &lt;2e-16 ***
+## Vowel3       -158.14      11.87 -13.318   &lt;2e-16 ***
+## Nasality2    -124.26      13.72  -9.059   &lt;2e-16 ***
+## Nasality3     -35.06      13.62  -2.575   0.0104 *  
+## Nasality4      23.35      13.82   1.689   0.0920 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 97.71 on 399 degrees of freedom
+## Multiple R-squared:  0.575,  Adjusted R-squared:  0.5697 
+## F-statistic:   108 on 5 and 399 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>emmeans(nasal_lm1, &quot;Vowel&quot;, by = &quot;Nasality&quot;)</code></pre>
+<pre><code>## Nasality = nasalized:
+##  Vowel emmean   SE  df lower.CL upper.CL
+##  a        565 11.9 399      541      588
+##  i        325 11.9 399      302      349
+##  u        407 11.7 399      384      430
+## 
+## Nasality = nasal:
+##  Vowel emmean   SE  df lower.CL upper.CL
+##  a        441 11.9 399      417      464
+##  i        201 12.0 399      178      225
+##  u        282 11.9 399      259      306
+## 
+## Nasality = nasal_final:
+##  Vowel emmean   SE  df lower.CL upper.CL
+##  a        530 11.8 399      507      553
+##  i        290 11.8 399      267      314
+##  u        372 11.7 399      348      395
+## 
+## Nasality = oral:
+##  Vowel emmean   SE  df lower.CL upper.CL
+##  a        588 12.1 399      564      612
+##  i        349 12.0 399      325      372
+##  u        430 12.0 399      406      454
+## 
+## Confidence level used: 0.95</code></pre>
+<pre class="r"><code>pairs(emmeans(nasal_lm1, &quot;Vowel&quot;, by = &quot;Nasality&quot;))</code></pre>
+<pre><code>## Nasality = nasalized:
+##  contrast estimate   SE  df t.ratio p.value
+##  a - i       239.4 12.0 399 20.017  &lt;.0001 
+##  a - u       158.1 11.9 399 13.318  &lt;.0001 
+##  i - u       -81.3 11.9 399 -6.860  &lt;.0001 
+## 
+## Nasality = nasal:
+##  contrast estimate   SE  df t.ratio p.value
+##  a - i       239.4 12.0 399 20.017  &lt;.0001 
+##  a - u       158.1 11.9 399 13.318  &lt;.0001 
+##  i - u       -81.3 11.9 399 -6.860  &lt;.0001 
+## 
+## Nasality = nasal_final:
+##  contrast estimate   SE  df t.ratio p.value
+##  a - i       239.4 12.0 399 20.017  &lt;.0001 
+##  a - u       158.1 11.9 399 13.318  &lt;.0001 
+##  i - u       -81.3 11.9 399 -6.860  &lt;.0001 
+## 
+## Nasality = oral:
+##  contrast estimate   SE  df t.ratio p.value
+##  a - i       239.4 12.0 399 20.017  &lt;.0001 
+##  a - u       158.1 11.9 399 13.318  &lt;.0001 
+##  i - u       -81.3 11.9 399 -6.860  &lt;.0001 
+## 
+## P value adjustment: tukey method for comparing a family of 3 estimates</code></pre>
+</div>
+<div id="sum-coding-1" class="section level2">
+<h2>Sum coding</h2>
+<pre class="r"><code>contrasts(normtimeBP02$Nasality) = contr.sum(4)
+contrasts(normtimeBP02$Vowel) =contr.sum(3)
+nasal_lm5 = lm(F1~Vowel + Nasality, data = normtimeBP02)
+summary(nasal_lm5)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = F1 ~ Vowel + Nasality, data = normtimeBP02)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -282.70  -59.22   -7.81   61.11  741.99 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  398.253      4.857  81.999  &lt; 2e-16 ***
+## Vowel1       132.525      6.894  19.225  &lt; 2e-16 ***
+## Vowel2      -106.913      6.881 -15.538  &lt; 2e-16 ***
+## Nasality1     33.993      8.390   4.052 6.12e-05 ***
+## Nasality2    -90.268      8.417 -10.724  &lt; 2e-16 ***
+## Nasality3     -1.065      8.336  -0.128    0.898    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 97.71 on 399 degrees of freedom
+## Multiple R-squared:  0.575,  Adjusted R-squared:  0.5697 
+## F-statistic:   108 on 5 and 399 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>emmeans(nasal_lm5, &quot;Vowel&quot;, by = &quot;Nasality&quot;)</code></pre>
+<pre><code>## Nasality = nasalized:
+##  Vowel emmean   SE  df lower.CL upper.CL
+##  a        565 11.9 399      541      588
+##  i        325 11.9 399      302      349
+##  u        407 11.7 399      384      430
+## 
+## Nasality = nasal:
+##  Vowel emmean   SE  df lower.CL upper.CL
+##  a        441 11.9 399      417      464
+##  i        201 12.0 399      178      225
+##  u        282 11.9 399      259      306
+## 
+## Nasality = nasal_final:
+##  Vowel emmean   SE  df lower.CL upper.CL
+##  a        530 11.8 399      507      553
+##  i        290 11.8 399      267      314
+##  u        372 11.7 399      348      395
+## 
+## Nasality = oral:
+##  Vowel emmean   SE  df lower.CL upper.CL
+##  a        588 12.1 399      564      612
+##  i        349 12.0 399      325      372
+##  u        430 12.0 399      406      454
+## 
+## Confidence level used: 0.95</code></pre>
+<pre class="r"><code>pairs(emmeans(nasal_lm5, &quot;Vowel&quot;, by = &quot;Nasality&quot;))</code></pre>
+<pre><code>## Nasality = nasalized:
+##  contrast estimate   SE  df t.ratio p.value
+##  a - i       239.4 12.0 399 20.017  &lt;.0001 
+##  a - u       158.1 11.9 399 13.318  &lt;.0001 
+##  i - u       -81.3 11.9 399 -6.860  &lt;.0001 
+## 
+## Nasality = nasal:
+##  contrast estimate   SE  df t.ratio p.value
+##  a - i       239.4 12.0 399 20.017  &lt;.0001 
+##  a - u       158.1 11.9 399 13.318  &lt;.0001 
+##  i - u       -81.3 11.9 399 -6.860  &lt;.0001 
+## 
+## Nasality = nasal_final:
+##  contrast estimate   SE  df t.ratio p.value
+##  a - i       239.4 12.0 399 20.017  &lt;.0001 
+##  a - u       158.1 11.9 399 13.318  &lt;.0001 
+##  i - u       -81.3 11.9 399 -6.860  &lt;.0001 
+## 
+## Nasality = oral:
+##  contrast estimate   SE  df t.ratio p.value
+##  a - i       239.4 12.0 399 20.017  &lt;.0001 
+##  a - u       158.1 11.9 399 13.318  &lt;.0001 
+##  i - u       -81.3 11.9 399 -6.860  &lt;.0001 
+## 
+## P value adjustment: tukey method for comparing a family of 3 estimates</code></pre>
+</div>
+</div>
+
+         
+      </div>
+    </div>
+  </div>
+</div>
+
+          </div>
+      </div>
+  </div>
+  <script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.cookie.js"> </script>
+<script src="/js/ekko-lightbox.js"></script>
+<script src="/js/jquery.scrollTo.min.js"></script>
+<script src="/js/masonry.pkgd.min.js"></script>
+<script src="/js/imagesloaded.pkgd.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/front.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,230 @@
+---
+title: "R Modeling Workshop"
+author: "Marissa Barlaz"
+date: "February 26, 2018"
+image: "img/portfolio/linear.png"
+showonlyimage: false
+weight: 3
+draft: false
+description: "The aim of this workshop is to teach you the basics of statistical models in R."
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+---
+
+The aim of this workshop is to teach you the basics of statistical models in R.
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(lmtest)
+library(lme4)
+library(lmerTest)
+library(lsmeans)
+library(emmeans)
+library(ggplot2)
+```
+
+The materials for this workshop can be found [here](https://github.com/marissabarlaz/Workshops/tree/master/Modeling).
+
+## What is the point?
+When looking at data, we want to determine if there is a relationship between our independent and dependent variables. A traditional method of analysis in Linguistics and associated fields is regression analysis, which helps understand how a particular variable (the dependent variable) changes when other variables (independent variables, or predictors) are varied.
+
+When running regression analyses, the dependent variable must be continuous. The independent variables can be continuous, discrete, or categorical. 
+
+When we run regression analyses on our data, we first need to make sure a few basic assumptions are met:
+
+* The sample is representative of the population.
+* The predictors are measured with no error.
+* The predictors are linearly independent, i.e. it is not possible to express any predictor as a linear combination of the others.
+
+We will go through further assumptions as we go through the workshop.
+
+## Data
+The data I will be using during this tutorial is from the University of Wisconsin's X-Ray Microbeam Speech Production Database. The database has the following variables:
+
+* v = vowel
+* f0
+* f1-f4
+* ulx and uly = x and y coordinates of the upper lip
+* llx and lly = x and y coordinates of the lower lip
+* t(1-4)x and t(1-4)y = x and y coordinates of the tongue at position (1-4)
+* mnix and mniy = x and y coordinates of the mandibular incisor
+* mnmx and mnmy = x and y coordinates of the mandibular molar
+
+
+```{r data}
+ubdb = read.csv("ubdb.csv", header = T)
+head(ubdb)
+summary(ubdb)
+```
+
+## Simple linear regression
+Let's say we want to determine if there is a predictable relationship between articulation and acoustics. Let's see if there is a relationship between tongue height and the first formant. The first thing we want to do is examine the data. 
+
+```{r lm1}
+plot(ubdb$t1y, ubdb$f1)
+```
+
+It looks like the relationship is linear (specifically, of the form y=mx+b+e) based on a first glance at the data. We can model the relationship between these two variables using the *lm()* function.
+
+```{r lm2}
+lm1 = lm(f1~t1y, data = ubdb)
+summary(lm1)
+```
+
+What does this mean?
+The intercept (often labeled the constant) is the expected mean value of y (the dependent variable) when all x (the independent variable(s)) equal(s) 0.
+
+The estimate for t1y means, if we hold everything else constant, that if we were to raise t1y by one unit, f1 would change by -0.001557 Hz.
+
+We then need to check to make sure the model is well fit, by ensuring some more criteria are met. First, we need to make sure the residuals of the model are homoscedastic, meaning variance of the residuals does not increase with fitted values. If there is absolutely no heteroscedastity, you should see a completely random, equal distribution of points throughout the range the x axis and a flat red line, for the first and third plots.
+
+Another way to check to make sure there is no significant heteroscedastity is the Breush-Pagan test. 
+
+```{r lm3}
+bptest(lm1)
+par(mar = c(4, 4, 2, 2), mfrow = c(2, 2)) 
+plot(lm1)
+
+lmtest::bptest(lm1)
+
+```
+Here, we see p > 0.05, so we cannot reject the null hypothesis, and therefore there is no significant heteroscedastity.
+
+There are more assumptions, which I will not go into for the sake of time, but are discussed here: 
+
+[https://www.r-bloggers.com/basic-assumptions-to-be-taken-care-of-when-building-a-predictive-model-2/](https://www.r-bloggers.com/basic-assumptions-to-be-taken-care-of-when-building-a-predictive-model-2/)
+
+## Moving beyond simple linear regression
+What happens if we include more data in the model? For example, I only used the first tongue pellet here. What happens if we include all four tongue pellets in the analysis? Is this model better than the first one? We can compare models using *anova()* to see if they are different, and compare the R^2^ values.
+
+```{r lm4}
+lm2 = lm(f1~t1y+t2y+t3y+t4y, data = ubdb)
+summary(lm2)
+bptest(lm2)
+anova(lm1, lm2)
+```
+
+Here, what do the results mean? For each predictor, if we hold all other predictors constant and only increase the predictor in question by 1 unit, then f1 will change by the estimate of that predictor.
+
+So, what would happen to f1 if we changed t2y by one unit? Is this a significant change in f1?
+
+### Interactions
+Let's try interactions. Interactions allow us assess the extent to which the association between one predictor and the outcome depends on a second predictor. For example, does the effect of tongue (tip) height on F1 also depend on tongue (dorsum) height?
+
+```{r lm5}
+lm3 = lm(f1~t1y*t4y, data = ubdb)
+summary(lm3)
+```
+
+### Categorical Predictors
+What about categorical predictors? First, we need to make sure the categorical predictor is treated as a factor, not as a numeric. You can check that using the *str()* function. If you need to change the structure to factor, use the *factor()* function. This model includes the intercept as the vowel "AA." Each estimate is the predicted change in f1 when going from AA to that vowel.
+
+```{r lm6}
+ubdb$v = factor(ubdb$v)
+lm4 = lm(f1~v, data = ubdb)
+summary(lm4)
+```
+
+Now we can integrate previous models together.
+
+``` {r lm7}
+lm5 = lm(f1~t1y*t4y + v, data = ubdb)
+summary(lm5)
+anova(lm5, lm4)
+```
+
+### Predicting Values
+One thing we can do with regression models is try to predict what the dependent variable would be, given certain values of the independent variable. To do this, we generate a data frame with the independent variables as columns, and their hypothetical values in each row. We then can use the *predict()* function to determine the predicted value, given the regression model. Note that you need a column for each predictor that exists in your model.
+
+```{r lm8}
+predictdata1 = with(ubdb,expand.grid(t1y = c(4444, 11111)))
+head(predictdata1)
+cbind(predictdata1, predict(lm1, type = "response",
+                       se.fit = TRUE, interval="confidence",
+                       newdata = predictdata1))
+
+
+predictdata5 = with(ubdb,expand.grid(t1y = c(4444, -2222), t4y =c(13213, 16161),v = c("AA", "UW")))
+head(predictdata5)
+cbind(predictdata5, predict(lm5, type = "response",
+                       se.fit = TRUE, interval="confidence",
+                       newdata = predictdata5))
+```
+
+### Binary Outcomes
+Many linguistics experiments will have a binary outcome. In this case, our simple linear regression won't work, as the *lm()* function takes only a continuous variable as its dependent variable. Therefore, we need to use another function - *glm()*. 
+
+Let's see if the f1 value can predict whether a vowel is a high or low vowel. First, we need to conditionally include this information. Then, we can run the model. We need to specify that this is a binomial model. (Note that if you want to run a model with three or more levels of your predictor variable, a binary logistic regression is no longer appropriate, and the model will not work. You need to use another type of analysis, such as a multinomial logistic regression, which I will not go into detail about here.)
+
+```{r glm1, error=TRUE}
+mylevels = levels(ubdb$v)[1:4]
+ubdb$vlow <- factor(ifelse(ubdb$v %in% mylevels,"LOW", "HIGH"))
+
+glm1 = glm(vlow~f1+t1y, data = ubdb, family = "binomial")
+
+glm2 = glm(vlow~f1+t1y+v, data = ubdb, family = "binomial")
+#what's wrong with this glm?
+
+
+predictdata6 = with(ubdb,expand.grid(t1y = c(4444, -2222), f1 =c(666, 333)))
+cbind(predictdata6, predict(glm1, type = "response",
+                       se.fit = TRUE, interval="confidence",
+                       newdata = predictdata6))
+```
+
+## Polynomial Regression
+Sometimes, a linear line might not be considered the best model of our data. There are multiple ways of modeling data besides a linear relationship, including higher-order polynomials. We can include the polynomial in the *lm()* function, because even though we are fitting a higher-order line to the data, the model still falls in the linear regression family because the relationship between coefficients is linear. (Examples of nonlinear regressions inclue exponential, and logarithmic regressions.)
+
+```{r lm9}
+lm7 = lm(f1~t1y + I(t1y^2), data = ubdb)
+summary(lm7)
+f <- function(x,c) coef(lm7)[1] + coef(lm7)[2]*x + coef(lm7)[3]*x^2
+
+pl <- ggplot(ubdb) + geom_point(aes(x=t1y, y=f1), size=2, colour="#993399")  + geom_abline(intercept=coef(lm1)[1],slope=coef(lm1)[2],size=1, colour="#339900") +
+  stat_function(fun=f, colour="red", size=1)+ylim(c(0,2000))
+```
+## Mixed Effects Models
+The type of model that is used most often in linguistics research is the mixed effects model. Mixed effects models have two types of independent variables: fixed effects and random effects. For fixed effects, the observed values are of direct interest. For example, vowel quality, experimental condition, language background, etc., can be considered a fixed effect. In this example, *v* is a fixed effect. Random effects, on the other hand, are not of direct interest in the model. The goal is to make inferences to a general population based on the observed differences between levels. Speaker or participant is a common random effect. 
+
+How do we encode random effects? It depends on what you are trying to do. First, running a null model (with only random effects, but no fixed effects), allows a preliminary understanding of the variance between levels of the random effect. Because the current dataset does not have any random effects, I have "created" them.
+
+
+```{r lmer1}
+myspeakers = c("S1", "S2", "S3", "S4", "S5")
+ubdb$speaker = factor(sample(myspeakers, dim(ubdb)[1], replace = TRUE))
+lme1= lmer(f1~1+(1|speaker), data = ubdb, REML = FALSE)
+summary(lme1) 
+```
+The variance in random factor tells you how much variability there is between individuals across all vowels, not the level of variance between individuals within each vowel category.
+
+Now let's see if we can model f1 based on tongue position and speaker.
+
+```{r lmer2}
+lme2= lmer(f1~t1y+(1|speaker), data = ubdb, REML = FALSE)
+summary(lme2) 
+
+ubdb$t1y.z = scale(ubdb$t1y,center = TRUE, scale = TRUE)
+lme3= lmer(f1~t1y.z+(1|speaker), data = ubdb, REML = FALSE)
+summary(lme3) 
+
+lme5= lmer(f1~t1y.z+v+(1|speaker), data = ubdb, REML = FALSE)
+summary(lme5) 
+```
+
+In this sets of models, each contains a random intercept shared by individuals that have the same value for speaker - each speaker's regression line is shifted up/down by a random amount with mean 0. This implies that each speaker shows the same relationship (i.e., slope) between *t1y* and *f1*, but at a different "starting" point. 
+
+
+What if we want to include a random slope, meaning that speaker's F1 differs at different rates based on t1y. Then we would run the following code:
+```{r lmer3}
+lme6= lmer(f1~t1y.z+v+(1+t1y.z|speaker), data = ubdb, REML = FALSE)
+summary(lme6) 
+```
+This model, in addition to a random intercept, also contains a random slope for t1y. This means that the rate of *f1* change based on *t1y* is different from person to person. If an individual has a positive random effect, then their *f1* increases more quickly with practice than the average, while a negative random effect indicates their *f1* increases less quickly with practice than the average.
+
+To constrain the model so that the random slope and random intercept are uncorrelated (and therefore independent, since they are normally distributed), you'd fit the model:
+
+```{r lmer4}
+lme6= lmer(f1~t1y.z+v+(1|speaker)+(t1y.z-1|speaker), data = ubdb, REML = FALSE)
+summary(lme6) 
+```

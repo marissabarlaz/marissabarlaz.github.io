@@ -1,0 +1,283 @@
+---
+title: "ERP Data Analysis in R"
+author: "Marissa Barlaz"
+image: "img/brain.jpg"
+showonlyimage: false
+weight: 3
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+description: "This workshop is an introduction to processing and analyzing ERP data in R."
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Preprocessing
+
+## Required packages
+
+```{r}
+library(tidyverse)
+library(mgcv)
+library(itsadug)
+library(eegUtils)
+#devtools::install_github("craddm/eegUtils")
+library(gridExtra)
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+```
+
+
+## Read in data
+
+This data was kindly provided by Prof. Green.
+
+The easiest way to read in data is to add each participant file to a list and then bind it all together. Often you have to initialize the 'participant' column yourself, possibly by taking that information out of the file name. Here since the participant code is a number, I use a regex to extract it from the filenames.
+
+```{r}
+datadir = "/Users/goldrch2/Desktop/twix_results/"
+mydata = list.files(path = datadir, pattern = "twix_.*")
+mydata
+alldata = list()
+
+for (k in 1:length(mydata)){
+  current_data = read_csv(paste0(datadir, mydata[k])) %>% mutate(Participant = str_extract(mydata[k], "[[:digit:]]+")) %>% select(Participant, everything())
+
+  alldata[[k]] = current_data
+  
+}
+
+twix_data = do.call( "rbind", alldata) %>% mutate_at(.vars = c(1,2), .funs = as.factor)
+head(twix_data)
+dim(twix_data)
+unique(twix_data$epoch)
+unique(twix_data$condition)
+```
+
+Here I am reading in two different datasets - hemisphereinfo has anteriority and hemisphere, and electrodes has X and Y coordinates of the electrodes.
+
+```{r}
+
+hemisphereinfo = read_csv("/Users/goldrch2/Desktop/twix_results/electrode_quadrants.csv")
+
+
+electrodes <- itsadug::eeg[,c('X','Y','Electrode')]
+electrodes <- ( electrodes[!duplicated(electrodes),] )
+electrodes$Electrode = toupper( electrodes$Electrode)
+
+```
+
+
+## Convert to long format, combine data frames
+
+A previous function to make data long is gather(), however, this function is being retired in the tidyverse.
+```{r}
+twix_data_long = twix_data %>% pivot_longer(-c(Participant:time), names_to= "Electrode", values_to = "uV") %>% left_join(hemisphereinfo, by = "Electrode") %>% left_join(electrodes, by = "Electrode") %>% select(Participant, condition, epoch, Anteriority, Hemisphere,Electrode, X, Y, time, uV)
+
+```
+
+
+
+# Plotting time courses
+
+Note that many functions from the eegUtils package require the columns to have specific names.
+
+Here I am plotting one participant's data.
+
+```{r}
+twix0101 = twix_data_long %>% filter(Participant == "0101")
+
+twix0101 %>% filter(!is.na(Anteriority)) %>% ggplot(aes(x = time, y = uV)) +  stat_summary(fun.y = mean,geom = "line",aes(colour = condition)) + facet_grid(Hemisphere~Anteriority) + theme_minimal() + scale_color_manual(values = cbPalette)
+
+twix0101 %>% rename(electrode = Electrode, amplitude = uV) %>% plot_butterfly()
+```
+
+
+# P600 and N400 calculations
+
+Here I am creating two dataframes - one for P600, one for N400, and combining them.
+```{r}
+twix_data_N400 = twix_data_long %>% filter(time <=500 & time >=300) %>% group_by(Participant, Hemisphere, Anteriority, condition) %>% summarise(N400 = mean(uV, na.rm = TRUE))
+
+twix_data_P600 = twix_data_long %>% filter(time >=500 & time <=800) %>% group_by(Participant, Hemisphere, Anteriority, condition) %>% summarise(P600 = mean(uV, na.rm = TRUE))
+
+twix_effects = full_join(twix_data_N400, twix_data_P600)
+
+
+```
+
+# ANOVA
+
+
+```{r}
+summary(aov(N400~condition*Hemisphere, data = filter(twix_effects, Hemisphere!="midline", Anteriority=="posterior")))
+
+
+summary(aov(P600~Anteriority*condition*Hemisphere, data = twix_effects))
+
+```
+
+# k means clustering
+
+Darren Tanner used k-means clustering in [this](https://www.researchgate.net/publication/326979552_Individual_Differences_in_the_Real-Time_Neural_Dynamics_of_Language_Comprehension) paper. His use of k-means clustering was an exploratory analysis. He used this method to compare two test conditions to baseline.
+
+Here I am comparing conditions S125 and S135 each to baseline S115. The first steps are creating the data frames.
+
+```{r}
+twix_data_N400_diff = twix_data_N400 %>% ungroup() %>% pivot_wider( names_from = condition, values_from = N400) %>% mutate(N400_S2_1 = S125-S115, N400_S3_1 = S135-S115) %>% select(-c(S115:S135))
+
+
+twix_data_P600_diff = twix_data_P600 %>% ungroup() %>% pivot_wider( names_from = condition, values_from = P600) %>% mutate(P600_S2_1 = S125-S115, P600_S3_1 = S135-S115) %>% select(-c(S115:S135))
+
+head(twix_data_P600_diff)
+
+twix_diff = full_join(twix_data_N400_diff, twix_data_P600_diff) %>% filter(!is.na(Hemisphere)) %>%  pivot_wider(id_cols = Participant, names_from = c(Anteriority, Hemisphere), values_from = c(N400_S2_1:P600_S3_1))
+  
+head(twix_diff)
+```
+
+Here I am running k-means clustering by giving the function the columns for each condition. I am specifying 2 groups (i.e., centers). I am then adding this information to the wide dataframe.
+
+```{r}
+twix_kmeans_2_1 = kmeans(twix_diff[,c(2:8,16:22)], centers = 2)
+
+twix_kmeans_3_1 = kmeans(twix_diff[,c(9:15,23:29)], centers = 2)
+
+twix_diff$cluster2_1 = twix_kmeans_2_1$cluster
+
+twix_diff$cluster3_1 = twix_kmeans_3_1$cluster
+
+twix_diff = twix_diff %>% select(Participant, cluster2_1, cluster3_1, everything())
+```
+
+
+## Plotting
+
+Note that the topoplot() function (from eegUtils) requires specific column names, hence the rename function.
+
+I am plotting a single person from each cluster, for each of these condition comparisons. To plot four figures in one plot, I am using the grid.arrange() function from the gridExtra package.
+
+### S125 - S115
+
+
+```{r}
+n400s1251 = twix_data_long %>% filter(Participant =="0101", condition == "S125") %>% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %>% topoplot(time_lim = c(300,500)) + ggtitle("N400, cluster 1, condition S125")
+
+p600s1251 = twix_data_long %>% filter(Participant =="0101", condition == "S125") %>% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %>% topoplot(time_lim = c(500,800)) + ggtitle("P600, cluster 1, condition S125")
+
+
+n400s1252 = twix_data_long %>% filter(Participant =="0102", condition == "S125") %>% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %>% topoplot(time_lim = c(300,500)) + ggtitle("N400, cluster 2, condition S125")
+
+p600s1252 = twix_data_long %>% filter(Participant =="0102", condition == "S125") %>% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %>% topoplot(time_lim = c(500,800)) +ggtitle("P600, cluster 2, condition S125")
+
+grid.arrange(n400s1251, p600s1251, n400s1252, p600s1252, nrow = 2)
+
+```
+
+
+
+### S135 - S115
+
+```{r}
+n400s1351 = twix_data_long %>% filter(Participant =="0107", condition == "S135") %>% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %>% topoplot(time_lim = c(300,500)) + ggtitle("N400, cluster 1, condition S135")
+
+p600s1351 = twix_data_long %>% filter(Participant =="0107", condition == "S135") %>% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %>% topoplot(time_lim = c(500,800)) + ggtitle("P600, cluster 1, condition S135")
+
+
+n400s1352 = twix_data_long %>% filter(Participant =="0102", condition == "S135") %>% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %>% topoplot(time_lim = c(300,500)) + ggtitle("N400, cluster 2, condition S135")
+
+p600s1352 = twix_data_long %>% filter(Participant =="0102", condition == "S135") %>% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %>% topoplot(time_lim = c(500,800)) +ggtitle("P600, cluster 2, condition S135")
+
+grid.arrange(n400s1351, p600s1351, n400s1352, p600s1352, nrow = 2)
+
+```
+
+# GAM
+
+For computational purposes I am only looking at one participant. This model took me 15 minutes to run on my personal laptop.
+
+```{r}
+twix0101 = twix_data_long %>% filter(Participant == "0101")
+
+gamtwix0101 = bam(uV~te(time, X,Y, by = condition), data = twix0101)
+summary(gamtwix0101)
+
+
+#not run:
+#gamtwixall = bam(uV~te(time, X,Y, by = condition) + s(time,X,Y, Participant, by = condition, bs = "fs", m =1), data = twix_data_long)
+
+```
+
+## topo plotting
+
+```{r}
+plot_topo(gamtwix0101, view = c("X", "Y"), cond = list(time = 400, condition = "S115"), color = "topo", main = "condition S115, time = 400 ms")
+
+#Add electrode sites
+plot_topo(gamtwix0101, view = c("X", "Y"), cond = list(time = 600, condition = "S125"), color = "topo", el.pos = electrodes,  main = "condition S125, time = 600 ms")
+
+# Add labels:
+plot_topo(gamtwix0101, view=c('X', 'Y'), cond=list(time=200, condition = "S135"))
+text(electrodes[['X']], electrodes[['Y']], 
+    labels=electrodes[['Electrode']], cex=.75, 
+    xpd=TRUE)
+
+```
+
+
+## Difference plotting
+
+For difference plotting, you need to specify a zlim in order to see the color bar on the bottom. zlim is the range of differences between two conditions. Figuring out an appropriate zlim takes some trial and error. If a value is outside of that zlim range, it shows up as white on the topo plot.
+
+```{r}
+plot_topo(gamtwix0101, view=c('X', 'Y'), zlim = c(-1,8),
+     cond = list(time = 400), comp=list(condition = c("S115", "S125")),
+    fun='plot_diff2')
+
+
+plot_topo(gamtwix0101, view=c('X', 'Y'), zlim = c(-1,8),
+     cond = list(time = 400), comp=list(condition = c("S115", "S125")),
+    fun='plot_diff2', show.diff = T, col.diff = "white")
+
+
+par(mfrow = c(2,2))
+
+for (k in c(200,400,600,800)){
+ plot_topo(gamtwix0101, view=c('X', 'Y'), zlim = c(-1,8),
+     cond = list(time = k), comp=list(condition = c("S115", "S125")),
+    fun='plot_diff2', main = paste0("Time: ", k, " ms"), show.diff = T, col.diff = "white") 
+  text(electrodes[['X']], electrodes[['Y']], 
+    labels=electrodes[['Electrode']], cex=.75, 
+    xpd=TRUE)
+  
+  
+}
+
+```
+
+## Making a movie
+
+```{r, eval=FALSE}
+library(av)
+for (k in seq(from = 0,to = 800,by = 20)){
+  nameme = paste0("~/Desktop/twix_png/twix", sprintf("%03d", k), ".png")
+  png(nameme)
+  plot_topo(gamtwix0101, view=c('X', 'Y'), zlim = c(-8,8),
+            cond = list(time = k), comp=list(condition = c("S125", "S115")),
+            fun='plot_diff2', main = paste0("Time: ", k, " ms"), show.diff = T, col.diff = "white") 
+  dev.off()
+  
+}
+
+
+png_files <- sprintf("~/Desktop/twix_png/twix%03d.png", seq(0,800,20))
+av::av_encode_video(png_files, '~/Desktop/twix_png/output.mp4', framerate = 10)
+
+```
+
+
+

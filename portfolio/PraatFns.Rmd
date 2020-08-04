@@ -1,0 +1,256 @@
+---
+title: "Praat Functions in R"
+author: "Marissa Barlaz"
+image: "img/soundwave.jpg"
+showonlyimage: false
+weight: 1
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+description: "The aim of this document is to automate acoustic data acquisition in R without having to directly use Praat scripting."
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE, message=FALSE)
+```
+
+The aim of this document is to automate acoustic data acquisition in R without having to directly use Praat scripting. Rather, these functions will interact with Praat for you. You will need to segment files in Praat manually. Given the absolute directory to a folder, the functions will loop through a folder that has a set of .WAV files and their associated segmented .TextGrid files. The extension can be .wav or .WAV.
+
+This file includes two functions. The first is create_praat_files, which interacts with Praat via the package PraatR, and creates the relevant files on your computer from the Praat environment. The second is get_acoustic_data, which can utilize these files to get time-dynamic acoustic data (with any number of time points you wish, including 1, which will get the midpoint value). Any combination of F0, intensity, or formant data can be collected. The output of get_acoustic_data is ready for use in analyses such as GAMM, with minimal further data processing required.
+
+More information on utilizing these functions are below. The packages PraatR, rPraat, and the tidyverse should be installed onto your computer. You also need to have Praat installed on your computer.
+
+# Function setup
+## Check for packages
+
+```{r}
+
+if (!"PraatR" %in% installed.packages()) devtools:::install_github("usagi5886/PraatR")
+if (!"rPraat" %in% installed.packages()) install.packages("rPraat")
+if (!"tidyverse" %in% installed.packages()) install.packages("tidyverse")
+```
+
+
+## Create files on computer
+
+```{r}
+create_praat_files = function(absdir, pitch = TRUE, formant = TRUE, intensity = TRUE){
+  
+  library(PraatR)
+  library(tidyverse)
+mydir = list.files(absdir, "*.WAV", ignore.case = T)
+mydir=paste0(absdir, mydir)
+mydirpitch=str_replace_all(mydir,fixed(".WAV", ignore_case = T), ".Pitch")
+mydirpitchtier=str_replace_all(mydir,fixed(".WAV", ignore_case = T), ".PitchTier")
+mydirformant=str_replace_all(mydir,fixed(".WAV", ignore_case = T), ".Formant")
+mydirint=str_replace_all(mydir, fixed(".WAV", ignore_case = T), ".Intensity")
+mydirinttier=str_replace_all(mydir,fixed(".WAV", ignore_case = T), ".IntensityTier")
+mydirtable=str_replace_all(mydir,fixed(".WAV", ignore_case = T), ".FormantTable")
+mydirall=cbind(mydir, mydirpitch, mydirpitchtier, mydirformant, mydirint, mydirinttier, mydirtable)
+  
+
+PitchArguments=list(0.001, #timestep
+                    75,    #pitch floor
+                    350)   #pitch ceiling
+
+#to Intensity...
+IntensityArguments=list(100, #Maximum Pitch
+                    0)    #TimeStep
+  
+#to Formant...  
+FormantArguments=list(0.001, #timestep
+                    5,    #Maximum number of formants
+                   5500,  #Maximum formant
+                   0.025,  #Window length 
+                   50)    #pre-emphasis from        
+
+#to table
+FormantTableArgs = list("no", #frame number
+                 "yes", #include time
+                 6, #number of time decimals
+                 "no", #include intensity
+                 3, #number of intnsity decimals
+                 "yes", #include number of formants
+                 3, #number of frequency decimals
+                 "yes")#include bandwidths
+
+
+if (pitch ==TRUE){
+  
+print("Creating all Pitch files, please wait patiently.")
+apply(mydirall, 1,
+     function(x) praat("To Pitch...", arguments = PitchArguments, input=x[1], 
+      output=x[2], overwrite=TRUE))
+  
+print("Creating all PitchTier files, please wait patiently.")
+apply(mydirall, 1, 
+      function(x) praat( "Down to PitchTier", input=x[2], output=x[3], overwrite=TRUE, filetype="headerless spreadsheet" ))
+}
+
+if(intensity ==TRUE){      
+print("Creating all Intensity files, please wait patiently.")
+  apply(mydirall, 1, 
+     function(x) praat("To Intensity...", arguments = IntensityArguments, input=x[1], 
+      output=x[5], overwrite=TRUE))
+
+  print("Creating all IntensityTier files, please wait patiently.")
+apply(mydirall, 1, 
+     function(x) praat("Down to IntensityTier", input=x[5], 
+      output=x[6], overwrite=TRUE, filetype="text"))
+}
+if (formant ==TRUE){
+
+  print("Creating all Formant files, please wait patiently.")
+  apply(mydirall, 1, 
+     function(x) praat( "To Formant (burg)...",arguments = FormantArguments,input = x[1], output = x[4], overwrite = TRUE)
+  )
+}
+
+print("Creating all FormantTable files, please wait patiently.")
+apply(mydirall, 1, function(x) praat( "Down to Table...",
+       arguments = FormantTableArgs, 
+       input=x[4],
+       output=x[7],
+       filetype="comma-separated", 
+       overwrite = TRUE
+))
+
+
+}
+
+```
+
+
+## Get data from files
+
+```{r}
+get_acoustic_data = function(absdir, tiername = "segment", numpoints = 10, pitch = TRUE, formant = TRUE, intensity = TRUE, remove_files = FALSE){
+  library(rPraat)
+  library(tidyverse)
+  mydir = list.files(absdir, "*.WAV", ignore.case = T)
+alltextgrids2 = list()
+  
+for (j in 1:length(mydir)){
+  
+  print(paste("Currently processing file", mydir[j], "... Please wait patiently."))
+curwav = paste0(absdir, mydir[j])
+curtext = str_replace(curwav, fixed(".WAV", ignore_case = T), ".TextGrid")
+curpitch= str_replace(curwav, fixed(".WAV", ignore_case = T), ".Pitch")
+curpitchtier = str_replace(curwav, fixed(".WAV", ignore_case = T), ".PitchTier")
+curint = str_replace(curwav, fixed(".WAV", ignore_case = T), ".Intensity")
+curinttier = str_replace(curwav, fixed(".WAV", ignore_case = T), ".IntensityTier")
+curformant = str_replace(curwav, fixed(".WAV", ignore_case = T), ".Formant")
+
+curformanttable = str_replace(curwav, fixed(".WAV", ignore_case = T), ".FormantTable")
+
+TextGridInfo = tg.read(curtext)
+CurTextGrid = data.frame(filename = mydir[j], tmin =TextGridInfo[[tiername]]$t1, tmax = TextGridInfo[[tiername]]$t2, label = TextGridInfo[[tiername]]$label) %>% filter(label !="")
+
+if (numpoints ==1){
+  CurTextGrid = CurTextGrid %>% mutate(normtime = 0.5, acttimenorm = (tmin+tmax)/2)
+} else{
+  
+CurTextGrid = CurTextGrid %>% mutate(RepNo = as.numeric(as.factor(tmin))) %>% group_by(tmin) %>% 
+  mutate(normtime = list(seq(0.1,1.0,length.out = numpoints)),
+         acttimenorm= list(seq(from = tmin, to = tmax, by = (tmax-tmin)/(numpoints-1)))) %>%
+  unnest(cols = c(normtime, acttimenorm)) 
+}
+
+if (pitch ==TRUE){
+PitchTierInfo = pt.read(curpitchtier)
+
+mywhichptpitch = map_dbl(CurTextGrid$acttimenorm, function(x) which.min(abs(x - PitchTierInfo$t)))
+#CurTextGrid$F0Time = map_dbl(mywhichptpitch, function(x) PitchTierInfo$t[x])
+CurTextGrid$F0 = map_dbl(mywhichptpitch, function(x) PitchTierInfo$f[x])
+  
+CurTextGrid = CurTextGrid %>% mutate(F0 = as.numeric(na_if(F0, "--undefined--")))
+
+if (remove_files==TRUE) file.remove(curpitch, curpitchtier)
+}
+
+if (intensity ==TRUE){
+IntensityTierInfo = it.read(curinttier)
+
+mywhichptint = map_dbl(CurTextGrid$acttimenorm, function(x) which.min(abs(x - IntensityTierInfo$t)))
+CurTextGrid$Intensity = map_dbl(mywhichptint, function(x) IntensityTierInfo$i[x])
+if (remove_files==TRUE) file.remove(curint, curinttier)
+
+}
+
+
+if (formant ==TRUE){
+#FormantInfo = formant.read(curformant)
+
+FormantInfo = suppressMessages(read_delim(curformanttable, delim = ","))
+
+
+mywhichptformant = map_dbl(CurTextGrid$acttimenorm, function(x) which.min(abs(x - FormantInfo$`time(s)`)))
+#CurTextGrid$FormantTime = map_dbl(mywhichptformant, function(x) FormantInfo$`time(s)`[x])
+CurTextGrid$F1 = map(mywhichptformant, function(x) FormantInfo$`F1(Hz)`[x])
+CurTextGrid$B1 = map(mywhichptformant, function(x) FormantInfo$`B1(Hz)`[x])
+CurTextGrid$F2 = map(mywhichptformant, function(x) FormantInfo$`F2(Hz)`[x])
+CurTextGrid$B2 = map(mywhichptformant, function(x) FormantInfo$`B2(Hz)`[x])
+CurTextGrid$F3 = map(mywhichptformant, function(x) FormantInfo$`F3(Hz)`[x])
+CurTextGrid$B3 = map(mywhichptformant, function(x) FormantInfo$`B3(Hz)`[x])
+CurTextGrid$F4 = map(mywhichptformant, function(x) FormantInfo$`F4(Hz)`[x])
+CurTextGrid$B4 = map(mywhichptformant, function(x) FormantInfo$`B4(Hz)`[x])
+CurTextGrid$F5 = map(mywhichptformant, function(x) FormantInfo$`F5(Hz)`[x])
+CurTextGrid$B5 = map(mywhichptformant, function(x) FormantInfo$`B5(Hz)`[x])
+
+
+CurTextGrid = CurTextGrid %>% mutate_at(.vars = c("F1", "B1","F2", "B2","F3", "B3","F4", "B4","F5", "B5"), .funs = ~ as.numeric(na_if(., "--undefined--")))
+if (remove_files==TRUE) file.remove(curformant, curformanttable)
+
+}
+
+
+
+
+alltextgrids2[[j]] = CurTextGrid
+#rm(CurTextGrid, curwav, curtable, curpitch, curtext, curpitchtier)
+}
+
+all_data_rPraat <- do.call("rbind", alltextgrids2)
+return(all_data_rPraat)
+}
+
+```
+
+
+# Utilizing the functions
+
+In order to use these functions, you need the following arguments:
+
+For create_praat_files, which creates the actual .Pitch, .Intensity, .Formant, etc. files on your computer, you need to specify the absolute directory (starting with /Users... on a Mac, and C:/ on a Windows computer). You also need to decide if you are going to analyze Pitch, Intensity, or Formants. The script will allow you to do all three, but it will take some time. For each of these three measurements, if you would like the files created, leave the values to their default (TRUE); if you would not like them created, change them to FALSE. Note that this will take some time to run (depending on how many measures you are running, how long your files are, how many files there are, and the power of your computer), after which the output in your R console will say NULL.
+
+For get_acoustic_data, you need the same absolute directory given above, the name of the tier you have segmented for which you want data, the number of normalized time points (numpoints, default is 10), and then which acoustic variable values you would like (TRUE/FALSE). The last argument is remove_files, which is by default set to FALSE. If you set this to TRUE, it will delete the files off of your computer *permanently* - this is only for the acoustic measures set to TRUE. (For example, if you create Pitch and Intensity files with create_praat_files, but only run get_acoustic_data for Pitch, it will only delete the pitch-related files.) If you want to redo an analysis for that acoustic measure, you would have to rerun create_praat_files. 
+
+The output for get_acoustic_data is a dataframe which will have the following information:
+
+* filename
+* label
+* start time of segment (tmin)
+* end time of segment (tmax)
+* Repetition Number (i.e., which segment number it is)
+* Normalized time value (between 0 and 1, in however many steps you specified in numpoints)
+* Actual time in the audio file where the normalized time is calculated
+* If pitch = TRUE, F0 at that time
+* If Intensity = TRUE, the intensity value at that time
+* If Formant = TRUE, the values of F1-F5 and their bandwidths at that particular time (with any "--undefined--" replaced with NA)
+
+```{r}
+absdir = "/Users/goldrch2/Desktop/Research/FemaleBP/"
+
+#create_praat_files(absdir, pitch = TRUE, formant = FALSE, intensity = FALSE)
+create_praat_files(absdir, pitch = TRUE, formant = TRUE, intensity = TRUE)
+
+#acoustic_pitch_output = get_acoustic_data(absdir, tiername = "segment", numpoints = 10, pitch = TRUE, formant = FALSE, intensity = FALSE, remove_files = TRUE)
+
+acoustic_all_output = get_acoustic_data(absdir, tiername = "segment", numpoints = 10, pitch = TRUE, formant = TRUE, intensity = TRUE, remove_files = FALSE)
+
+head(acoustic_all_output)
+```
+

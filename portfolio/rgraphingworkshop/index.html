@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>R Graphing Workshop</title>
+<meta name="description" content="Describe your website">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/owl.carousel.css">
+<link rel="stylesheet" href="/css/owl.theme.css">
+
+
+  <link href="/css/style.default.css" rel="stylesheet" id="theme-stylesheet">
+
+ 
+
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+
+<link href="/css/custom.css" rel="stylesheet">
+<link rel="shortcut icon" href="/img/favicon.png">
+
+
+</head>
+<body>
+  <div id="all">
+      <div class="container-fluid">
+          <div class="row row-offcanvas row-offcanvas-left">
+              <div id="sidebar" class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+  <div class="sidebar-content">
+    <h1 class="sidebar-heading"><a href="/">Marissa Barlaz, PhD</a></h1>
+    
+      <p class="sidebar-p">Until May 2020, I was the Linguistic Data Analytics Manager in the School of Literatures, Cultures, and Linguistics at the University of Illinois at Urbana-Champaign.</p>
+    
+    <ul class="sidebar-menu">
+      
+        <li><a href="/portfolio/">Home</a></li>
+      
+        <li><a href="/about/">About</a></li>
+      
+        <li><a href="/contact/">Get in touch</a></li>
+      
+    </ul>
+    <p class="social">
+  
+  
+  
+  
+  
+  <a href="mailto:marissa.barlaz@gmail.com" data-animate-hover="pulse" class="email">
+    <i class="fa fa-envelope"></i>
+  </a>
+  
+  
+  <a href="https://www.linkedin.com/in/marissa-barlaz-52801830/" data-animate-hover="pulse" class="external">
+    <i class="fa fa-linkedin"></i>
+  </a>
+  
+  
+  
+  <a href="https://github.com/marissabarlaz" data-animate-hover="pulse" class="external">
+    <i class="fa fa-github"></i>
+  </a>
+  
+  
+  
+</p>
+
+
+    <div class="copyright">
+      <p class="credit">
+        
+          &copy;2020 Marissa Barlaz |
+        
+        Template by <a href="https://bootstrapious.com/free-templates" class="external">Bootstrapious.com</a>
+
+&amp; ported to Hugo by <a href="https://github.com/kishaningithub">Kishan B</a>
+
+      </p>
+    </div>
+  </div>
+</div>
+
+              
+<div class="col-xs-12 col-sm-8 col-md-9 content-column white-background">
+  <div class="small-navbar visible-xs">
+  <button type="button" data-toggle="offcanvas" class="btn btn-ghost pull-left"> <i class="fa fa-align-left"> </i>Menu</button>
+  <h1 class="small-navbar-heading"><a href="/">Marissa Barlaz, PhD</a></h1>
+</div>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="content-column-content">
+         <h1>R Graphing Workshop</h1>
+         
+
+<div id="TOC">
+<ul>
+<li><a href="#data">Data</a></li>
+<li><a href="#introduction-to-ggplot">Introduction to ggplot</a></li>
+<li><a href="#aesthetics">Aesthetics</a></li>
+<li><a href="#faceting">Faceting</a></li>
+<li><a href="#statistical-transformations">Statistical Transformations</a></li>
+<li><a href="#other-aspects-of-the-graph">Other Aspects of the graph</a><ul>
+<li><a href="#colors">Colors</a></li>
+</ul></li>
+<li><a href="#wrapping-up">Wrapping up</a></li>
+</ul>
+</div>
+
+<p>The aim of this workshop is to teach you the ins and outs of using the <em>ggplot2</em> package in R.</p>
+<p>The materials for this workshop can be found <a href="https://github.com/marissabarlaz/Workshops/tree/master/Graphing">here</a>.</p>
+<p>A lot of the information in this workshop is based on workshops given at Harvard:
+<a href="https://dss.iq.harvard.edu/workshop-materials">https://dss.iq.harvard.edu/workshop-materials</a></p>
+<p>Please make good use of the following cheat sheet!
+<a href="https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf">https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf</a></p>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>The data I will be using during this tutorial is from the University of Wisconsin’s X-Ray Microbeam Speech Production Database. The database has the following variables:</p>
+<ul>
+<li>v = vowel</li>
+<li>f0</li>
+<li>f1-f4</li>
+<li>ulx and uly = x and y coordinates of the upper lip</li>
+<li>llx and lly = x and y coordinates of the lower lip</li>
+<li>t(1-4)x and t(1-4)y = x and y coordinates of the tongue at position (1-4)</li>
+<li>mnix and mniy = x and y coordinates of the mandibular incisor</li>
+<li>mnmx and mnmy = x and y coordinates of the mandibular molar</li>
+<li>I have artificially introduced 5 “speakers” randomly</li>
+</ul>
+</div>
+<div id="introduction-to-ggplot" class="section level2">
+<h2>Introduction to ggplot</h2>
+<p>As linguists, we are often dealing with data. And dealing with data means that when we are presenting results, we need to both describe these results in words, and display these results using plots.</p>
+<p>R is very powerful when it comes to making graphics. There are a lot of functions in base R that can create these graphics:</p>
+<pre class="r"><code>hist(ubdb$f1)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/basegraph-1.png" width="576" /></p>
+<pre class="r"><code>plot(ubdb$t1y, ubdb$f1)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/basegraph-2.png" width="576" /></p>
+<pre class="r"><code>boxplot(f1~v, notch = TRUE, data = ubdb)</code></pre>
+<pre><code>## Warning in bxp(list(stats = structure(c(419.198, 574.662, 611.469,
+## 698.7815, : some notches went outside hinges (&#39;box&#39;): maybe set notch=FALSE</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/basegraph-3.png" width="576" /></p>
+<p>However, each of these functions have slightly different syntactic forms, and the code is more complex to create plots. The <em>ggplot()</em> function, on the other hand, has a consistent coding structure, and creates much prettier plots. Once you understand the basic functions in ggplot, pretty and informative graphics are only a few steps away!</p>
+<p>The basic idea is similar to that of Photoshop. You independently specify building blocks of your plot, and combine them to create a graphical display. We add these building blocks (i.e., layers) to the graph using the “+” sign. Building blocks include:</p>
+<ul>
+<li>data</li>
+<li>aesthetic mapping</li>
+<li>geometric object</li>
+<li>statistical transformations</li>
+<li>scales</li>
+<li>coordinate systems</li>
+<li>position adjustments</li>
+<li>faceting</li>
+</ul>
+<p>It is important to include everything you need in one data frame for the graph. The first thing that happens is you call the data frame, and every subsequent call for a variable will come directly from that data frame.</p>
+</div>
+<div id="aesthetics" class="section level2">
+<h2>Aesthetics</h2>
+<p>In <em>ggplot()</em>, aesthetics include things you can see. Aesthetics are called with the function <em>aes()</em>. Some example aesthetics are:</p>
+<ul>
+<li>x: positioning along x-axis</li>
+<li>y: positioning along y-axis</li>
+<li>color: color of objects, or the color of the object’s outline (compare to fill below)</li>
+<li>fill: fill color of objects</li>
+<li>alpha: transparency of objects (value between 0, transparent, and 1, opaque)</li>
+<li>linetype: how lines should be drawn (solid, dashed, dotted, etc.)</li>
+<li>shape: shape of markers in scatter plots</li>
+<li>size: how large objects appear</li>
+</ul>
+<p>Let’s see what happens when we use <em>ggplot()</em> and <em>aes()</em> together:</p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot1-1.png" width="576" /></p>
+<p>What’s going on here? We’ve told ggplot to make a graph for the data file ubdb, with the x axis being t1y, and the y axis being f1. However, we didn’t specify what kind of graph we want. There are a few options for this, many of which are considered geometric objects:</p>
+<ul>
+<li>geom_point()</li>
+<li>geom_boxplot()</li>
+<li>geom_line()</li>
+<li>geom_ribbon()</li>
+<li>geom_label() or geom_text()</li>
+<li>geom_violin()</li>
+</ul>
+<p>Let’s try some of these:</p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_point()</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot11-1.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_point(aes(color = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot11-2.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_point(aes(color = f1))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot11-3.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_point(aes(color = t4y))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot11-4.png" width="576" />
+What’s the difference here? For the first plot, we are plotting basic geometric points. For the subsequent plots, we are adding an additional layer to the plot - changing the color of the plots from the default black. Therefore, the aesthetics of the points need to be included.</p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_point(aes(color = t4y, size = 2))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot2-1.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_point(aes(color = t4y), size = 2)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot2-2.png" width="576" /></p>
+<p>Here, the size is included as a variable, which is why we end up with an extra legend. Therefore, it is important to keep any aesthetics that do not call a variable (i.e., are fixed for the entire plot) stay outside of the <em>aes()</em> call. If you want to to base size on a variable (or color, linetype, etc.)) but do not want the legend, you can use <em>guides()</em> after your call for that geometric object, and specify which guide you do not want to be shown by using <em>FLASE</em>.</p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_point(aes(color = t4y, size = t1y))+guides(size = FALSE)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot22-1.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_point(aes(color = t4y, size = t1y))+guides(color = FALSE)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot22-2.png" width="576" /></p>
+<p>So what’s going on here? Why do we get an error for the second plot call?</p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(group = v, color = v)</code></pre>
+<pre><code>## Error in layer(data = data, mapping = mapping, stat = stat, geom = GeomLine, : object &#39;v&#39; not found</code></pre>
+<pre class="r"><code>#This is one way to get around the aes() issue, but is not the best! It means you have to call your data file again, and if you have some similarly-titled data frames, a simple typo can give you an inaccurate graph!
+ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(group = ubdb$v, color = ubdb$v)</code></pre>
+<pre><code>## Error in grDevices::col2rgb(colour, TRUE): invalid color name &#39;AA&#39;</code></pre>
+<pre class="r"><code>#This is the best method of doing it!
+ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(group = v, color = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot3-1.png" width="576" /></p>
+<p>What about other aesthetics?</p>
+<p>For boxplots and barplots, as well as other geoms, we can include significance levels with the <em>ggsignif</em> package. The pairwise comparisons being made are included in a list. The significance levels can be manually given using the ‘annotations’ argument. The geom_signif function has many other possibilities for changing the style of the significance bars.</p>
+<pre class="r"><code>ggplot(ubdb, aes(x=v, y=f1)) + geom_boxplot(aes(group = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot33-1.png" width="576" /></p>
+<pre class="r"><code>mycomparisons = list(c(&quot;AA&quot;, &quot;AE&quot;), c(&quot;IH&quot;, &quot;IY&quot;), c(&quot;IH&quot;, &quot;UW&quot;))
+ggplot(ubdb, aes(x=v, y=f1)) + geom_boxplot(aes(group = v)) + geom_signif(comparisons = mycomparisons, annotations = c(&quot;***&quot;, &quot;**&quot;, &quot;NS&quot;), y = c(1000, 1500, 1000))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot33-2.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, fill=v)) + geom_density(size = 1, alpha=.2)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot34-1.png" width="576" /></p>
+<p>The following plots are going to look pretty darn ugly! Why is that? What can we do to fix them?</p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(group = v))+geom_ribbon(aes(group = v, ymin = f1-sd(f1), ymax = f1+sd(f1)))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-1.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(group = v))+geom_smooth(aes(group =v, color = v))</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-2.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_smooth(aes(color = v), method = &quot;gam&quot;, size = 2)+geom_ribbon(aes(color = v, ymin = f1-sd(f1), ymax = f1+sd(f1)), alpha = .2)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-3.png" width="576" /></p>
+<pre class="r"><code>#this is better. There is not an overload of information in these plots!
+ggplot(ubdb, aes(x=t1y, y=f1)) + geom_smooth(aes(color = v), method = &quot;gam&quot;, size = 2)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-4.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(color = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-5.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1))+geom_ribbon(aes(color = v, ymin = f1-sd(f1), ymax = f1+sd(f1)), alpha = .2)+ geom_line(aes(color = v), size = 1.2)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-6.png" width="576" /></p>
+<p>Other plots that we can do include using geom_text, geom_violin, and geom_bar, among many others!</p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1))+geom_text(aes(label=v, color = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot36-1.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=v, y=f2))+geom_violin(aes(color = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot36-2.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=v, y=f2))+geom_violin(aes(color = v, fill = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot36-3.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=v))+geom_bar(aes(color = v, fill = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot36-4.png" width="576" /></p>
+<p>What if we wanted to plot the average F1 for each vowel? This doesn’t do it…</p>
+<pre class="r"><code>ggplot(ubdb, aes(x=v, y = f1))+geom_bar(aes(color = v, fill = v), stat = &quot;identity&quot;)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/unnamed-chunk-1-1.png" width="576" />
+What we need to do is create a summary function and pass that into ggplot. This is a common thing to do for all sorts of data. In the summarise function, you can include standard error, SD, and many other summary statistics.</p>
+<pre class="r"><code>ubdbsummary = ubdb %&gt;% group_by(v) %&gt;% summarise(meanF1 = mean(f1), sdF1 = sd(f1))
+
+ggplot(ubdbsummary, aes(x=v, y = meanF1))+geom_bar(aes(color = v, fill = v), stat = &quot;identity&quot;)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/unnamed-chunk-2-1.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdbsummary, aes(x=v, y = meanF1))+geom_bar(aes(color = v, fill = v), stat = &quot;identity&quot;) + geom_errorbar(aes(ymin = meanF1-sdF1,ymax = meanF1+sdF1, group = v), width= 0.5)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/unnamed-chunk-2-2.png" width="576" /></p>
+</div>
+<div id="faceting" class="section level2">
+<h2>Faceting</h2>
+<p>Some of these graphs look pretty gross, because there is too much information on one single plot. A common way to deal with this is to do faceting, which splits the graph up into multiple graphs, based on one or more variable.</p>
+<p>There are two functions that can be used to split the plots - <em>facet_wrap()</em> and <em>facet_grid()</em>. The first function, <em>facet_wrap()</em>, takes one grouping variable, splits the data up by that variable into multiple graphs, and then wraps the data into multiple rows. The variable being wrapped follows a tilde. The number of rows or columns can be specified (but not both!).</p>
+<p>The second function, <em>facet_grid()</em>, takes two or more grouping variables, splits the data up by those variables into multiple graphs, and then wraps the data into multiple rows and columns based on the specified formula. Put the row-splitting variable(s) before the tilde, and the column-splitting variable(s) after the tilde. A period specifies no faceting along that dimension.</p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, fill=v)) + geom_density(size = 1, alpha=.2)+facet_wrap(~v)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot4-1.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_point(aes(color = v), size = 2)+facet_grid(speaker~v)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot4-2.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_point(aes(color = t4y), size = 2)+facet_grid(speaker~.)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot4-3.png" width="576" /></p>
+</div>
+<div id="statistical-transformations" class="section level2">
+<h2>Statistical Transformations</h2>
+<p>So we’ve gone through various aesthetic calls for geometric objects. Note, however, that these objects are direct visualizations of the data, with no statistical transformations. What if we wanted to do something that showed statistical transforms? This could be helpful, as it would give summaries or more informative depictions of data, without the messiness of all of the points on the screen.</p>
+<p>There are a few basic ones. First, you can do a histogram using <em>stat_bin()</em>. You can also use <em>stat_summary()</em>, which gives the mean and standard error of y at each x value (although other summary functions, such as median, mean and confidence interval, etc. can be used). <em>stat_unique()</em> removes duplicate values.</p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y))+stat_bin()</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-1.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y))+stat_bin(geom=&quot;point&quot;)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-2.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y))+stat_bin(geom=&quot;line&quot;, bins = 50)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-3.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y))+stat_bin(bins = 40)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-4.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=v, y=t1y))+stat_summary()</code></pre>
+<pre><code>## No summary function supplied, defaulting to `mean_se()</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-5.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_point(aes(color = v)) + stat_unique()</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-6.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse()</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-7.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1, color = v))+stat_ellipse(type = &quot;norm&quot;)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-8.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-9.png" width="576" /></p>
+<pre class="r"><code>#Here I am breaking my own rule and using a second dataset, mymeans (which is the mean of F1 and F2 by vowel), in the plot to plot the centers of each ellipse.
+mymeans = aggregate(ubdb[c(&quot;f1&quot;, &quot;f2&quot;)], list(v=ubdb$v), mean)
+mymeans2= aggregate(ubdb[c(&quot;f1&quot;, &quot;f2&quot;)], list(v=ubdb$v, speaker = ubdb$speaker), mean)
+ggplot(ubdb, aes(x=f2, y=f1))+geom_text(data = mymeans, aes(color = v, label = v), size = 4)+stat_ellipse(aes(color = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-10.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_text(data = mymeans, aes(color = v, label = v), size = 4)+stat_ellipse(aes(color = v, linetype = v))</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-11.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_text(data = mymeans, aes(color = v, label = v), size = 4)+stat_ellipse(aes(color = v, linetype = v))+ geom_point(aes(color = v), alpha = 0.2)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-12.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_text(data = mymeans2, aes(color = v, label = v), size = 4,show.legend = FALSE)+stat_ellipse(aes(color = v, linetype = v))+facet_wrap(~speaker)</code></pre>
+<pre><code>## Too few points to calculate an ellipse</code></pre>
+<pre><code>## Too few points to calculate an ellipse</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-13.png" width="576" /></p>
+</div>
+<div id="other-aspects-of-the-graph" class="section level2">
+<h2>Other Aspects of the graph</h2>
+<div id="colors" class="section level3">
+<h3>Colors</h3>
+<p>There’s a lot to be said about different color palettes in R. You can specify your color scheme based on personal taste, school colors, using a colorblind friendly palette, etc. Note that it’s generally in good taste to use a colorblind friendly palette, which the base colors in <em>ggplot</em> are not, as they have the same luminescence. Below, I am defining a colorblind friendly palette and using it in graphs using <em>scale_fill_manual()</em> and <em>scale_colour_manual()</em>. You can do use these two functions with a predefined palette, as I am, or by calling color codes (either HTML or basic color names) in the function.</p>
+<pre class="r"><code>cbPalette &lt;- c(&quot;#999999&quot;, &quot;#E69F00&quot;, &quot;#56B4E9&quot;, &quot;#009E73&quot;, &quot;#F0E442&quot;, &quot;#0072B2&quot;, &quot;#D55E00&quot;, &quot;#CC79A7&quot;, &quot;#000000&quot;)
+
+#To use for fills, add  scale_fill_manual(values=cbPalette)
+
+# To use for line and point colors, add  scale_colour_manual(values=cbPalette)
+
+ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v), alpha = 0.3)+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/colors-1.png" width="576" />
+There are many other ways to define and change colors, including changing hues, luminance, saturation, etc. If you have any questions about these things, please ask me! You can also find more information on color in R here:</p>
+<p><a href="http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/">http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/</a></p>
+<p>###Labels, titles, and Axes
+If you want to relabel the axes, or give a title, you can use the <em>xlab()</em>, <em>ylab()</em>, and <em>ggtitle()</em> functions.</p>
+<p>To change limits of the x and y axes, you can use <em>xlim()</em> and <em>ylim()</em>.</p>
+<p>You can reverse the order of the x and y axes using <em>scale_x_reverse()</em> and <em>scale_y_reverse()</em>.</p>
+<p>If you want to move the axes to the right/top, put these positions in the <em>scale_x_continuous()</em> and <em>scale_y_continuous()</em> functions. These can also go in the <em>scale_x_reverse()</em> and <em>scale_y_reverse()</em> functions. You can also specify two axes by calling for a second, duplicate axis. If you are using custom x and y scales and want to change the limits of the axes, do so inside of the scale functions calling <em>limits = c(lim1, lim2)</em>. NOTE that if you are using <em>scale_x_reverse()</em> and/or <em>scale_y_reverse()</em> you have to include your limits in reverse!!</p>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/labels-1.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(position = &quot;top&quot;)+scale_y_reverse(position = &quot;right&quot;)+ xlab(&quot;F2!!!!&quot;) + ylab(&quot;F1!!!!!&quot;) + ggtitle(&quot;My vowel plot&quot;)</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/labels-2.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(position = &quot;top&quot;, limits = c(2500,1000))+scale_y_reverse(position = &quot;right&quot;, limits = c(2500,0))+ xlab(&quot;F2!!!!&quot;) + ylab(&quot;F1!!!!!&quot;) + ggtitle(&quot;My vowel plot&quot;)</code></pre>
+<pre><code>## Warning: Removed 107 rows containing non-finite values (stat_ellipse).</code></pre>
+<pre><code>## Warning: Removed 107 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 46 rows containing missing values (geom_path).</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/labels-3.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(sec.axis = dup_axis()) + scale_y_reverse(limits = (c(0,1500)),sec.axis = dup_axis())+ xlab(&quot;F2!!!!&quot;) + ylab(&quot;F1!!!!!&quot;) + ggtitle(&quot;My vowel plot&quot;)</code></pre>
+<pre><code>## Warning: Removed 1073 rows containing non-finite values (stat_ellipse).</code></pre>
+<pre><code>## Warning: Removed 1073 rows containing missing values (geom_point).</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/labels-4.png" width="576" />
+<!-- ###Position --></p>
+<p>###Theme
+As you’ve noticed, there is a set theme about the graphs - the background is grey, the text is black, the gridlines are white, etc. There are a number of ways to change the theme around. The most common is to use a different complete theme, such as <em>theme_minimal()</em> or <em>theme_grey()</em>. You can also define your own theme settings.</p>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(position = &quot;top&quot;)+scale_y_reverse(position = &quot;right&quot;)+ xlab(&quot;F2!!!!&quot;) + ylab(&quot;F1!!!!!&quot;) + ggtitle(&quot;My vowel plot&quot;) + theme_minimal()</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplottheme-1.png" width="576" /></p>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(position = &quot;top&quot;)+scale_y_reverse(position = &quot;right&quot;)+ xlab(&quot;F2!!!!&quot;) + ylab(&quot;F1!!!!!&quot;) + ggtitle(&quot;My vowel plot&quot;) + theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.border = element_blank(), panel.background = element_blank())</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplottheme-2.png" width="576" /></p>
+</div>
+</div>
+<div id="wrapping-up" class="section level2">
+<h2>Wrapping up</h2>
+<p>In sum, <em>ggplot2</em> is an extremely powerful package that can create lots of beautiful plots for your research. Think carefully about what you want to plot, and add layers as needed. I encourage you to save your plots as variables. You can then view and save them.</p>
+<pre class="r"><code>myplot = ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v), alpha = 0.2, size = 0.4)+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(position = &quot;top&quot;)+scale_y_reverse(position = &quot;right&quot;)+ xlab(&quot;F2!!!!&quot;) + ylab(&quot;F1!!!!!&quot;) + ggtitle(&quot;My vowel plot&quot;) + theme_minimal() + geom_label(data = mymeans,aes(color = v, label = v), size = 4,show.legend =FALSE)
+
+myplot</code></pre>
+<p><img src="/portfolio/RGraphingWorkshop_files/figure-html/wrapup-1.png" width="576" /></p>
+<pre class="r"><code>#Not run = to save the plot!
+#ggsave(&quot;myplot.pdf&quot;, plot = myplot, height = 6, width = 10, units = &quot;in&quot;, device = cairo_pdf)</code></pre>
+<p>I highly recommend using the following reference whenever you need to find more information about a graphing mechanism in <em>ggplot</em>:
+<a href="http://ggplot2.tidyverse.org/reference/">http://ggplot2.tidyverse.org/reference/</a></p>
+</div>
+
+         
+      </div>
+    </div>
+  </div>
+</div>
+
+          </div>
+      </div>
+  </div>
+  <script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.cookie.js"> </script>
+<script src="/js/ekko-lightbox.js"></script>
+<script src="/js/jquery.scrollTo.min.js"></script>
+<script src="/js/masonry.pkgd.min.js"></script>
+<script src="/js/imagesloaded.pkgd.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/front.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>ERP Data Analysis in R</title>
+<meta name="description" content="Describe your website">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/owl.carousel.css">
+<link rel="stylesheet" href="/css/owl.theme.css">
+
+
+  <link href="/css/style.default.css" rel="stylesheet" id="theme-stylesheet">
+
+ 
+
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+
+<link href="/css/custom.css" rel="stylesheet">
+<link rel="shortcut icon" href="/img/favicon.png">
+
+
+</head>
+<body>
+  <div id="all">
+      <div class="container-fluid">
+          <div class="row row-offcanvas row-offcanvas-left">
+              <div id="sidebar" class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+  <div class="sidebar-content">
+    <h1 class="sidebar-heading"><a href="/">Marissa Barlaz, PhD</a></h1>
+    
+      <p class="sidebar-p">Until May 2020, I was the Linguistic Data Analytics Manager in the School of Literatures, Cultures, and Linguistics at the University of Illinois at Urbana-Champaign.</p>
+    
+    <ul class="sidebar-menu">
+      
+        <li><a href="/portfolio/">Home</a></li>
+      
+        <li><a href="/about/">About</a></li>
+      
+        <li><a href="/contact/">Get in touch</a></li>
+      
+    </ul>
+    <p class="social">
+  
+  
+  
+  
+  
+  <a href="mailto:marissa.barlaz@gmail.com" data-animate-hover="pulse" class="email">
+    <i class="fa fa-envelope"></i>
+  </a>
+  
+  
+  <a href="https://www.linkedin.com/in/marissa-barlaz-52801830/" data-animate-hover="pulse" class="external">
+    <i class="fa fa-linkedin"></i>
+  </a>
+  
+  
+  
+  <a href="https://github.com/marissabarlaz" data-animate-hover="pulse" class="external">
+    <i class="fa fa-github"></i>
+  </a>
+  
+  
+  
+</p>
+
+
+    <div class="copyright">
+      <p class="credit">
+        
+          &copy;2020 Marissa Barlaz |
+        
+        Template by <a href="https://bootstrapious.com/free-templates" class="external">Bootstrapious.com</a>
+
+&amp; ported to Hugo by <a href="https://github.com/kishaningithub">Kishan B</a>
+
+      </p>
+    </div>
+  </div>
+</div>
+
+              
+<div class="col-xs-12 col-sm-8 col-md-9 content-column white-background">
+  <div class="small-navbar visible-xs">
+  <button type="button" data-toggle="offcanvas" class="btn btn-ghost pull-left"> <i class="fa fa-align-left"> </i>Menu</button>
+  <h1 class="small-navbar-heading"><a href="/">Marissa Barlaz, PhD</a></h1>
+</div>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="content-column-content">
+         <h1>ERP Data Analysis in R</h1>
+         
+
+<div id="TOC">
+<ul>
+<li><a href="#preprocessing">Preprocessing</a><ul>
+<li><a href="#required-packages">Required packages</a></li>
+<li><a href="#read-in-data">Read in data</a></li>
+<li><a href="#convert-to-long-format-combine-data-frames">Convert to long format, combine data frames</a></li>
+</ul></li>
+<li><a href="#plotting-time-courses">Plotting time courses</a></li>
+<li><a href="#p600-and-n400-calculations">P600 and N400 calculations</a></li>
+<li><a href="#anova">ANOVA</a></li>
+<li><a href="#k-means-clustering">k means clustering</a><ul>
+<li><a href="#plotting">Plotting</a><ul>
+<li><a href="#s125---s115">S125 - S115</a></li>
+<li><a href="#s135---s115">S135 - S115</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#gam">GAM</a><ul>
+<li><a href="#topo-plotting">topo plotting</a></li>
+<li><a href="#difference-plotting">Difference plotting</a></li>
+<li><a href="#making-a-movie">Making a movie</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="preprocessing" class="section level1">
+<h1>Preprocessing</h1>
+<div id="required-packages" class="section level2">
+<h2>Required packages</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.2.1     ✓ purrr   0.3.3
+## ✓ tibble  2.1.3     ✓ dplyr   0.8.4
+## ✓ tidyr   1.0.2     ✓ stringr 1.4.0
+## ✓ readr   1.3.1     ✓ forcats 0.4.0</code></pre>
+<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(mgcv)</code></pre>
+<pre><code>## Loading required package: nlme</code></pre>
+<pre><code>## 
+## Attaching package: &#39;nlme&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     collapse</code></pre>
+<pre><code>## This is mgcv 1.8-31. For overview type &#39;help(&quot;mgcv-package&quot;)&#39;.</code></pre>
+<pre class="r"><code>library(itsadug)</code></pre>
+<pre><code>## Loading required package: plotfunctions</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotfunctions&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     alpha</code></pre>
+<pre><code>## Loaded package itsadug 2.3 (see &#39;help(&quot;itsadug&quot;)&#39; ).</code></pre>
+<pre class="r"><code>library(eegUtils)</code></pre>
+<pre><code>## Make sure to check for the latest development version at https://github.com/craddm/eegUtils!</code></pre>
+<pre><code>## 
+## Attaching package: &#39;eegUtils&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre class="r"><code>#devtools::install_github(&quot;craddm/eegUtils&quot;)
+library(gridExtra)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;gridExtra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     combine</code></pre>
+<pre class="r"><code>cbPalette &lt;- c(&quot;#999999&quot;, &quot;#E69F00&quot;, &quot;#56B4E9&quot;, &quot;#009E73&quot;, &quot;#F0E442&quot;, &quot;#0072B2&quot;, &quot;#D55E00&quot;, &quot;#CC79A7&quot;)</code></pre>
+</div>
+<div id="read-in-data" class="section level2">
+<h2>Read in data</h2>
+<p>This data was kindly provided by Prof. Green.</p>
+<p>The easiest way to read in data is to add each participant file to a list and then bind it all together. Often you have to initialize the ‘participant’ column yourself, possibly by taking that information out of the file name. Here since the participant code is a number, I use a regex to extract it from the filenames.</p>
+<pre class="r"><code>datadir = &quot;/Users/goldrch2/Desktop/twix_results/&quot;
+mydata = list.files(path = datadir, pattern = &quot;twix_.*&quot;)
+mydata</code></pre>
+<pre><code>## [1] &quot;twix_0101.csv&quot; &quot;twix_0102.csv&quot; &quot;twix_0103.csv&quot; &quot;twix_0104.csv&quot;
+## [5] &quot;twix_0105.csv&quot; &quot;twix_0106.csv&quot; &quot;twix_0107.csv&quot;</code></pre>
+<pre class="r"><code>alldata = list()
+
+for (k in 1:length(mydata)){
+  current_data = read_csv(paste0(datadir, mydata[k])) %&gt;% mutate(Participant = str_extract(mydata[k], &quot;[[:digit:]]+&quot;)) %&gt;% select(Participant, everything())
+
+  alldata[[k]] = current_data
+  
+}</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   condition = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   condition = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   condition = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   condition = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   condition = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   condition = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   condition = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>twix_data = do.call( &quot;rbind&quot;, alldata) %&gt;% mutate_at(.vars = c(1,2), .funs = as.factor)
+head(twix_data)</code></pre>
+<pre><code>## # A tibble: 6 x 36
+##   Participant condition epoch  time   FP1   FP2    F7    F3    Fz    F4    F8
+##   &lt;fct&gt;       &lt;fct&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 0101        S115          0  -200  30.5  32.7  18.6  11.5 12.8   7.25  6.15
+## 2 0101        S115          0  -199  28.8  32.1  17.4  11.5 12.0   6.45  5.22
+## 3 0101        S115          0  -198  27.0  31.4  16.2  11.7 11.3   5.80  4.40
+## 4 0101        S115          0  -197  25.2  30.5  14.7  11.8 10.6   5.29  3.70
+## 5 0101        S115          0  -196  23.5  29.5  13.2  12.1  9.92  4.93  3.15
+## 6 0101        S115          0  -195  21.8  28.3  11.5  12.4  9.32  4.73  2.74
+## # … with 25 more variables: FC5 &lt;dbl&gt;, FC1 &lt;dbl&gt;, FC2 &lt;dbl&gt;, FC6 &lt;dbl&gt;,
+## #   T7 &lt;dbl&gt;, C3 &lt;dbl&gt;, Cz &lt;dbl&gt;, C4 &lt;dbl&gt;, T8 &lt;dbl&gt;, CP5 &lt;dbl&gt;, CP1 &lt;dbl&gt;,
+## #   CP2 &lt;dbl&gt;, CP6 &lt;dbl&gt;, P7 &lt;dbl&gt;, P3 &lt;dbl&gt;, Pz &lt;dbl&gt;, P4 &lt;dbl&gt;, P8 &lt;dbl&gt;,
+## #   O1 &lt;dbl&gt;, Oz &lt;dbl&gt;, O2 &lt;dbl&gt;, LO1 &lt;dbl&gt;, LO2 &lt;dbl&gt;, IO1 &lt;dbl&gt;, M2 &lt;dbl&gt;</code></pre>
+<pre class="r"><code>dim(twix_data)</code></pre>
+<pre><code>## [1] 819819     36</code></pre>
+<pre class="r"><code>unique(twix_data$epoch)</code></pre>
+<pre><code>##   [1]   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17
+##  [19]  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35
+##  [37]  36  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51  52  53
+##  [55]  54  55  56  57  58  59  60  61  62  63  64  65  66  67  68  69  70  71
+##  [73]  72  73  74  75  76  77  78  79  80  81  82  83  84  85  86  87  88  89
+##  [91]  90  91  92  93  94  95  96  97  98  99 100 101 102 103 104 105 106 107
+## [109] 108 109 110 111 112 113 114 115 116 117 118 119</code></pre>
+<pre class="r"><code>unique(twix_data$condition)</code></pre>
+<pre><code>## [1] S115 S125 S135
+## Levels: S115 S125 S135</code></pre>
+<p>Here I am reading in two different datasets - hemisphereinfo has anteriority and hemisphere, and electrodes has X and Y coordinates of the electrodes.</p>
+<pre class="r"><code>hemisphereinfo = read_csv(&quot;/Users/goldrch2/Desktop/twix_results/electrode_quadrants.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Electrode = col_character(),
+##   Anteriority = col_character(),
+##   Hemisphere = col_character()
+## )</code></pre>
+<pre class="r"><code>electrodes &lt;- itsadug::eeg[,c(&#39;X&#39;,&#39;Y&#39;,&#39;Electrode&#39;)]
+electrodes &lt;- ( electrodes[!duplicated(electrodes),] )
+electrodes$Electrode = toupper( electrodes$Electrode)</code></pre>
+</div>
+<div id="convert-to-long-format-combine-data-frames" class="section level2">
+<h2>Convert to long format, combine data frames</h2>
+<p>A previous function to make data long is gather(), however, this function is being retired in the tidyverse.</p>
+<pre class="r"><code>twix_data_long = twix_data %&gt;% pivot_longer(-c(Participant:time), names_to= &quot;Electrode&quot;, values_to = &quot;uV&quot;) %&gt;% left_join(hemisphereinfo, by = &quot;Electrode&quot;) %&gt;% left_join(electrodes, by = &quot;Electrode&quot;) %&gt;% select(Participant, condition, epoch, Anteriority, Hemisphere,Electrode, X, Y, time, uV)</code></pre>
+</div>
+</div>
+<div id="plotting-time-courses" class="section level1">
+<h1>Plotting time courses</h1>
+<p>Note that many functions from the eegUtils package require the columns to have specific names.</p>
+<p>Here I am plotting one participant’s data.</p>
+<pre class="r"><code>twix0101 = twix_data_long %&gt;% filter(Participant == &quot;0101&quot;)
+
+twix0101 %&gt;% filter(!is.na(Anteriority)) %&gt;% ggplot(aes(x = time, y = uV)) +  stat_summary(fun.y = mean,geom = &quot;line&quot;,aes(colour = condition)) + facet_grid(Hemisphere~Anteriority) + theme_minimal() + scale_color_manual(values = cbPalette)</code></pre>
+<p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-5-1.png" width="576" /></p>
+<pre class="r"><code>twix0101 %&gt;% rename(electrode = Electrode, amplitude = uV) %&gt;% plot_butterfly()</code></pre>
+<p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-5-2.png" width="576" /></p>
+</div>
+<div id="p600-and-n400-calculations" class="section level1">
+<h1>P600 and N400 calculations</h1>
+<p>Here I am creating two dataframes - one for P600, one for N400, and combining them.</p>
+<pre class="r"><code>twix_data_N400 = twix_data_long %&gt;% filter(time &lt;=500 &amp; time &gt;=300) %&gt;% group_by(Participant, Hemisphere, Anteriority, condition) %&gt;% summarise(N400 = mean(uV, na.rm = TRUE))
+
+twix_data_P600 = twix_data_long %&gt;% filter(time &gt;=500 &amp; time &lt;=800) %&gt;% group_by(Participant, Hemisphere, Anteriority, condition) %&gt;% summarise(P600 = mean(uV, na.rm = TRUE))
+
+twix_effects = full_join(twix_data_N400, twix_data_P600)</code></pre>
+<pre><code>## Joining, by = c(&quot;Participant&quot;, &quot;Hemisphere&quot;, &quot;Anteriority&quot;, &quot;condition&quot;)</code></pre>
+</div>
+<div id="anova" class="section level1">
+<h1>ANOVA</h1>
+<pre class="r"><code>summary(aov(N400~condition*Hemisphere, data = filter(twix_effects, Hemisphere!=&quot;midline&quot;, Anteriority==&quot;posterior&quot;)))</code></pre>
+<pre><code>##                      Df Sum Sq Mean Sq F value  Pr(&gt;F)    
+## condition             2 154.79   77.39  35.860 2.7e-09 ***
+## Hemisphere            1   1.46    1.46   0.678   0.416    
+## condition:Hemisphere  2   0.52    0.26   0.121   0.887    
+## Residuals            36  77.70    2.16                    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>summary(aov(P600~Anteriority*condition*Hemisphere, data = twix_effects))</code></pre>
+<pre><code>##                                   Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+## Anteriority                        2  166.1   83.04  10.000 9.31e-05 ***
+## condition                          2   17.1    8.54   1.028   0.3606    
+## Hemisphere                         2   18.8    9.40   1.132   0.3255    
+## Anteriority:condition              4   67.3   16.82   2.025   0.0948 .  
+## Anteriority:Hemisphere             2    0.3    0.15   0.018   0.9820    
+## condition:Hemisphere               4    5.8    1.44   0.173   0.9517    
+## Anteriority:condition:Hemisphere   4    1.2    0.30   0.036   0.9975    
+## Residuals                        126 1046.2    8.30                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 21 observations deleted due to missingness</code></pre>
+</div>
+<div id="k-means-clustering" class="section level1">
+<h1>k means clustering</h1>
+<p>Darren Tanner used k-means clustering in <a href="https://www.researchgate.net/publication/326979552_Individual_Differences_in_the_Real-Time_Neural_Dynamics_of_Language_Comprehension">this</a> paper. His use of k-means clustering was an exploratory analysis. He used this method to compare two test conditions to baseline.</p>
+<p>Here I am comparing conditions S125 and S135 each to baseline S115. The first steps are creating the data frames.</p>
+<pre class="r"><code>twix_data_N400_diff = twix_data_N400 %&gt;% ungroup() %&gt;% pivot_wider( names_from = condition, values_from = N400) %&gt;% mutate(N400_S2_1 = S125-S115, N400_S3_1 = S135-S115) %&gt;% select(-c(S115:S135))
+
+
+twix_data_P600_diff = twix_data_P600 %&gt;% ungroup() %&gt;% pivot_wider( names_from = condition, values_from = P600) %&gt;% mutate(P600_S2_1 = S125-S115, P600_S3_1 = S135-S115) %&gt;% select(-c(S115:S135))
+
+head(twix_data_P600_diff)</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   Participant Hemisphere Anteriority P600_S2_1 P600_S3_1
+##   &lt;fct&gt;       &lt;chr&gt;      &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;
+## 1 0101        left       anterior      -10.3      -6.29 
+## 2 0101        left       posterior      -1.22     -0.255
+## 3 0101        midline    anterior       -7.48     -3.42 
+## 4 0101        midline    mid            -2.06     -0.154
+## 5 0101        midline    posterior       0.486     0.422
+## 6 0101        right      anterior       -7.43     -4.03</code></pre>
+<pre class="r"><code>twix_diff = full_join(twix_data_N400_diff, twix_data_P600_diff) %&gt;% filter(!is.na(Hemisphere)) %&gt;%  pivot_wider(id_cols = Participant, names_from = c(Anteriority, Hemisphere), values_from = c(N400_S2_1:P600_S3_1))</code></pre>
+<pre><code>## Joining, by = c(&quot;Participant&quot;, &quot;Hemisphere&quot;, &quot;Anteriority&quot;)</code></pre>
+<pre class="r"><code>head(twix_diff)</code></pre>
+<pre><code>## # A tibble: 6 x 29
+##   Participant N400_S2_1_anter… N400_S2_1_poste… N400_S2_1_anter…
+##   &lt;fct&gt;                  &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1 0101                  -6.27             -6.75           -5.57 
+## 2 0102                  -2.62             -3.93           -1.56 
+## 3 0103                  -7.60             -3.41           -9.61 
+## 4 0104                  -2.41             -2.91           -2.10 
+## 5 0105                   0.696            -3.22            0.429
+## 6 0106                  -2.51             -2.52           -4.89 
+## # … with 25 more variables: N400_S2_1_mid_midline &lt;dbl&gt;,
+## #   N400_S2_1_posterior_midline &lt;dbl&gt;, N400_S2_1_anterior_right &lt;dbl&gt;,
+## #   N400_S2_1_posterior_right &lt;dbl&gt;, N400_S3_1_anterior_left &lt;dbl&gt;,
+## #   N400_S3_1_posterior_left &lt;dbl&gt;, N400_S3_1_anterior_midline &lt;dbl&gt;,
+## #   N400_S3_1_mid_midline &lt;dbl&gt;, N400_S3_1_posterior_midline &lt;dbl&gt;,
+## #   N400_S3_1_anterior_right &lt;dbl&gt;, N400_S3_1_posterior_right &lt;dbl&gt;,
+## #   P600_S2_1_anterior_left &lt;dbl&gt;, P600_S2_1_posterior_left &lt;dbl&gt;,
+## #   P600_S2_1_anterior_midline &lt;dbl&gt;, P600_S2_1_mid_midline &lt;dbl&gt;,
+## #   P600_S2_1_posterior_midline &lt;dbl&gt;, P600_S2_1_anterior_right &lt;dbl&gt;,
+## #   P600_S2_1_posterior_right &lt;dbl&gt;, P600_S3_1_anterior_left &lt;dbl&gt;,
+## #   P600_S3_1_posterior_left &lt;dbl&gt;, P600_S3_1_anterior_midline &lt;dbl&gt;,
+## #   P600_S3_1_mid_midline &lt;dbl&gt;, P600_S3_1_posterior_midline &lt;dbl&gt;,
+## #   P600_S3_1_anterior_right &lt;dbl&gt;, P600_S3_1_posterior_right &lt;dbl&gt;</code></pre>
+<p>Here I am running k-means clustering by giving the function the columns for each condition. I am specifying 2 groups (i.e., centers). I am then adding this information to the wide dataframe.</p>
+<pre class="r"><code>twix_kmeans_2_1 = kmeans(twix_diff[,c(2:8,16:22)], centers = 2)
+
+twix_kmeans_3_1 = kmeans(twix_diff[,c(9:15,23:29)], centers = 2)
+
+twix_diff$cluster2_1 = twix_kmeans_2_1$cluster
+
+twix_diff$cluster3_1 = twix_kmeans_3_1$cluster
+
+twix_diff = twix_diff %&gt;% select(Participant, cluster2_1, cluster3_1, everything())</code></pre>
+<div id="plotting" class="section level2">
+<h2>Plotting</h2>
+<p>Note that the topoplot() function (from eegUtils) requires specific column names, hence the rename function.</p>
+<p>I am plotting a single person from each cluster, for each of these condition comparisons. To plot four figures in one plot, I am using the grid.arrange() function from the gridExtra package.</p>
+<div id="s125---s115" class="section level3">
+<h3>S125 - S115</h3>
+<pre class="r"><code>n400s1251 = twix_data_long %&gt;% filter(Participant ==&quot;0101&quot;, condition == &quot;S125&quot;) %&gt;% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %&gt;% topoplot(time_lim = c(300,500)) + ggtitle(&quot;N400, cluster 1, condition S125&quot;)</code></pre>
+<pre><code>## Using electrode locations from data.</code></pre>
+<pre><code>## Warning in topoplot.data.frame(., time_lim = c(300, 500)): Removing channels
+## with no location.</code></pre>
+<pre class="r"><code>p600s1251 = twix_data_long %&gt;% filter(Participant ==&quot;0101&quot;, condition == &quot;S125&quot;) %&gt;% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %&gt;% topoplot(time_lim = c(500,800)) + ggtitle(&quot;P600, cluster 1, condition S125&quot;)</code></pre>
+<pre><code>## Using electrode locations from data.</code></pre>
+<pre><code>## Warning in topoplot.data.frame(., time_lim = c(500, 800)): Removing channels
+## with no location.</code></pre>
+<pre class="r"><code>n400s1252 = twix_data_long %&gt;% filter(Participant ==&quot;0102&quot;, condition == &quot;S125&quot;) %&gt;% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %&gt;% topoplot(time_lim = c(300,500)) + ggtitle(&quot;N400, cluster 2, condition S125&quot;)</code></pre>
+<pre><code>## Using electrode locations from data.</code></pre>
+<pre><code>## Warning in topoplot.data.frame(., time_lim = c(300, 500)): Removing channels
+## with no location.</code></pre>
+<pre class="r"><code>p600s1252 = twix_data_long %&gt;% filter(Participant ==&quot;0102&quot;, condition == &quot;S125&quot;) %&gt;% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %&gt;% topoplot(time_lim = c(500,800)) +ggtitle(&quot;P600, cluster 2, condition S125&quot;)</code></pre>
+<pre><code>## Using electrode locations from data.</code></pre>
+<pre><code>## Warning in topoplot.data.frame(., time_lim = c(500, 800)): Removing channels
+## with no location.</code></pre>
+<pre class="r"><code>grid.arrange(n400s1251, p600s1251, n400s1252, p600s1252, nrow = 2)</code></pre>
+<p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-10-1.png" width="576" /></p>
+</div>
+<div id="s135---s115" class="section level3">
+<h3>S135 - S115</h3>
+<pre class="r"><code>n400s1351 = twix_data_long %&gt;% filter(Participant ==&quot;0107&quot;, condition == &quot;S135&quot;) %&gt;% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %&gt;% topoplot(time_lim = c(300,500)) + ggtitle(&quot;N400, cluster 1, condition S135&quot;)</code></pre>
+<pre><code>## Using electrode locations from data.</code></pre>
+<pre><code>## Warning in topoplot.data.frame(., time_lim = c(300, 500)): Removing channels
+## with no location.</code></pre>
+<pre class="r"><code>p600s1351 = twix_data_long %&gt;% filter(Participant ==&quot;0107&quot;, condition == &quot;S135&quot;) %&gt;% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %&gt;% topoplot(time_lim = c(500,800)) + ggtitle(&quot;P600, cluster 1, condition S135&quot;)</code></pre>
+<pre><code>## Using electrode locations from data.</code></pre>
+<pre><code>## Warning in topoplot.data.frame(., time_lim = c(500, 800)): Removing channels
+## with no location.</code></pre>
+<pre class="r"><code>n400s1352 = twix_data_long %&gt;% filter(Participant ==&quot;0102&quot;, condition == &quot;S135&quot;) %&gt;% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %&gt;% topoplot(time_lim = c(300,500)) + ggtitle(&quot;N400, cluster 2, condition S135&quot;)</code></pre>
+<pre><code>## Using electrode locations from data.</code></pre>
+<pre><code>## Warning in topoplot.data.frame(., time_lim = c(300, 500)): Removing channels
+## with no location.</code></pre>
+<pre class="r"><code>p600s1352 = twix_data_long %&gt;% filter(Participant ==&quot;0102&quot;, condition == &quot;S135&quot;) %&gt;% rename(electrode = Electrode, x = X, y = Y, amplitude = uV) %&gt;% topoplot(time_lim = c(500,800)) +ggtitle(&quot;P600, cluster 2, condition S135&quot;)</code></pre>
+<pre><code>## Using electrode locations from data.</code></pre>
+<pre><code>## Warning in topoplot.data.frame(., time_lim = c(500, 800)): Removing channels
+## with no location.</code></pre>
+<pre class="r"><code>grid.arrange(n400s1351, p600s1351, n400s1352, p600s1352, nrow = 2)</code></pre>
+<p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-11-1.png" width="576" /></p>
+</div>
+</div>
+</div>
+<div id="gam" class="section level1">
+<h1>GAM</h1>
+<p>For computational purposes I am only looking at one participant. This model took me 15 minutes to run on my personal laptop.</p>
+<pre class="r"><code>twix0101 = twix_data_long %&gt;% filter(Participant == &quot;0101&quot;)
+
+gamtwix0101 = bam(uV~te(time, X,Y, by = condition), data = twix0101)
+summary(gamtwix0101)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## uV ~ te(time, X, Y, by = condition)
+## 
+## Parametric coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -2.80304    0.01299  -215.7   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                              edf Ref.df     F p-value    
+## te(time,X,Y):conditionS115 84.54  94.37 140.6  &lt;2e-16 ***
+## te(time,X,Y):conditionS125 88.10  97.25 549.8  &lt;2e-16 ***
+## te(time,X,Y):conditionS135 88.38  97.47 279.5  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.0373   Deviance explained = 3.74%
+## fREML = 1.0729e+07  Scale est. = 405.66    n = 2426424</code></pre>
+<pre class="r"><code>#not run:
+#gamtwixall = bam(uV~te(time, X,Y, by = condition) + s(time,X,Y, Participant, by = condition, bs = &quot;fs&quot;, m =1), data = twix_data_long)</code></pre>
+<div id="topo-plotting" class="section level2">
+<h2>topo plotting</h2>
+<pre class="r"><code>plot_topo(gamtwix0101, view = c(&quot;X&quot;, &quot;Y&quot;), cond = list(time = 400, condition = &quot;S115&quot;), color = &quot;topo&quot;, main = &quot;condition S115, time = 400 ms&quot;)</code></pre>
+<pre><code>## Summary:
+##  * time : numeric predictor; set to the value(s): 400. 
+##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * condition : factor; set to the value(s): S115.</code></pre>
+<p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-13-1.png" width="576" /></p>
+<pre class="r"><code>#Add electrode sites
+plot_topo(gamtwix0101, view = c(&quot;X&quot;, &quot;Y&quot;), cond = list(time = 600, condition = &quot;S125&quot;), color = &quot;topo&quot;, el.pos = electrodes,  main = &quot;condition S125, time = 600 ms&quot;)</code></pre>
+<pre><code>## Summary:
+##  * time : numeric predictor; set to the value(s): 600. 
+##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * Y : numeric predictor; with 100 values ranging from -47.700000 to 44.700000. 
+##  * condition : factor; set to the value(s): S125.</code></pre>
+<p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-13-2.png" width="576" /></p>
+<pre class="r"><code># Add labels:
+plot_topo(gamtwix0101, view=c(&#39;X&#39;, &#39;Y&#39;), cond=list(time=200, condition = &quot;S135&quot;))</code></pre>
+<pre><code>## Summary:
+##  * time : numeric predictor; set to the value(s): 200. 
+##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * condition : factor; set to the value(s): S135.</code></pre>
+<pre class="r"><code>text(electrodes[[&#39;X&#39;]], electrodes[[&#39;Y&#39;]], 
+    labels=electrodes[[&#39;Electrode&#39;]], cex=.75, 
+    xpd=TRUE)</code></pre>
+<p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-13-3.png" width="576" /></p>
+</div>
+<div id="difference-plotting" class="section level2">
+<h2>Difference plotting</h2>
+<p>For difference plotting, you need to specify a zlim in order to see the color bar on the bottom. zlim is the range of differences between two conditions. Figuring out an appropriate zlim takes some trial and error. If a value is outside of that zlim range, it shows up as white on the topo plot.</p>
+<pre class="r"><code>plot_topo(gamtwix0101, view=c(&#39;X&#39;, &#39;Y&#39;), zlim = c(-1,8),
+     cond = list(time = 400), comp=list(condition = c(&quot;S115&quot;, &quot;S125&quot;)),
+    fun=&#39;plot_diff2&#39;)</code></pre>
+<pre><code>## Summary:
+##  * time : numeric predictor; set to the value(s): 400. 
+##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000.</code></pre>
+<p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-14-1.png" width="576" /></p>
+<pre class="r"><code>plot_topo(gamtwix0101, view=c(&#39;X&#39;, &#39;Y&#39;), zlim = c(-1,8),
+     cond = list(time = 400), comp=list(condition = c(&quot;S115&quot;, &quot;S125&quot;)),
+    fun=&#39;plot_diff2&#39;, show.diff = T, col.diff = &quot;white&quot;)</code></pre>
+<pre><code>## Summary:
+##  * time : numeric predictor; set to the value(s): 400. 
+##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000.</code></pre>
+<p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-14-2.png" width="576" /></p>
+<pre class="r"><code>par(mfrow = c(2,2))
+
+for (k in c(200,400,600,800)){
+ plot_topo(gamtwix0101, view=c(&#39;X&#39;, &#39;Y&#39;), zlim = c(-1,8),
+     cond = list(time = k), comp=list(condition = c(&quot;S115&quot;, &quot;S125&quot;)),
+    fun=&#39;plot_diff2&#39;, main = paste0(&quot;Time: &quot;, k, &quot; ms&quot;), show.diff = T, col.diff = &quot;white&quot;) 
+  text(electrodes[[&#39;X&#39;]], electrodes[[&#39;Y&#39;]], 
+    labels=electrodes[[&#39;Electrode&#39;]], cex=.75, 
+    xpd=TRUE)
+  
+  
+}</code></pre>
+<pre><code>## Summary:
+##  * time : numeric predictor; set to the value(s): 200. 
+##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000.</code></pre>
+<pre><code>## Summary:
+##  * time : numeric predictor; set to the value(s): 400. 
+##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000.</code></pre>
+<pre><code>## Summary:
+##  * time : numeric predictor; set to the value(s): 600. 
+##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000.</code></pre>
+<pre><code>## Summary:
+##  * time : numeric predictor; set to the value(s): 800. 
+##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000.</code></pre>
+<p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-14-3.png" width="576" /></p>
+</div>
+<div id="making-a-movie" class="section level2">
+<h2>Making a movie</h2>
+<pre class="r"><code>library(av)
+for (k in seq(from = 0,to = 800,by = 20)){
+  nameme = paste0(&quot;~/Desktop/twix_png/twix&quot;, sprintf(&quot;%03d&quot;, k), &quot;.png&quot;)
+  png(nameme)
+  plot_topo(gamtwix0101, view=c(&#39;X&#39;, &#39;Y&#39;), zlim = c(-8,8),
+            cond = list(time = k), comp=list(condition = c(&quot;S125&quot;, &quot;S115&quot;)),
+            fun=&#39;plot_diff2&#39;, main = paste0(&quot;Time: &quot;, k, &quot; ms&quot;), show.diff = T, col.diff = &quot;white&quot;) 
+  dev.off()
+  
+}
+
+
+png_files &lt;- sprintf(&quot;~/Desktop/twix_png/twix%03d.png&quot;, seq(0,800,20))
+av::av_encode_video(png_files, &#39;~/Desktop/twix_png/output.mp4&#39;, framerate = 10)</code></pre>
+</div>
+</div>
+
+         
+      </div>
+    </div>
+  </div>
+</div>
+
+          </div>
+      </div>
+  </div>
+  <script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.cookie.js"> </script>
+<script src="/js/ekko-lightbox.js"></script>
+<script src="/js/jquery.scrollTo.min.js"></script>
+<script src="/js/masonry.pkgd.min.js"></script>
+<script src="/js/imagesloaded.pkgd.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/front.js"></script>
+
+
+
+</body>
+</html>

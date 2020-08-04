@@ -1,0 +1,452 @@
+---
+title: "Ordinal logistic regression in R"
+author: "Marissa Barlaz"
+image: "img/likert.png"
+showonlyimage: false
+weight: 4
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+description: "This workshop aims to teach you the basics of ordinal logistic regression models and how to implement them in R."
+editor_options: 
+  chunk_output_type: console
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ordinal)
+library(MASS)
+library(ggeffects)
+library(effects)
+BrP = read.csv("/Users/goldrch2/Desktop/Teaching/LING 490/Course Data/BrP_positionNP_omnibus.csv")
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+```
+
+# Packages
+
+The packages you will need for this workshop are as follows. I am also including the hex codes for a colorblind-friendly palette, which I use for my plots.
+
+```{r eval = FALSE}
+library(tidyverse)
+library(ordinal)
+library(MASS)
+library(ggeffects)
+library(effects)
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+```
+![](/img/cbpalette.png)
+
+
+# What is ordinal logistic regression?
+
+
+Ordinal logistic regression (henceforth, OLS) is used to determine the relationship between a set of predictors and an ordered factor dependent variable. This is especially useful when you have rating data, such as on a Likert scale. OLS is more appropriate to use than linear mixed effects models in this case because although a Likert scale might include numeric values to choose from, these values are inherently categorical. For example, it is unacceptable to choose 2.743 on a Likert scale ranging from 1 to 5. The most common form of an ordinal logistic regression is the "proportional odds model".
+
+
+Note that an assumption of ordinal logistic regression is the distances between two points on the scale are approximately equal. (That is, if on a scale of 1 to 5, the distance between 1 and 2 is similar to the distance between 4 and 5.) This is a difficult assumption to test, as it involves knowledge about the rating system of language users. We will therefore assume for this workshop that this is the case.
+
+There are two packages that currently run ordinal logistic regression. The *polr()* function in the MASS package works, as do the *clm()* and *clmm()* functions in the ordinal package. Here, I will show you how to use the ordinal package. Note that the difference between the *clm()* and *clmm()* functions is the second m, standing for mixed. This package allows the inclusion of mixed effects. The results from the two packages are comparable.
+
+The coefficients for OLS are given in ordered logits, or ordered log odds ratios. It is therefore important to remember what a log odds ratio is.
+
+## Probabilities, odds, and odds ratios
+Recall the difference between odds and probabilities. Probabilities are considered proportions or percentages, defined by dividing the occurrences of an event divided by the total number of observations. Odds are the ratio of the probability of one event to the probability of another event, which can be simplified as the ratio of the frequency of X to the frequency of Y.
+
+
+For probabilities, if the chances of two events are equal, the probability of either outcome is 0.5, or 50%. Probability ranges from 0 to 1 (0% to 100%).
+
+If the odds equal 1, the probabilities of the outcomes are equal. If the odds are lower than 1, the probability of the second event is greater than the first (aka, if m/p < 1, then P is more likely than M). If odds is higher than 1, the probability of the first event is greater than the second event (if m/p > 1, then M more likely than P).
+
+
+Log odds are logarithmically transformed odds. Log odds are also called logits. Note that logarithmically transformed here means the *natural log*, not *base-10 log*.
+
+An odds ratio is the ratio of two odds. It tells you if the odds for a particular event is more or less likely in a particular scenario over another.
+
+A log odds ratio is the log of the odds ratio. If a log odds ratio is positive, the specified  level boosts the chances of a selected  outcome. If a log odds ratio is negative, the specified level decreases the chances of a  selected outcome. Log odds are centered around 0 (because ln(1) = 0, so when odds are equal, ln(odds) = 0.
+
+In order to convert from log odds ratios to odds ratios, use *exp(X)*. To convert from log odds ratios to probabilities, use the following formula: *probability = exp(X)/(1 + exp(X))*. You can also use the *plogis()* function to do this conversion.
+
+
+
+| Probability 	| Odds  	| Logit 	|
+|-------------	|-------	|-------	|
+| 0.001       	| 0.001 	| -6.91 	|
+| 0.01        	| 0.01  	| -4.6  	|
+| 0.05        	| 0.05  	| -2.94 	|
+| 0.01        	| 0.11  	| -2.2  	|
+| 0.25        	| 0.33  	| -1.1  	|
+| 0.5         	| 1     	| 0     	|
+| 0.75        	| 3     	| 1.1   	|
+| 0.9         	| 9     	| 2.2   	|
+| 0.95        	| 19    	| 2.94  	|
+| 0.99        	| 99    	| 4.6   	|
+| 0.999       	| 999   	| 6.91  	|
+
+
+## Set-up of the model
+The format of the OLS proportional odds model is as follows. Note that this will become important when we calculate log odds ratios, and by extension, probabilities, of events getting a certain rating (or below).
+
+$logit[P(Y \leq j)] = \alpha_j - \beta x, j = 1 ... J-1$
+
+We can read this as such: The log odds of the probability of getting a rating less than or equal to J is equal to the equation $\alpha_j - \beta x$, where $\alpha_j$ is the threshold coefficient corresponding to the particular rating, $\beta$ is the variable coefficient corresponding to a change in a predictor variable, and $x$ is the value of the predictor variable. Note, $\beta$ is the value given to each coefficient corresponding to a variable, which is similar to a coefficient in a linear model. However, while we have in a linear model the coefficient for a variable in the original units of the response variable, this model gives us the change in log odds. The $\alpha$ value can be considered an intercept of sorts (if comparing to a linear model) - it is the intercept for getting a rating of J or below, again in log odds.
+
+Since we have defined the relationship between probability and log odds as *P(X) = exp(X)/(1 + exp(X))* (where X is the log odds ratio), we can extend our definition of the proportional odds model to be:
+
+$P(Y \leq j) = \frac{exp(\alpha_j - \beta x)}{1+exp(\alpha_j - \beta x)}, j = 1 ... J-1$.
+
+
+
+# Running an ordinal logistic regression in R
+
+## Data
+The data I will be using was kindly provided by Prof. Ionin. The data is comprised of ratings of acceptability of Brazilian Portuguese noun phrases in a variety of positions. The fixed effects of interest are as follows:
+
+* NP type (bare singular vs. bare plural)
+* position (subject vs. object)
+* NP number (single-NP vs. list-NP)
+
+In addition, because these are categorical variables, I have simulated a fourth fixed effect, called *FreqSim*, which is a numeric value between 1 and 10. While data analysis should **not** include the simulation of random variables, I have done this in order to show you the effect of continuous variables on a model.
+
+```{r echo = FALSE}
+set.seed(123456)
+BrP$FreqSim = runif(dim(BrP)[1], 1, 3)
+head(BrP)
+BrP$rating = factor(BrP$rating, ordered=TRUE)
+
+#somehow the data  got read in with spaces - this is recoding those affected levels without spaces
+levels(BrP$position)[2] = "subject"
+levels(BrP$survey)= c("listNP", "singleNP")
+levels(BrP$NP)[1] = "barepl"
+str(BrP)
+```
+
+
+```{r}
+head(BrP)
+str(BrP)
+```
+
+
+Before we get started, we should plot the data and see if we see any patterns. To do so, I will use *ggplot2* syntax.
+
+```{r}
+
+BrP %>% mutate(rating = ordered(rating, levels=rev(levels(rating)))) %>% ggplot( aes(x = position, fill = rating)) + geom_bar(position = "fill") + facet_grid(survey~NP) + scale_fill_manual(values = cbPalette) + theme_minimal()
+
+```
+
+## Initial model
+
+
+The syntax for an OLS is similar to that of a linear mixed effects model using *lme4*. I will first plot the data based on the variables we are considering, and then run the model.
+```{r}
+
+BrP %>% mutate(rating = ordered(rating, levels=rev(levels(rating)))) %>% ggplot( aes(x = position, fill = rating)) + geom_bar(position = "fill") + scale_fill_manual(values = cbPalette) + theme_minimal()
+
+
+ols1 = clm(rating~position,data = BrP, link = "logit")
+summary(ols1)
+
+```
+
+
+What does this mean? We have one variable coefficient, corresponding to the difference between the two positions (similar to the slope estimate in linear models), and three threshold coefficients.
+
+The coefficient, here just for position = *subject*, takes the $\beta$ value in our model specification given above.  
+We can consider the coefficient similarly to coefficients in linear models. Compared to position = *object*, the variable position = *subject* has a log-odds value of -1.095. That means when we calculate the log odds ratios, whenever we are looking at an observation with position = *subject*, we include the $\beta$ as -1.095, and $x$ = 1. When we are looking at an observation with position = *object*, we include the $\beta$ as -1.095, and $x$ = 0. 
+
+In terms of its actual meaning in relationship to the variables, we would say that for a one unit increase in *position* (i.e., going from 0 to 1, or object to subject), we expect a -1.095 increase (or a 1.095 decrease) in the expected value of *rating* on the log odds scale, given all of the other variables in the model are held constant. In other words, when going from *object* to *subject*, the likelihood of a 4 versus a 1-3 on the rating scale decreases by 1.095 on the log odds scale, the likelihood of a 3 versus a 1-2 on the rating scale decreases by 1.095 on the log odds scale, and the likelihood of a 2 versus a 1 on the rating scale decreases by 1.095 on the log odds scale.
+
+
+If we want to look at this on the odds scale, we can exponentiate using exp() to look at odds.
+
+```{r}
+exp(coef(ols1))
+```
+
+Now, when position = *subject*, the likelihood of a 4 versus a 1-3 on the rating scale is multiplied by 0.2488 (compared to the likelihood of position = *object*), the likelihood of a 3 versus a 1-2 on the rating scale is multiplied by 0.2488, and the likelihood of a 2 versus a 1 on the rating scale is multiplied by 0.2488.
+
+
+Now, what about the threshold coefficients? These are the coefficients, again in log odds, for receiving a rating of below J. They can be considered the "cut points" or thresholds between the two variables. So the coefficient reading 1|2 is the likelihood of receiving a 1 rating as opposed to a 2, 3, or 4 rating, the coefficient 2|3 is the likelihood of receiving a 1 or 2 as opposed to a 3 or 4, and the 3|4 coefficient is the likelihood of receiving a 1, 2, or 3, as opposed to a 4.
+
+Why is this relevant? Because we can use the formula given above to calculate the log odds, and therefore the probability by extension, of receiving a certain score or below for each value of the predictor variable. We can also extend this to get the log odds ratio of receiving an exact rating.
+
+First, let's look at the log odds of receiving a 2 or below for both subject and object positions. The calculation looks like this:
+
+Subject:
+
+$logit[P(Y \leq 2)] = \alpha_{2|3} - \beta (subject) = -1.39129 - (-1.095 \times 1) = -0.29629$
+
+Object:
+$logit[P(Y \leq 2)] = \alpha_{2|3} - \beta (subject) = -1.39129 - (-1.095 \times 0) = -1.39129$
+
+
+If we want to get the probabilities for each of these, we can use the formula given above:
+
+
+Subject:
+
+$P(Y \leq 2) = \frac{exp(\alpha_{2|3} - \beta (subject))}{1+exp(\alpha_{2|3} - \beta (subject)} = \frac{exp(-0.29629)}{1+exp(-0.29629)} = \frac{0.2487542}{1+0.2487542} = 0.4264647$
+
+Object:
+$P(Y \leq 2) = \frac{exp(\alpha_{2|3} - \beta (subject))}{1+exp(\alpha_{2|3} - \beta (subject)} = \frac{exp(-1.39129)}{1+exp(-1.39129)} = \frac{1.097374}{2.097374} = 0.1992019$
+
+Note, you can also do this calculation using the plogis function:
+
+```{r}
+
+#subject
+plogis(-0.29629)
+
+#object
+plogis(-1.39129)
+
+```
+
+What about the probability of getting a rating of *exactly* 2? We can calculate this as $P(Y = 2) = P(Y \leq 2) - P(Y \leq 1)$.
+
+For subject position, $P(Y \leq 2) = 0.4264647$. Using the calculations above, we can see that $P(Y \leq 1) = plogis(-2.41897 - (-1.095 * 1)) = 0.2101585$. Therefore, $P(Y = 2) = 0.4264647 - 0.2101585 = 0.2163062
+
+
+For object position, $P(Y \leq 2) = 0.1992019$. Using the calculations above, we can see that $P(Y \leq 1) = plogis(-2.41897 - (-1.095 * 0)) = 0.08173753$. Therefore, $P(Y = 2) = 0.1992019 - 0.08173753 = 0.1174644
+
+Finally, what about the probabilities/logits for the rating level 4? Since probability needs to add up to 1, we can take the probabilitiies for 1, 2, and 3, and subtract them from 1. If we would like to convert to logits, we can use the inverse of the equation above... or the *qlogis()* function.
+
+Note that these results look similar to the proportions seen in the graph (though are not identical, due to the modeling parameters.)
+
+
+
+
+Note that we can calculate all of these probabilties using the *ggpredict()* function from the *ggeffects* package, or using *predict()* in base R. I will continue using the *ggpredict()* version because it automatically gives confidence intervals.
+
+```{r}
+
+newdat= data.frame(position = c("subject", "object"))
+ols1predict =cbind(newdat, predict(ols1, newdat, type = "prob")$fit)
+ols1predict
+
+
+ggpredictions_ols1 = ggpredict(ols1, terms = c("position"))
+ggpredictions_ols1
+
+#Note that ggpredicts doesn't give the original labels for position - you need to give it the names of the factor labels, which will be in the order of the original model.
+ggpredictions_ols1$x = factor(ggpredictions_ols1$x)
+levels(ggpredictions_ols1$x) = c("object", "subject")
+colnames(ggpredictions_ols1)[c(1, 5)] = c("Position", "Rating")
+
+ggpredictions_ols1
+ggplot(ggpredictions_ols1, aes(x = Rating, y = predicted)) + geom_point(aes(color = Position), position =position_dodge(width = 0.5)) + geom_errorbar(aes(ymin = conf.low, ymax = conf.high, color = Position), position = position_dodge(width = 0.5), width = 0.3) + theme_minimal() + scale_color_manual(values = cbPalette[2:3])
+
+```
+
+
+## Adding another term
+
+Now, let's run another model, here with two terms. Can you figure out how to interpret these results?
+
+```{r}
+BrP %>% mutate(rating = ordered(rating, levels=rev(levels(rating)))) %>% ggplot( aes(x = position, fill = rating)) + geom_bar(position = "fill") + scale_fill_manual(values = cbPalette) + theme_minimal()+ facet_wrap(~NP)
+
+
+ols2 = clm(rating~position + NP,data = BrP, link = "logit")
+summary(ols2)
+
+```
+
+Here, we can extend our model in a similar method we would use for a linear model: 
+
+$logit[P(Y \leq j)] = \alpha_j - \beta_1 x_1 - \beta_2 x_2, j = 1 ... J-1$
+
+So what would the logit be for position = *subject* and NP = *barepl*, for a rating of 3 or less?
+
+$logit[P(Y \leq 3)] = \alpha_{3|4} - \beta_{subject} x_1 - \beta_{baresg} x_2 = -1.2032 - (-1.2492 \times 1) - (-1.5581 \times 0) = 0.046$
+
+To get probability, we use *plogis()*:
+
+```{r}
+plogis(0.046)
+```
+
+
+What about for position = *object* and NP = *baresg*, with rating == 3?
+
+
+$logit[P(Y \leq 3)] = \alpha_{3|4} - \beta_{subject} x_1 - \beta_{baresg} x_2 = -1.2032 - (-1.2492 \times 0) - (-1.5581 \times 1) = 0.3549$
+
+$logit[P(Y \leq 2)] = \alpha_{2|3} - \beta_{subject} x_1 - \beta_{baresg} x_2 = -2.3564 - (-1.2492 \times 0) - (-1.5581 \times 1) = 0.3549$
+
+```{r}
+plogis(0.3549) - plogis(-0.7983)
+```
+
+
+Once again, we can use the *ggpredict()* function to get all probabilities:
+
+```{r}
+
+ggpredictions_ols2 = data.frame(ggpredict(ols2, terms = c("position", "NP")))
+ggpredictions_ols2
+ggpredictions_ols2$x = factor(ggpredictions_ols2$x)
+levels(ggpredictions_ols2$x) = c("object", "subject")
+colnames(ggpredictions_ols2)[c(1, 5,6)] =c("Position", "Rating", "NP")
+ggpredictions_ols2
+
+ggplot(ggpredictions_ols2, aes(x = Rating, y = predicted)) + geom_point(aes(color = Position), position =position_dodge(width = 0.5)) + geom_errorbar(aes(ymin = conf.low, ymax = conf.high, color = Position), position = position_dodge(width = 0.5), width = 0.3) + theme_minimal() +facet_wrap(~NP) +  scale_color_manual(values = cbPalette[2:3])
+
+
+```
+
+
+## Including a continuous predictor
+
+It is also possible to include a continuous predictor in a model. Here, I will include the FreqSim variable I simulated.
+
+```{r}
+
+
+BrP %>% mutate(rating = ordered(rating, levels=rev(levels(rating)))) %>% ggplot( aes(x = FreqSim, fill = rating)) + geom_histogram(binwidth = 0.1) + scale_fill_manual(values = cbPalette) + theme_minimal() 
+
+
+BrP %>% mutate(rating = ordered(rating, levels=rev(levels(rating)))) %>% ggplot( aes(x = cut(FreqSim, 5), fill = rating)) + geom_bar(position = "fill") + scale_fill_manual(values = cbPalette) + theme_minimal() 
+
+
+```
+
+Once again you can include the continuous predictor in the model with the same syntax as for a linear model.
+```{r}
+ols3 = clm(rating~position + FreqSim, data = BrP)
+summary(ols3)
+```
+
+
+Here, our result for FreqSim is not significant, which is not surprising since this is simulated data. However, we can still use this to show the how to interpret the results of the model. In this case, we say that for a one unit increase in *FreqSim*, we expect a -0.03531 increase (or a 0.03531 decrease) in the expected value of *rating* on the log odds scale, given all of the other variables in the model are held constant. In other words, the likelihood of a 4 versus a 1-3 on the rating scale decreases by 0.03531 on the log odds scale, the likelihood of a 3 versus a 1-2 on the rating scale decreases by 0.03531 on the log odds scale, and the likelihood of a 2 versus a 1 on the rating scale decreases by 0.03531 on the log odds scale.
+
+If we wanted to calculate the probability of getting a rating value of 1 for a word with FreqSim = 2 and position = *subject*, we use our formula:
+
+$logit[P(Y \leq 1)] = \alpha_{1|2} - \beta_{subject} x_1 - \beta_{FreqSim} x_2 = -2.4896 - (-1.09443 \times 1) - (-0.03531 \times 3) = -1.28924$
+
+```{r}
+plogis(-1.28924)
+```
+
+Once again, the *ggpredict()* function can be used to predict values for all combinations of the predictor variable.
+```{r}
+ggpredictions_ols3 = data.frame(ggpredict(ols3, terms = c("position", "FreqSim [1, 1.5, 2, 2.5, 3]")))
+ggpredictions_ols3
+ggpredictions_ols3$x = factor(ggpredictions_ols3$x)
+levels(ggpredictions_ols3$x) = c("object", "subject")
+colnames(ggpredictions_ols3)[c(1, 5,6)] =c("Position", "Rating", "FreqSim")
+ggpredictions_ols3
+
+ggplot(ggpredictions_ols3, aes(x = FreqSim, y = predicted)) + geom_smooth(aes(color = Rating, group = Rating), se = FALSE)+ theme_minimal() +facet_wrap(~Position) +  scale_color_manual(values = cbPalette)
+```
+
+As we can see here, FreqSim really doesn't add much. This isn't totally surprising. A dataset with a meaningful research question behind it will possibly show more significant results.
+
+## Interactions
+Including an interaction, like with a linear model, will require a theoretical motivation. I will include here a two-way interaction in order to show how the model can be interpreted with an interaction. The syntax is the same as with a linear model.
+
+
+```{r}
+ols4 = clm(rating~position * NP,data = BrP, link = "logit")
+summary(ols4)
+
+```
+
+Now, we have an extra term in our model coefficients, being the interaction term. This term is significant, indicating that there is a modulating effect between the position and NP terms.
+
+Now, our model looks like this:
+
+$logit[P(Y \leq j)] = \alpha_j - \beta_1 x_1 - \beta_2 x_2 - \beta_3 x_1x_2, j = 1 ... J-1$
+
+I will do the calculation for a rating of exactly 2, for a subject/baresg word:
+
+$logit[P(Y \leq 2)] = \alpha_{2|3} - \beta_{subject} x_1 - \beta_{baresg} x_2 - \beta_{subject:baresg} x_1x_2 = -2.5350 - (-1.5325 \times 1) - (-1.8399 \times 1) - (0.4917 \times 1 \times 1) = 0.3457$
+
+$logit[P(Y \leq 1)] = \alpha_{1|2} - \beta_{subject} x_1 - \beta_{baresg} x_2 - \beta_{subject:baresg} x_1x_2 = -3.6605 - (-1.5325 \times 1) - (-1.8399 \times 1) - (0.4917 \times 1 \times 1) = 0.3457$
+
+
+
+
+```{r}
+plogis(0.3457)
+plogis(-0.7798)
+
+plogis(0.3457) - plogis(-0.7798)
+
+```
+
+Once again, we can plot the results:
+
+```{r}
+ggpredictions_ols4 = data.frame(ggpredict(ols4, terms = c("position", "NP")))
+ggpredictions_ols4
+ggpredictions_ols4$x = factor(ggpredictions_ols4$x)
+levels(ggpredictions_ols4$x) = c("object", "subject")
+colnames(ggpredictions_ols4)[c(1, 5,6)] =c("Position", "Rating", "NP")
+ggpredictions_ols4
+
+ggplot(ggpredictions_ols4, aes(x = Rating, y = predicted)) + geom_point(aes(color = Position), position =position_dodge(width = 0.5)) + geom_errorbar(aes(ymin = conf.low, ymax = conf.high, color = Position), position = position_dodge(width = 0.5), width = 0.3) + theme_minimal() +facet_wrap(~NP) +  scale_color_manual(values = cbPalette[2:3])
+```
+
+
+## Random effects
+
+As I mentioned before, the ordinal package has an advantage over MASS, in that it has the ability to include random effects. The syntax is similar to that of *lme4*'s *lmer()* function. Note that the function being used here is *clmm()* - the extra *m* stands for *mixed*. 
+
+```{r}
+ols5 = clmm(rating~position*NP + (1|ID), data = BrP)
+summary(ols5)
+```
+  
+Now we have the same information as before, plus a little more. At the top of the summary, there is the information regarding the random effects - specifically the ID of the participant. The coefficients have changed slightly , though we have the same significance levels.
+
+Note that we have an extra column in our prediction matrix, with the standard error.
+```{r}
+ggpredictions_ols5 = data.frame(ggpredict(ols5, terms = c("position", "NP"), type = "fe"))
+ggpredictions_ols5
+ggpredictions_ols5$x = factor(ggpredictions_ols5$x)
+levels(ggpredictions_ols5$x) = c("object", "subject")
+colnames(ggpredictions_ols5)[c(1, 6,7)] =c("Position", "Rating", "NP")
+ggpredictions_ols5
+
+ggplot(ggpredictions_ols5, aes(x = Rating, y = predicted)) + geom_point(aes(color = Position), position =position_dodge(width = 0.5)) + geom_errorbar(aes(ymin = conf.low, ymax = conf.high, color = Position), position = position_dodge(width = 0.5), width = 0.3) + theme_minimal() +facet_wrap(~NP) +  scale_color_manual(values = cbPalette[2:3])
+```
+
+
+## The full model
+Following Dr. Ionin's paper from which this data comes, let's take a look at a full model. Note that this took me about 15 seconds to run on my computer.
+
+```{r}
+
+#raw data
+BrP %>% mutate(rating = ordered(rating, levels=rev(levels(rating)))) %>% ggplot( aes(x = position, fill = rating)) + geom_bar(position = "fill") + facet_grid(survey~NP) + scale_fill_manual(values = cbPalette) + theme_minimal() + ggtitle("Raw Data")
+
+ols6 = clmm(rating~position*NP*survey + (1|ID) + (1|item), data = BrP)
+
+summary(ols6)
+
+ggpredictions_ols6 = data.frame(ggpredict(ols6, terms = c("position", "NP", "survey"), type = "fe"))
+ggpredictions_ols6
+ggpredictions_ols6$x = factor(ggpredictions_ols6$x)
+levels(ggpredictions_ols6$x) = c("object", "subject")
+colnames(ggpredictions_ols6)[c(1, 6,7, 8)] =c("Position", "Rating", "NP", "survey")
+ggpredictions_ols6
+
+ggplot(ggpredictions_ols6, aes(x = Rating, y = predicted)) + geom_point(aes(color = Position), position =position_dodge(width = 0.5)) + geom_errorbar(aes(ymin = conf.low, ymax = conf.high, color = Position), position = position_dodge(width = 0.5), width = 0.3) + theme_minimal() +facet_grid(survey~NP) +  scale_color_manual(values = cbPalette[2:3])+ ggtitle("Probabilities of responses, full model")
+
+
+ggplot(ggpredictions_ols6, aes(x = Position, y = predicted, fill = Rating)) + geom_bar(position = "dodge", stat = "identity") + facet_grid(survey~NP) + scale_fill_manual(values = cbPalette) + theme_minimal()+ ggtitle("Probabilities of responses, full model")
+
+
+
+ggpredictions_ols6 %>% mutate(Rating = ordered(Rating, levels=rev(levels(Rating)))) %>% ggplot( aes(x = Position, y = predicted, fill = Rating)) + geom_bar(position = "fill", stat = "identity") + facet_grid(survey~NP) + scale_fill_manual(values = cbPalette) + theme_minimal() + ggtitle("Probabilities of responses, full model (reversed color scheme)")
+
+ggplot(ggpredictions_ols6, aes(x = Position, y = predicted, fill = Rating)) + geom_bar(position = "fill", stat = "identity") + facet_grid(survey~NP) + scale_fill_manual(values = cbPalette) + theme_minimal() + ggtitle("Probabilities of responses, full model")
+
+```
+
+**Questions?**

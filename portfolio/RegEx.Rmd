@@ -1,0 +1,395 @@
+---
+title: "Regular Expressions in R"
+author: "Marissa Barlaz"
+image: "img/regex.png"
+showonlyimage: false
+weight: 5
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+description: "This workshop is an introduction to regular expressions in R for text analysis."
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+#devtools::install_github("josiahparry/genius")
+library(genius)
+
+lesmis = genius_album(artist = "Claude-Michel Schönberg", album = "Les Misérables: The Complete Symphonic Recording",info = "features") %>% mutate( title = str_extract(track_title, regex("[[a-z]?'\\s]+", ignore_case = TRUE)))
+
+whoami = "He thinks that man is me
+He knew him at a glance!
+That stranger he has found
+This man could be my chance!
+Why should I save his hide?
+Why should I right this wrong
+When I have come so far
+And struggled for so long?
+If I speak, I am condemned.
+If I stay silent, I am damned!
+
+I am the master of hundreds of workers.
+They all look to me.
+How can I abandon them?
+How would they live
+If I am not free?
+If I speak, they are condemned.
+If I stay silent, I am damned!
+
+Who am I?
+Can I condemn this man to slavery
+Pretend I do not feel his agony
+This innocent who bears my face
+Who goes to judgement in my place
+
+Who am I?
+Can I conceal myself for evermore?
+Pretend I'm not the man I was before?
+And must my name until I die
+Be no more than an alibi?
+
+Must I lie?
+How can I ever face my fellow men?
+How can I ever face myself again?
+My soul belongs to God, I know
+I made that bargain long ago
+He gave me hope when hope was gone
+He gave me strength to journey on
+Who am I? Who am I?
+I am Jean Valjean!
+
+And so Javert, you see it's true
+That man bears no more guilt than you!
+Who am I?
+24601!"
+```
+
+The dataset I will use for this workshop is the set of lyrics to songs from the Broadway musical Les Mise\'rables. The data looks like this:
+
+
+
+```{r}
+head(lesmis, 30)
+dim(lesmis)
+unique(lesmis$track_title)
+
+```
+
+I will also show you how to do searches within a single string, specifically the lyrics to the song "Who am I?"
+
+```{r}
+whoami
+```
+
+
+Note that I chose a dataset like this for a few reasons, including the diversity of words and numbers. I also chose to use a dataset like this because this is the format many datasets come in when downloading information off the web (such as Twitter or Youtube comments), so it is important to know how to vectorize your searches.
+
+
+# A brief introduction to the tidyverse
+
+Before I begin talking about strings, I would like to introduce you to six basic functions that are important to working with data in R. These functions are part of the *dplyr* package, which is part of the tidyverse suite of packages. These packages, written by Hadley Wickham, are useful for doing data manipulation and analysis in an organized and easy-to-understand way.
+
+
+To install the tidyverse, use these functions (note it will take a few minutes to install). Note you only have to run *install.packages()* once, whereas you will have to run *library()* every time you open R.
+
+```{r eval = FALSE}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+## Filter
+
+The *filter()* function is used to choose rows/cases where conditions are true. We can use the following to do filtering:
+
+* ==
+* \> and <
+* \>= and \<=
+* \&, \|, !
+
+```{r}
+filter(lesmis, track_n ==1)
+head(filter(lesmis, track_n <=5 & element =="VALJEAN"), 30)
+```
+
+## Arrange
+
+Arrange changes the order of rows based on a column or a set of columns. The default is ascending order. To use descending order, use desc().
+
+```{r}
+#arrange(lesmis, desc(element))
+head(arrange(lesmis, desc(element)), 30)
+
+#arrange(lesmis, line)
+head(arrange(lesmis, line), 30)
+```
+
+## Select
+Select allows you to choose one or more variable from your dataset. This is important because you may have columns that you simply don't care about, and you don't want to accidentially use them in your analysis. For example, twitter outputs often have over 80 columns of data, most of which is unneeded.
+
+You can select using column names or indexes. Selecting by listing a column name with a minus sign before it is exclusion of a column.
+
+
+```{r}
+#select(lesmis, 1:3)
+head(select(lesmis, 1:3), 30)
+
+#select(lesmis, track_title, element, lyric)
+head(select(lesmis, track_title, element, lyric), 30)
+
+#select(lesmis, -element_artist)
+head(select(lesmis, -element_artist), 30)
+```
+
+## Mutate
+
+Sometimes, you want to create a new variable that is a function of an old variable. This function will add a new variable to the end of your dataset.
+
+```{r}
+#mutate(lesmis, trackntotal = track_n/max(track_n))
+head(mutate(lesmis, trackntotal = track_n/max(track_n)), 30)
+
+lesmis = mutate(lesmis, title = str_extract(track_title, "[[:alpha:]?'\\s]+"))
+
+head(lesmis, 30)
+
+```
+
+## summarise and group_by
+
+Summarise allows you to collapse a data frame into a single row that tells you some sort of summary about that data. Summarise is not very useful unless we use it in conjunction with group_by. This is because we want to see summaries within different groups, not just across the whole dataset. You can put together multiple summary functions into one summary table. If you want to create a new grouping mechanism, use ungroup() first.
+
+Note that this is really helpful for getting summary statistics such as mean, median, standard deviation, etc., which I will not show here because this is text data, not numeric.
+
+```{r}
+summarise(lesmis, n())
+
+lesmis = group_by(lesmis, title)
+head(lesmis)
+summarise(lesmis, nlines = n(), ncharacters = n_distinct(element))
+lesmis = ungroup(lesmis)
+lesmis = group_by(lesmis, element)
+
+head(arrange(summarise(lesmis, nlines = n()), desc(nlines)), 20)
+lesmis = ungroup(lesmis)
+```
+
+# A brief introduction to strings 
+
+![](/img/stringtheory.jpg)
+
+Don't worry, we aren't going to be working on particle physics today! Strings in R are a sequence of characters, which usually (in linguistic work, at least) are text-based data. In the tidyverse, the *stringr* has been developed to work with strings. You need to load this package into R along with the tidyverse.
+
+There are seven main functions (tidyverse calls them **verbs**) that work with strings and patterns. I will go through five of them now:
+
+
+* str_detect(x, pattern) tells you if there’s any match to the pattern. You can use this in a filter!
+
+```{r}
+str_detect(whoami, "Who am I")
+
+str_detect(lesmis$lyric, "Who am I")
+filter(lesmis, str_detect(lyric, "Who am I"))
+
+
+```
+
+* str_count(x, pattern) counts the number of patterns.
+
+```{r}
+str_count(whoami, "24601")
+str_count(whoami, "Who am I")
+
+str_count(lesmis$lyric, "24601")
+
+filter(lesmis, str_count(lyric, "24601")>0)
+
+```
+
+* str_subset(x, pattern) extracts the matching components.
+
+```{r}
+str_subset(whoami, "Who am I")
+str_subset(lesmis$lyric, "24601")
+```
+
+* str_locate(x, pattern) gives the position of the match. This does so only for the first match - for every match, use str_locate_all().
+
+
+```{r}
+str_locate(whoami, "Who am I")
+str_locate_all(whoami, "Who am I")
+
+head(str_locate(lesmis$lyric, "look down"), 30)
+head(str_locate_all(lesmis$lyric, "look down"), 30)
+
+```
+
+* str_extract(x, pattern) extracts the text of the match. This does so only for the first match - for every match, use str_extract_all().
+```{r}
+str_extract(whoami, "Who am I")
+str_extract_all(whoami, "Who am I")
+
+
+str_extract(lesmis$title, "Prologue")
+```
+
+
+
+* str_replace(x, pattern, replacement) replaces the matches with new text. To replace every instance of a match, use str_replace_all().
+
+```{r}
+str_replace(whoami, "Who am I", "I am Sam")
+str_replace_all(whoami, "Who am I", "I am Sam")
+
+
+
+Javert = filter(lesmis, (str_detect(lyric, "Javert")))
+Javert
+Javert$lyric
+
+str_replace_all(Javert$lyric, "Javert", "Valjean")
+```
+
+
+# Regular expressions
+
+Now that we've gotten through the basics of string manipulation in R, we need to think about how to best deal with strings in R. For example, what if we wanted to find all instances of the word "hey" in a set of text messages? Or, what if we want to search for words that have spelling alternations (i.e., gray vs. grey, color vs. colour)? Or if we want to see how many times any form of a verb is used (i.e., write, writes, wrote)? 
+
+![](/img/heyyy.jpg)
+
+One way to do this is to do a search for *hey*, then one for *heyy*, then one for *heyyy*, etc. But that gets really tiresome really quickly. Instead, we can use regular expressions (often called regex or regexp for short). Regular expressions are a concise and flexible tool for describing patterns in strings. They are used in just about every programming language you might come into contact with. From Hadley Wickham and Garrett's [R For Data Science](https://r4ds.had.co.nz/) (Ch 14):
+
+> Regular expressions are useful because strings usually contain unstructured or semi-structured data, and regexps are a concise language for describing patterns in strings. When you first look at a regexp, you’ll think a cat walked across your keyboard, but as your understanding improves they will soon start to make sense.
+
+In all of the cases above, when we looked for patterns within a string, the literal patterns could be replaced with regular expressions. In fact, R actually looks for regular expressions as a default - the literal patterns you are giving R are actually considered to be (very specific) regular expressions! Note that because we are searching for strings, all patterns (literal or regex) go within quotes. Also note that if you want to ignore case, you put the regex inside of regex() with ignore_case = TRUE:
+
+```{r}
+str_extract_all(whoami, regex("who AM i", ignore_case = TRUE))
+head(str_extract(lesmis$lyric, regex("aah", ignore_case = TRUE)), 30)
+
+
+```
+
+
+
+After literal expressions, the next step up in complexity is ., which matches any character (except a newline). Note that this is considered "greedy" - it matches *everything* - and should be used with caution!
+
+
+```{r}
+str_extract(whoami, "V.l")
+
+str_extract(lesmis$lyric, "a.h")
+
+
+```
+
+If you want to match the character ".", you need to escape it. Basically, the escape is a backslash, but we also have to escape the character being used for the escape - so in order to search for a period, yu use the string "\\.".
+
+```{r}
+str_detect(whoami, "\\.")
+str_detect(lesmis$lyric, "\\.")
+```
+
+
+The default for a regular expression is to match any part of the string. In some cases you may want to anchor the regular expression, so it matches relative to the start or end of the string. You can use ^ to match the start of the string, and \$ to match the end of the string.
+
+```{r}
+str_detect(whoami, "He")
+str_detect(whoami, "24601")
+str_detect(whoami, "^He")
+str_detect(whoami, "^24601")
+str_detect(whoami, "He$")
+str_detect(whoami, "24601$")
+
+
+
+head(str_extract(lesmis$lyric, regex("look", ignore_case = TRUE)), 30)
+
+head(str_extract(lesmis$lyric, regex("^look", ignore_case = TRUE)), 30)
+
+head(str_extract(lesmis$lyric, regex("down$", ignore_case = TRUE)), 30)
+
+
+```
+
+
+There are a number of patterns that match more than one character. You’ve already seen ".", which matches any character except a newline. There are four other useful tools:
+
+* \\d: matches any digit.
+* \\s: matches any whitespace (e.g. space, tab, newline).
+* [abc]: matches a, b, or c.
+* [^abc]: matches anything except a, b, or c.
+
+Note that the square brackets are called a character class - it is a list of characters enclosed within a set of square brackets, which matches any single character in the list. In addition to a set of letters, you can specify ranges, such as a-z, A-Z, 0-9, etc.
+
+```{r}
+str_extract_all(whoami, "\\d")
+str_extract(whoami, "\\s")
+str_extract_all(whoami, "[aeiou]")
+str_extract_all(whoami, "[^aeiou]")
+
+
+str_extract_all(whoami, "[a-e]")
+str_extract_all(whoami, "[^a-z0-9]")
+
+
+str_extract(lesmis$lyric, "\\d")
+str_extract(lesmis$lyric, "\\s")
+str_extract(lesmis$lyric, "[aeiou]")
+str_extract(lesmis$lyric, "[^aeiou]")
+
+
+```
+
+
+You can use alternation to pick between one or more alternative patterns. For example, to look for grey or gray, you can use |. To make it clear that you are picking between two characters, use parentheses:
+
+```{r}
+str_extract_all(whoami, "kn(e|o)w")
+
+str_detect(lesmis$lyric, "kn(e|o)w")
+```
+
+You can also determine how many times a character occurs:
+
+* ?: 0 or 1
+* +: 1 or more
+* \*: 0 or more
+* {n}: exactly n
+* {n,}: n or more
+* {,m}: at most m
+* {n,m}: between n and m
+
+This is great for alternations (such as color vs. color) and commonly-misspelled words. For example, does judgement have that first *e*? Many people spell it without the *e*.
+
+
+```{r}
+str_extract_all(whoami, "judge?ment")
+
+head(str_extract_all(lesmis$lyric, "a{2,}h"), 30)
+
+head(str_extract_all(lesmis$lyric, "a{1,3}h"), 30)
+
+```
+
+Note that I used a regular expression to extract the title only from the track_title column:
+
+
+```{r}
+lesmis = mutate(lesmis, title = str_extract(track_title, regex("[[a-z]?'\\s]+", ignore_case = TRUE)))
+
+head(lesmis)
+```
+
+# Practice
+
+For more practice and reading on regular expressions, I encourage you to read the following:
+
+* [R For Data Science](https://r4ds.had.co.nz/) - specifically chapter 14
+* [Handling strings with R](https://www.gastonsanchez.com/r4strings/manip.html)
+* [R Studio cheat sheets](https://www.rstudio.com/resources/cheatsheets/) - there are printable cheat sheets for working with the tidyverse, stringr, and using regular expressions
+* [Tidy text mining](https://www.tidytextmining.com/) - Once you're familiar with R and how to wrangle strings, and want to begin analysis

@@ -1,0 +1,421 @@
+---
+title: "Introduction to R and RMarkdown"
+author: "Marissa Barlaz"
+image: "img/portfolio/RStudio-Ball.png"
+showonlyimage: false
+weight: 3
+draft: false
+description: "The aim of this workshop is to teach you the basics of how to use R and RMarkdown."
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Welcome to R!
+You might be asking, why should I use R instead of another type of software? In addition to being able to do statistics (like in Minitab, SPSS, Stata, etc.), you can do high-level scripting, statistical programming, and exploratory data analysis in R. It is free and open-source, meaning there is a large community of contributors and users. R and Rmarkdown allow reproducibility and transparency in analyses, which is becoming increasingly important in social sciences research.
+
+To install R, go to [https://www.r-project.org](https://www.r-project.org) and choose a mirror site near here. (There is one at WashU in St. Louis that works.)
+
+While R is great, it is not very user friendly. Luckily, RStudio exists to help with this problem. To download, go to [https://www.rstudio.com](https://www.rstudio.com). This is what RStudio looks like. It has four subwindows: the console, the code/variable viewer, the environment and history viewer, and the "other" viewer.
+
+![ ](/img/Rstudio.png){width=95%}
+
+Rstudio allows you to split your work into various contexts. Each context has its own working directory, workspace, and history. Going forward, I recommend you create a project for each distinct task you plan to complete (e.g., different courses, qualifying exams, dissertation analyses). This way, if you accidentally call datasets for different courses by the same name, you won’t erase one because they are in different projects.
+
+To create a new project, go to the top right corner of RStudio, where it says 'Project: (None)', and click on New Project. Choose a folder that will remain static on your computer to put all of your data and code, and create the new project in a new directory.
+
+#What can we do with R?
+
+
+## R as a calculator
+First of all, R can be used as a calculator! R follows the standard order of operations. Please excuse my dear Aunt Sally!
+```{r}
+1 + 3
+
+4 - 2
+
+5 * 5
+
+8 / 2
+
+77 %% 4
+
+132 %/% 8
+
+9 ^ 7
+```
+
+## Variables
+
+You will likely want to use any output as input into future calculations. To save the information, assign it to a variable. There are many styles of naming variables. Choose names that are concise, yet informative. I highly recommend against using the name data! 
+
+You can use either "<-" or "=" for variable assignment.
+
+
+
+```{r}
+
+z = 10 + 20
+myvariable = 33 %/% 4
+```
+
+## Functions
+Functions contain expressions (or, code) that perform a specific task. Inputs are called arguments, output is the return value. When you use the function, you are calling the function. R will evaluate the call and return the output. You can save the output as a variable. Functions can have multiple inputs, or arguments. Some are required. Others have default values, so you don’t have to specify them unless you are deviating from the default. You can find out the argument structure for a function using the args() function.
+
+
+```{r}
+args(sd)
+
+x = c(1,5,7,3,8,4,8,5,2,21,8,0,4,2,1,5)
+
+sd(x)
+ 
+mysd = sd(x)
+
+is.numeric(x)
+
+as.factor(x)
+
+as.character(x)
+
+length(x)
+
+head(x)
+
+```
+
+##Packages
+R has a lot of built-in functions. However, many functions you will be using are not built in. Rather, R users have written packages, or a series of functions, that can be used for a specific purpose. For example, lm() is built in to R, so we can run linear models, but if you want to run a mixed effects model, we have to use lmer() from the lme4 package. Most packages are available to install from the R repository. To install the package, use install.packages(). Note: this requires an internet connection. R will also install any packages that lme4 requires in order to run. You can also download the package onto your computer and install it manually using the code:
+```
+install.packages(pkgs = file.choose(), repos = NULL, type = "source")
+```
+
+Once a package is installed on your computer, it is there until you uninstall it. You do not need to install the package every time you open R.However, whenever you want to use a function from a package, you have to make sure that package is loaded. This needs to be done every time you open R or change projects. This can be done one of two ways:
+```
+library(lme4)
+require(lme4)
+```
+Sometimes, multiple packages will have functions with the same name. In this case, calling the function by name will use the function from the package loaded most recently. If you want to make sure you are using the right package, specify the package before double colons, then call the function:
+
+```
+dplyr::select(...)
+```
+
+#Types of data
+R has three basic, built-in types of data: character, numeric, and logical. Another important type of data is a factor, or category. You can check the type of data using the class() function.
+
+Data in R all comes in vectors. There is no such thing as a scalar in R. Rather, it is just a vector of length 1. A vector is an ordered container, with all elements being of the same type. To create a vector, you can use c(), which combines individual elements. When calling character data, put your variable in quotation marks.
+
+You can find out if a vector is of a certain type by using the is.X() function family: 
+
+```
+is.logical(X)
+is.factor(X)
+is.numeric(X)
+```
+
+If you need to coerce a vector to be another type, you can use the as.X() function family:
+```
+as.logical(X)
+as.factor(X)
+as.numeric(X)
+```
+Some important functions regarding vectors:
+
+```
+length() retrieves the number of elements in a vector.
+head() shows the first 6 elements of a vector.
+names() shows names of vector elements.
+is.na() shows whether any data is missing
+```
+
+## Data Frames
+It’s great to have a lot of information in vector form, but we will need to keep data about experimental work all in one object, which will keep all information about an experiment. A data frame is similar to an Excel spreadsheet. Data frames are ordered containers of vectors. Each vector can be of a different type, but all must be of the same length. When we load information into R from Excel, a .csv, or a .txt file, it generally will take the form of a data frame. You can also combine various variables into a data frame:
+```
+X = data.frame(colname1 = variable1, colname2 = variable2, ...)
+```
+
+Some other important parts of data frames:
+```
+length(dataframe) will tell you how many variables are in your data frame.
+dim(dataframe) will show you the number of rows and colums in your dataframe.
+```
+
+To call a particular variable, you use the \$:
+```
+dataframe$speaker
+dataframe$reactiontime
+```
+You can also “attach” your data using attach(), which tells R to consider your data frame native to the R search path, meaning you do not have to specify the data frame when calling a variable. Be careful when you do this – if you update your data frame in any way, or have different data frames, you might run the risk of calling the wrong variable!
+
+```
+```{r}
+library(Rling)
+data("ELP")
+
+head(ELP)
+length(ELP)
+dim(ELP)
+str(ELP)
+summary(ELP)
+
+```
+
+## Subsetting
+You can subset your data in various ways. One way is by position, in which you give the indices of the element(s) you want.
+
+```{r}
+ELP[1:10,5]
+```
+Another way is by exclusion, in which you give the indices of the element(s) you want.
+```{r}
+head(ELP[-c(5,2),2:4])
+```
+If you index by name, you call the name of he variable in the dataframe.
+```{r}
+ELP[1:10, "SUBTLWF"]
+
+ELP[1:10, c("SUBTLWF", "Word")]
+```
+Indexing by all takes all elements of one dimension of your data frame.
+```{r}
+
+ELP[,1:3]
+
+ELP[1:13,]
+```
+Indexing by logical subsets based on whether an element meets particular requirement. In this case, it keeps the ones that are TRUE.
+Knowing the logical operators in R is important for subsetting, which will help you with data processing down the road.
+These logical operators will return the values TRUE or FALSE
+
+  * \> 
+  * <
+  * \>=
+  * <=
+  * !=
+  * == 
+
+You can combine logical operators:
+
+  * & (and operator) requires two (or more) conditions to both be true in order to receive TRUE as a return.
+  * \| (or operator) ) requires one of two (or more) conditions to be true in order to receive TRUE as a return.
+```{r}
+
+#Why doesn't this work?
+#ELP[Mean_RT < 800,]
+
+#This one does work!
+ELP[ELP$Mean_RT < 800,]
+
+ELPJJ800 = ELP[(ELP$Mean_RT < 800) & (ELP$POS =="JJ"), ]
+head(ELPJJ800)
+```
+
+##Loading data
+
+The most common types of data to import to R are .csv and .txt. If you can save your files as either of these (or, if the program you use to collect data returns these) you are good to go!
+To read in a file, you can use the read.table() function. Here, Header = TRUE says take the first line of the table to be variable names.
+
+```
+ERP_experiment_1 = read.table(“ERP_data1.txt”, header = TRUE)
+```
+This says ‘tab’ separates each element. There are various other separators out there, such as comma (denoted by sep = ",", or by using read.csv).
+
+```
+ERP_experiment_1 = read.table(“ERP_data1.txt”, header = TRUE, sep = “\t”)
+ERP_experiment_1 = read.csv(“ERP_data1.csv”, header = TRUE)
+
+```
+If your data is in .xls or .xlsx form, you can either convert it to .csv, or use read_excel() from the readxl package (part of the tidyverse!).
+
+```
+require(readxl)
+ERP_experiment_1 = read_excel(“ERP_data1.xlsx”, col_names = TRUE, sheet = “Sheet1”)
+```
+
+Note, you can only give the name of the file only if it is in your working directory. To figure out what your working directory is, you can use the getwd() function.
+If the file is not in your working directory, you can access it in one of three ways:
+
+  * Move the file into your working directory
+  * Change the working directory, using the setwd() function.
+  * Use the absolute path to your file.
+
+If you are using a project in R, the easiest thing to do is to move all important files into your project folder. This will ensure they are in the working directory of your project.
+```{r error = FALSE, eval = FALSE}
+getwd()
+
+
+#This doesn't work because the file is not in my current working directory.
+nasality = read.csv("Acoustic_Nasality_Data.csv",header = TRUE)
+
+#Giving the absolute path does work!
+nasality = read.csv("/Users/goldrch2/Desktop/Teaching/LING 490/Data/Acoustic Nasality Data/Acoustic_Nasality_Data.csv",header = TRUE)
+
+
+setwd("/Users/goldrch2/Desktop/Teaching/LING 490/Data/Acoustic Nasality Data/")
+nasality = read.csv("Acoustic_Nasality_Data.csv",header = TRUE)
+head(nasality)
+
+
+
+library(readxl)
+
+nasality = read_excel("/Users/goldrch2/Desktop/Teaching/LING 490/Data/Acoustic Nasality Data/Nasality formants.xlsx",col_names = TRUE, sheet = "Sheet1")
+```
+
+#RMarkdown
+As you may have noted, this tutorial is formatted in HTML. The formatting was done in RMarkdown, which is an add-on package to R. You can consider RMarkdown to be a lab notebook of sorts. It allows you to nicely format your data and analysis, plus accompanying notes, into an HTML, PDF, LaTeX, or Word file.
+
+To create a new RMarkdown file, go to File > New File > RMarkdown. Your window will look like this:
+
+![ ](/img/RMarkdown.png)
+
+
+You can save an RMarkdown file to be rendered as Word, PDF or HTML. Note you can always switch, or even just use the knit button to render it as another format just once!
+Note, you can also save just your R code with comments (as a .R file), but RMarkdown is much nicer because of its rich formatting and rendering options.
+
+RMarkdown has a bunch of stuff included. The top of the document is the header. It gives information such as the title, author, default output (HTML, PDF, etc.), and any other global information. Then, there is text, which goes in the white space. (This is text, actually!) Finally, there are code chunks. Code chunks can be names or not.
+
+![ ](/img/markdownexample.png)
+
+There are different options you can add in each chunk: 
+
+* eval: whether or not to evaluate the code (though the code will be printed)
+      * default is TRUE
+* include: whether or not to include the code in the final document (though it will be evaluated)
+      * default is TRUE
+* echo: whether or not to include the code above its results in the final document 
+      * default is TRUE    
+* collapse: whether or not to collapse all source and output blocks into a single block
+      * default is FALSE
+* results: how to display the results of the code
+      * default is 'markup' - will show each result right after its associated code
+      * 'hide' - does not show results in final document
+      * 'hold' - will display all output at the end of the chunk
+
+Here, I am saying 'collapse = TRUE, results = 'hold''.
+```{r collapse=TRUE, results = 'hold'}
+1 + 3
+
+4 - 2
+
+5 * 5
+
+8 / 2
+
+77 %% 4
+
+132 %/% 8
+
+9 ^ 7
+```
+
+
+
+## RMarkdown Formatting
+
+Hash marks are used to denote headers - the more hash marks you add, the smaller the headers.
+
+## Bullet Points
+You can add a few types of bullets: 
+
+
+Simple bullet points:
+
+```
+* Point 1
+* Point 2
+* Point 3
+
+```
+
+* Point 1
+* Point 2
+* Point 3
+
+Enumerated points:
+```
+1. Number 1
+2. Number 2
+3. Number 3
+
+```
+
+
+1. Number 1
+2. Number 2
+3. Number 3
+
+and nested dot points:
+```
+* A
+    * A.1
+    * A.2
+* B
+    * B.1
+    * B.2
+
+```
+
+
+* A
+    * A.1
+    * A.2
+* B
+    * B.1
+    * B.2
+    
+##Images
+You can include images locally, or from the internet.
+```
+![This is my dog!](/img/salem.jpg)
+
+```
+
+![This is my dog!](/img/salem.jpg)
+```
+![This puffin came from the internet!](http://blog.mary.com/wp-content/uploads/2012/05/cute_animal_pictures_4.jpg?2c2c53){width=30%}
+
+```
+
+![This puffin came from the internet!](http://blog.mary.com/wp-content/uploads/2012/05/cute_animal_pictures_4.jpg?2c2c53){width=30%}
+
+
+
+##Hyperlinks
+```
+[R4DS](http://r4ds.had.co.nz/)
+```
+
+[R4DS](http://r4ds.had.co.nz/)
+
+
+##Tables and text formatting
+
+```
+|      	| Column1 	| Column2  	| Column3  	| Column4     	|
+|------	|---------:	|----------:	|:----------:	|:-------------	|
+| Row1 	| *derp*  	| **merp** 	| ~~burp~~ 	| **_flurp_** 	|
+| Row2 	| 1       	| 2        	| 3        	| 4           	|
+| Row3 	| 8       	| 7        	| 8        	| 5           	|
+```
+
+
+
+|      	| Column1 	| Column2  	| Column3  	| Column4     	|
+|------	|---------:	|----------:	|:----------:	|:-------------	|
+| Row1 	| *derp*  	| **merp** 	| ~~burp~~ 	| **_flurp_** 	|
+| Row2 	| 1       	| 2        	| 3        	| 4           	|
+| Row3 	| 8       	| 7        	| 8        	| 5           	|
+
+Note that if you want to include pretty tables that are output from a model or other function, you can use the kable() package.
+
+##Formatting cheat sheet
+To find a cheat sheet for RMarkdown formatting, go [here](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf).
+
+A more thorough reference for RMarkdown formatting is [here](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf).

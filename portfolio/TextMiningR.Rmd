@@ -1,0 +1,516 @@
+---
+title: "Text Mining with R"
+author: "Marissa Barlaz"
+image: "img/twitter.png"
+showonlyimage: false
+weight: 1
+draft: false
+description: "The aim of this workshop is to teach you the basics of how to use R for text mining, specifically from Twitter."
+output:
+  blogdown::html_page:
+    toc: true
+    fig_width: 6
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(tidytext)
+library(rtweet)
+library(wordcloud)
+library(ROAuth)
+library(ggmap)
+library(wordcloud)
+library(maps)
+library(rvest)
+library(RCurl)
+library(httr)
+library(twitteR)
+
+```
+
+#Setting up an API
+The first thing to do with R when getting ready to do Twitter mining is to set up your credentials. I won't go through this process right now, but it is outlined [here](https://github.com/mkearney/rtweet). You need to first become a Twitter developer and create an app. It only takes a few moments.
+
+```{r include=FALSE}
+
+#my_oauth <- OAuthFactory$new(consumerKey = consumer_key, consumerSecret = consumer_secret, requestURL = requestURL, accessURL = accessURL, authURL = authURL)
+#my_oauth$handshake(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl"))
+load("~/Desktop/Other Materials/Git/MSB89/content/portfolio/my_oauth")
+
+```
+
+There are a couple of different types of flows you can work with, depending on what your question is. For example, if you want to look at word counts and frequencies, your workflow will look something like this:
+
+![ ](/img/tidyflow-ch-1.png){width=95%}
+
+If you want to do sentiment analysis, your workflow will look something like this:
+
+![ ](/img/tidyflow-ch-2.png){width=95%}
+
+#Mining and Processing
+
+##Searching for tweets
+
+There are a number of functions/packages that allow you to search for tweets:
+
+* searchTwitteR in the TwitteR package (I've had a lot of problems with this package and limitations on number of tweets allowed to be grabbed.)
+* search_tweets in the rtweet package
+* filterStream in the streamR package
+
+For this example, I will show you the results from the *rtweet* package. Note that these packages will only give recent tweets, generally from the past week. (Note, I collected these tweets on Sept. 5, 2018.)
+```{r, eval=FALSE}
+#This gets the 5000 most recent tweets from each of the handles listed.
+timelines <- get_timelines(c("nbcsports", "cbssports", "bbcsport"), n = 5000, retryonratelimit = TRUE)
+
+#This gets the 5000 most recent tweets that have one of the words listed. You can also use AND as a search operator to look for tweets that meet multiple criteria.
+footballterms = search_tweets2(c("football OR  nfl OR superbowl", "lang:en"), n = 5000, retryonratelimit = TRUE, geocode = lookup_coords("usa"))
+footballterms = lat_lng(footballterms) #gives latitude and longitude for geocodes that are given
+
+#searching for three types of cute animals
+cuteanimals = search_tweets("dog OR cat OR hamster", n = 5000, retryonratelimit = TRUE, geocode = lookup_coords("usa"))
+cuteanimals = lat_lng(cuteanimals)
+patterns = c("cat|dog|hamster")
+#create a new variable that takes out which animal was mentioned
+cuteanimals = cuteanimals %>% mutate(animalmentioned = str_extract(tolower(text), patterns))
+
+
+champaign = search_tweets(n = 10000, geocode ="-88.24338, 40.11642, 5mi")
+#save all files for future use
+
+save(timelines, file = "twittertimelines.Rda")
+save(footballterms, file = "footballterms.Rda")
+save(cuteanimals, file = "cuteanimals.Rda")
+```
+Here's how you would do it with the twitteR package. I personally have not had a lot of luck with this package, and I have heard it is being deprecated because of rtweets.
+```{r}
+#CBStweets = searchTwitteR("from:@cbssports", n = 1000)
+#BBCtweets = searchTwitteR("from:@bbcsport", n = 1000)
+#NBCtweets = searchTwitteR("from:@nbcsports", n = 1000)
+```
+
+```{r, include=FALSE}
+
+load("twittertimelines.Rda")
+load("footballterms.Rda")
+load("cuteanimals.Rda")
+```
+
+#Comparing three Twitter Users
+##Processing Data
+
+As you can see, there is a LOT of information we're given when we download tweets. We only need a small subset of it, so we will use the tidyverse to select out the data we need, and we will forget the rest.
+```{r}
+head(timelines)
+dim(timelines)
+timelines_processed = timelines %>% select(screen_name, created_at, text, is_retweet, is_quote, favorite_count, retweet_count, hashtags)
+
+timelines_processed %>% group_by(screen_name) %>% summarise(number = n())
+
+```
+
+
+##Word Ratios
+Here, we are going to look at some words and see what the odds ratios are that these words belong to one user over another. This analysis is based on those found in [Tidy Text Mining with R](www.tidytextmining.com). 
+
+First, I have a list of symbols I would like to remove from any of the text. Those include ampersands, hash tags, at sign, etc. Then, we will also get rid of stop words and anything with numbers or other characers. 
+```{r}
+remove_reg <- "#|&|@|<|>"
+
+timelines_tidy_tweets <- timelines_processed %>% 
+  filter(!str_detect(text, "^RT")) %>%
+  mutate(text = str_remove_all(text, remove_reg)) %>%
+  unnest_tokens(word, text, token = "tweets") %>%
+  filter(!word %in% stop_words$word,
+         !word %in% str_remove_all(stop_words$word, "'"),
+         str_detect(word, "[a-z]"))
+```
+
+Then, we are going to find the relative frequency for each word, by user name. We will find the log odds for each pairwise comparison of user names.
+```{r}
+timelines_frequency <- timelines_tidy_tweets %>% 
+  group_by(screen_name) %>% 
+  count(word, sort = TRUE) %>% 
+  left_join(timelines_tidy_tweets %>% 
+              group_by(screen_name) %>% 
+              summarise(total = n())) %>%
+  mutate(freq = n/total)
+
+
+timelines_word_ratios <- timelines_tidy_tweets %>%
+  filter(!str_detect(word, "^@")) %>%
+  count(word, screen_name) %>%
+  group_by(word) %>%
+  filter(sum(n) >= 10) %>%
+  ungroup() %>%
+  spread(screen_name, n, fill = 0) %>%
+  mutate_if(is.numeric, funs((. + 1) / (sum(.) + 1))) %>%
+  mutate(logratioBBCNBC = log(BBCSport / NBCSports), logratioCBSNBC = log(CBSSports / NBCSports),logratioBBCCBS = log(BBCSport / CBSSports))
+
+
+```
+And finally, we will visualize the results. Here, if the number is positive, it is more likely to be a word used of the first group than the second group. If the log ratio is negative, it is more likely to be a word used by the second group than the first group. I took the top 15 positive and negative log odds, ordered them, and then plotted them. I did this for all three pairs possible from this dataset.
+
+```{r}
+timelines_word_ratios %>%
+  group_by(logratioCBSNBC < 0) %>%
+  top_n(15, abs(logratioCBSNBC)) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, logratioCBSNBC)) %>%
+  ggplot(aes(word, logratioCBSNBC, fill = logratioCBSNBC < 0)) +
+  geom_col() +
+  coord_flip() +
+  ylab("log odds ratio (CBS/NBC)") +
+  scale_fill_discrete(name = "", labels = c("CBS", "NBC"))
+
+timelines_word_ratios %>%
+  group_by(logratioBBCNBC < 0) %>%
+  top_n(15, abs(logratioBBCNBC)) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, logratioBBCNBC)) %>%
+  ggplot(aes(word, logratioBBCNBC, fill = logratioBBCNBC < 0)) +
+  geom_col() +
+  coord_flip() +
+  ylab("log odds ratio (BBC/NBC)") +
+  scale_fill_discrete(name = "", labels = c("BBC", "NBC"))
+
+timelines_word_ratios %>%
+  group_by(logratioBBCCBS < 0) %>%
+  top_n(15, abs(logratioBBCCBS)) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, logratioBBCCBS)) %>%
+  ggplot(aes(word, logratioBBCCBS, fill = logratioBBCCBS < 0)) +
+  geom_col() +
+  coord_flip() +
+  ylab("log odds ratio (BBC/CBS)") +
+  scale_fill_discrete(name = "", labels = c("BBC", "CBS"))
+```
+
+##Frequencies of key words
+
+Here, I have chosen a list of seven "key words" - that is, seven sports that are played in the US and UK. I filtered the list of frequencies for each word to only look for these words. Note that there are a few words that do not show up for a couple of the user names. Because these don't show up, if we leave them out, the bar plot looks a bit weird.
+```{r}
+#IF there are 0s, they won't show up in the bar plot
+sportslist = c("football", "soccer", "baseball", "basketball", "tennis", "rugby", "cricket")
+
+frequentsports = timelines_frequency %>% filter(word %in% sportslist)
+
+dim(frequentsports)
+ggplot(frequentsports, aes(x = word, fill = screen_name)) + geom_bar(aes(weight = n), position = "dodge")
+
+```
+
+
+If we want to include these specifically in the bar plot, even with values of 0, we need to make a new grid with all possible combinations of user_name and sport, and then merge this with the frequencies given from the tweets. Any word*screen_name pairs that do not exist will be filled in with a 0. This gives the bar plot we are looking for!
+```{r}
+
+#creating a full data grid with zeros to preserve shape of bar plot
+
+sportslist = data.frame(word = rep(c("football", "soccer", "baseball", "basketball", "tennis", "rugby", "cricket"), 3), screen_name = rep(c("BBCSport", "NBCSports", "CBSSports"), each = 7))
+
+frequentsports = timelines_frequency %>% filter(word %in% sportslist$word)
+
+fullsports_timelines = full_join(frequentsports, sportslist, by = c("screen_name", "word"), fill = 0)  %>% replace(., is.na(.), 0)
+
+
+ggplot(fullsports_timelines, aes(x = word, fill = screen_name)) + geom_bar(aes(weight = n), position = "dodge")
+
+```
+
+##Sentiment analysis
+In order to do sentiment analysis, we will use a few datasets from R's tidytext package: the sentiments dataset, and the stop_words dataset, which comes with three general-purpose lexicons:
+
+* *FINN* from Finn Årup Nielsen,
+* *bing* from Bing Liu and collaborators, and
+* *nrc* from Saif Mohammad and Peter Turney.
+
+From the [Text Mining with R](https://www.tidytextmining.com/sentiment.html) book (Section 2.1):
+
+> All three of these lexicons are based on unigrams, i.e., single words. These lexicons contain many English words and the words are assigned scores for positive/negative sentiment, and also possibly emotions like joy, anger, sadness, and so forth. The nrc lexicon categorizes words in a binary fashion (“yes”/“no”) into categories of positive, negative, anger, anticipation, disgust, fear, joy, sadness, surprise, and trust. The bing lexicon categorizes words in a binary fashion into positive and negative categories. The AFINN lexicon assigns words with a score that runs between -5 and 5, with negative scores indicating negative sentiment and positive scores indicating positive sentiment. All of this information is tabulated in the sentiments dataset, and tidytext provides a function get_sentiments() to get specific sentiment lexicons without the columns that are not used in that lexicon.
+
+For the bing lexicon, a sentiment score is given by the number of times a word shows up in the corpus. We calculate sentiment = positive - negative, so that negative words have a negative score, and positive words have a positive score. We choose the top 30 words in terms of sentiment scores - that is, the 30 most frequent words that are related to sentiment.
+
+```{r}
+data("sentiments")
+
+sports_sentiments_bing <- timelines_frequency %>%
+  inner_join(get_sentiments("bing")) %>%
+  spread(sentiment, n,fill = 0) %>%
+  mutate(sentiment = positive - negative) %>%
+  top_n(30, abs(sentiment))
+
+head(sports_sentiments_bing)
+
+
+ggplot(sports_sentiments_bing, aes(word, sentiment, fill = sentiment<0)) +  geom_col(show.legend = FALSE) +coord_flip()+  facet_wrap(~screen_name, ncol = 3, scales = "free_x")
+
+
+```
+
+
+For the afinn sentiment dataset, we calculate sentiment by multiplying the score given by the dataset (ranging form -5 to 5) by the number of instances of that word. Once again, the top 30 words are chosen.
+```{r}
+sports_sentiments_afinn <- timelines_frequency %>%
+  inner_join(get_sentiments("afinn")) %>% mutate(sentiment = n*score) %>%
+  top_n(30, abs(sentiment)) 
+  
+head(sports_sentiments_afinn)
+
+ggplot(sports_sentiments_afinn, aes(word, sentiment, fill = sentiment<0)) +  geom_col(show.legend = FALSE) +coord_flip()+  facet_wrap(~screen_name, ncol = 3, scales = "free_x")
+
+  
+```
+
+
+Here, we want to compare the counts per screen name for each sentiment word. The top 30 most frequent sentiment words, regardless of their positivity/negativity,  are chosen.
+```{r}
+bing_word_counts =  timelines_tidy_tweets %>% inner_join(get_sentiments("bing")) %>%
+  count(screen_name, word, sentiment, sort = TRUE) %>%  ungroup()
+
+head(bing_word_counts)
+
+bing_word_counts %>%
+  group_by(screen_name, sentiment) %>%
+  top_n(30) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = screen_name)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(y = "Contribution to sentiment",
+       x = NULL) +
+  coord_flip()
+```
+
+
+
+And finally, we can create a word cloud using the top 100 words from the dataset.
+```{r}
+timelines_tidy_tweets %>%
+  anti_join(stop_words) %>%
+  group_by(screen_name) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+
+```
+
+
+#Comparing tweets with certain search terms
+##Processing data
+Now we will go on to searching for tweets that have certain words included. Once again, I processed the data to get rid of the extraneous information.
+```{r}
+
+footballterms_processed = footballterms %>% select(screen_name, created_at, text, is_retweet, is_quote, favorite_count, retweet_count, hashtags, lat, lng)
+
+```
+
+
+##Locations and time series
+What if we want to see where/when tweets are being produced? I used previously the *lat_lng()* function from the rtweet package. This converts the geocoded information that is buried in the huge dataset into latitude and longitude. Note that I didn't search specifically for geotagged tweets, so only a subset of my tweets have latitudes and longitudes. If you want to search for geotagged tweets, you can give *search_tweets()* a latitude, longitude and radius to geographically bound your search results, as such:
+
+```{r, eval = FALSE}
+#not run
+rt <- search_tweets("rstats", n = 500, include_rts = FALSE, geocode = "37.78,-122.40,1mi")
+```
+
+Here, I am first filtering my data so that I only include data with values for latitude and longitude. (I am filtering only on latitude, with the presumption that if I have a value for latitude, I will have one for longitude as well.)
+
+I then am looking up the geocode for the United States, and calling to get a map from google maps. This is the basis of my geographical plot. The function *get_map* and the plotting function *ggmap* are found in the ggmap package. This allows you to use the map as a base for a ggplot-type figure, as I do below.
+```{r}
+head(footballterms_processed)
+dim(footballterms_processed[!is.na(footballterms_processed$lat),])
+footballgeo = footballterms_processed %>% filter(!is.na(lat))
+UScode = geocode("United States")
+usmap<-get_map(location=UScode, zoom=4, maptype = "terrain", source = "google")
+
+ggmap(usmap) + geom_point(data = footballgeo, aes(x = lng, y = lat, color = is_retweet))
+```
+
+
+Here's another example of processing and tokenizing tweets. I am doing the same thing I did before for the timelines data - processing the strings, then getting frequencies.
+
+Note that I am stripping the date and time from the _created_at_ variable. The _created_at_ variable is in a special date-time format for R, which makes plotting time series data very easy, so I don't recommend you necessarily use the stripped data to create plots. 
+```{r}
+data("stop_words")
+
+remove_reg <- "@|&|#"
+football_tweets <- footballterms_processed %>% 
+  filter(is_retweet == FALSE) %>%
+  mutate(text = str_remove_all(text, remove_reg)) %>%
+  unnest_tokens(word, text, token = "tweets") %>%
+  filter(!word %in% stop_words$word,
+         !word %in% str_remove_all(stop_words$word, "'"),
+         str_detect(word, "[a-z]"),
+         !str_detect(word, "^http"), 
+         !word=="amp")
+
+head(football_tweets)
+
+football_frequency <- football_tweets %>% 
+#  group_by(screen_name) %>% 
+  count(word, sort = TRUE) %>% 
+  left_join(football_tweets) %>%
+  rename(number = n) %>%
+  mutate(freq = number/n(), date = strftime(created_at, format = "%m/%d/%y"), time = strftime(created_at, format="%H:%M:%S")) %>% select(screen_name, created_at, word, number, freq, everything()) %>% select(-hashtags) 
+```
+
+
+Here, I am plotting the top 20 most frequent words.
+```{r}
+football_frequency %>% group_by(word) %>% summarise(number = max(number)) %>% arrange(desc(number)) %>% top_n(20, number) %>% ggplot(aes(reorder(word, number), number)) +geom_col() +coord_flip()
+
+
+```
+
+And here, I am doing a time-series plot using the *ts_plot* function from the rtweet package. First, I am looking at the data by hour, and then by minute. Because I collected this data from a small window of time, these aren't particularly informative, but if you had a larger dataset, you could do some cool time series work. [Tidy Text Mining with R](https://www.tidytextmining.com/twitter.html) gives another example of time-dynamic analyses.
+```{r}
+football10 = football_frequency %>% group_by(word) %>% summarise(number = max(number)) %>% arrange(desc(number))%>%top_n(10,number)%>% left_join(football_frequency) %>% group_by(word)
+
+ts_plot(football10, "hours")
+
+ts_plot(football10, "mins")
+```
+
+And finally, you can create another word cloud!
+```{r}
+football_frequency %>%
+  anti_join(stop_words)%>%
+  group_by(word) %>% summarise(number = max(number)) %>% top_n(100, number)%>%
+  with(wordcloud(word, number, max.words = 100))
+
+```
+
+
+#Another example of multiple search terms
+
+Finally, I am looking at the relative distributions of dogs, cats and hamsters on Twitter. Note that I created a variable a while ago on my dataset, called _animalmentioned_, which pulled out which of my three search terms is mentioned in the tweet. I created the tokenized tweets file one more.
+##Data processing
+
+
+```{r}
+animals_processed = cuteanimals %>% select(screen_name, animalmentioned, created_at, text, is_retweet, is_quote, favorite_count, retweet_count, hashtags, lat, lng)
+
+head(animals_processed)
+
+  remove_reg <- "@|&|#"
+animal_tweets <- animals_processed %>% 
+  filter(is_retweet == FALSE) %>%
+  mutate(text = str_remove_all(text, remove_reg)) %>%
+  unnest_tokens(word, text, token = "tweets") %>%
+  filter(!word %in% stop_words$word,
+         !word %in% str_remove_all(stop_words$word, "'"),
+         str_detect(word, "[a-z]"),
+         !str_detect(word, "^http"), 
+         !word =="amp")
+```
+
+##Time and Space
+Here, I am looking at tweets over time and space by the animal mentioned. As you can see, not a lot of people are talking about hamsters!
+
+```{r}
+
+animalgeo = animals_processed %>% filter(!is.na(lat), !is.na(animalmentioned))
+ggmap(usmap) + geom_point(data = animalgeo, aes(x = lng, y = lat, color = animalmentioned))
+
+```
+
+Here, I am comparing the top 10 words used in reference to animals.
+```{r}
+animal_frequency <- animal_tweets %>% 
+#  group_by(screen_name) %>% 
+  count(word, sort = TRUE) %>% 
+  left_join(animal_tweets) %>%
+  rename(number = n) %>%
+  mutate(freq = number/n(), date = strftime(created_at, format = "%m/%d/%y"), time = strftime(created_at, format="%H:%M:%S")) %>% select(screen_name, created_at, word, number, freq, everything()) %>% select(-hashtags) 
+
+animal10 = animal_frequency %>% group_by(word) %>% summarise(number = max(number)) %>% arrange(desc(number))%>%top_n(10,number)%>% left_join(animal_frequency) %>% group_by(word)
+
+ts_plot(animal10, "hours")
+
+ts_plot(animal10, "mins")
+
+
+```
+
+
+##Sentiments
+Let's look at sentiments in reference to animals. Once again I will use the Bing sentiment corpus. I also have created another dataset, animals_bing_time, that looks at sentiments over time by dividing the timestamps into 40 windows.
+
+```{r}
+data("sentiments")
+
+animals_bing <- animal_tweets %>%
+  inner_join(get_sentiments("bing"))%>% 
+  count(word, sentiment, animalmentioned, sort = TRUE) %>% 
+  spread(sentiment, n,fill = 0)%>%
+  mutate(sentiment = positive - negative) %>%
+  top_n(30, abs(sentiment))
+
+
+animals_bing_time <- animal_tweets %>%
+  inner_join(get_sentiments("bing"))%>% 
+  count(index = as.numeric(cut(created_at, 40)), sentiment, sort = TRUE) %>% 
+  spread(sentiment, n,fill = 0)%>%
+  mutate(sentiment = positive - negative)
+
+ggplot(animals_bing, aes(word, sentiment, fill = sentiment<0)) +
+  geom_col(show.legend = FALSE) +coord_flip()+
+  facet_wrap(~animalmentioned, ncol = 3, scales = "free_x")
+
+ggplot(animals_bing_time, aes(index, sentiment, fill = sentiment<0)) +
+  geom_col(show.legend = FALSE) + scale_x_continuous(breaks=seq(0,40,10))
+
+animals_bing_time %>%  top_n(50, abs(sentiment)) %>%ggplot(aes(index, sentiment, fill = sentiment<0)) +  geom_col(show.legend = FALSE) + scale_x_continuous(breaks=seq(0,40,10))
+```
+
+Again, I am using the afinn sentiment corpus.
+```{r}
+animals_sentiments_afinn <- animal_frequency %>%
+  inner_join(get_sentiments("afinn")) %>% mutate(sentiment = number*score, index = as.numeric(cut(created_at, 40))) %>%count(word, sentiment, sort = TRUE)
+
+animals_sentiments_afinn   %>% top_n(10) %>%
+  ggplot( aes(reorder(word, desc(sentiment)), sentiment, fill = sentiment<0)) +
+  geom_col(show.legend = FALSE) +coord_flip() + xlab("Word")
+
+
+animals_counts_nbing =  animal_tweets %>% inner_join(get_sentiments("bing")) %>%
+  count(animalmentioned, word, sentiment, sort = TRUE) %>%
+  ungroup()
+head(animals_counts_nbing)
+
+animals_counts_nbing %>%
+  group_by(animalmentioned, sentiment) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = animalmentioned)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(y = "Contribution to sentiment",
+       x = NULL) +
+  coord_flip()
+```
+And a word cloud!
+```{r}
+animal_tweets %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 100))
+
+```
+
+#A few final words
+
+Using the other packages I mentioned, as well as rtweet, you can do a lot - you can stream tweets, follow users, etc.
+Here, I used a bounding box I determined interactively [here](http://boundingbox.klokantech.com/) to stream tweets found in Chicago. (I tried Champaign, but we don't seem to tweet much!)
+```{r, eval = FALSE}
+champaignbox = c(-88.290213,40.06123,-88.178074,40.166118)
+chicagobox = c(-87.741984,41.790998,-87.528422,41.989486)
+filterStream( file="tweets_rstats.json", locations=chicagobox, timeout=60, oauth=my_oauth )
+tweets.df <- parseTweets("tweets_rstats.json")
+
+```
+
+
+

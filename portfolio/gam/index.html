@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>GAM in R</title>
+<meta name="description" content="Describe your website">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="all,follow">
+<meta name="googlebot" content="index,follow,snippet,archive">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/owl.carousel.css">
+<link rel="stylesheet" href="/css/owl.theme.css">
+
+
+  <link href="/css/style.default.css" rel="stylesheet" id="theme-stylesheet">
+
+ 
+
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+
+<link href="/css/custom.css" rel="stylesheet">
+<link rel="shortcut icon" href="/img/favicon.png">
+
+
+</head>
+<body>
+  <div id="all">
+      <div class="container-fluid">
+          <div class="row row-offcanvas row-offcanvas-left">
+              <div id="sidebar" class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+  <div class="sidebar-content">
+    <h1 class="sidebar-heading"><a href="/">Marissa Barlaz, PhD</a></h1>
+    
+      <p class="sidebar-p">Until May 2020, I was the Linguistic Data Analytics Manager in the School of Literatures, Cultures, and Linguistics at the University of Illinois at Urbana-Champaign.</p>
+    
+    <ul class="sidebar-menu">
+      
+        <li><a href="/portfolio/">Home</a></li>
+      
+        <li><a href="/about/">About</a></li>
+      
+        <li><a href="/contact/">Get in touch</a></li>
+      
+    </ul>
+    <p class="social">
+  
+  
+  
+  
+  
+  <a href="mailto:marissa.barlaz@gmail.com" data-animate-hover="pulse" class="email">
+    <i class="fa fa-envelope"></i>
+  </a>
+  
+  
+  <a href="https://www.linkedin.com/in/marissa-barlaz-52801830/" data-animate-hover="pulse" class="external">
+    <i class="fa fa-linkedin"></i>
+  </a>
+  
+  
+  
+  <a href="https://github.com/marissabarlaz" data-animate-hover="pulse" class="external">
+    <i class="fa fa-github"></i>
+  </a>
+  
+  
+  
+</p>
+
+
+    <div class="copyright">
+      <p class="credit">
+        
+          &copy;2020 Marissa Barlaz |
+        
+        Template by <a href="https://bootstrapious.com/free-templates" class="external">Bootstrapious.com</a>
+
+&amp; ported to Hugo by <a href="https://github.com/kishaningithub">Kishan B</a>
+
+      </p>
+    </div>
+  </div>
+</div>
+
+              
+<div class="col-xs-12 col-sm-8 col-md-9 content-column white-background">
+  <div class="small-navbar visible-xs">
+  <button type="button" data-toggle="offcanvas" class="btn btn-ghost pull-left"> <i class="fa fa-align-left"> </i>Menu</button>
+  <h1 class="small-navbar-heading"><a href="/">Marissa Barlaz, PhD</a></h1>
+</div>
+
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="content-column-content">
+         <h1>GAM in R</h1>
+         
+
+<div id="TOC">
+<ul>
+<li><a href="#packages">Packages</a></li>
+<li><a href="#data">Data</a></li>
+<li><a href="#what-is-a-generalized-additive-model">What is a generalized additive model?</a></li>
+<li><a href="#running-a-gam-in-r">Running a GAM in R</a><ul>
+<li><a href="#fitting-a-basic-gam">Fitting a basic GAM</a></li>
+<li><a href="#visualizing-gam-results">Visualizing GAM results</a></li>
+<li><a href="#random-effects">Random effects</a><ul>
+<li><a href="#random-intercepts">Random intercepts</a></li>
+<li><a href="#random-slopes">Random slopes</a></li>
+<li><a href="#random-factor-smooths">Random factor smooths</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#other-topics-to-consider">Other topics to consider</a></li>
+</ul>
+</div>
+
+<div id="packages" class="section level1">
+<h1>Packages</h1>
+<p>The packages you will need for this workshop are as follows. I am also including the hex codes for a colorblind-friendly palette, which I use for my plots. I used the gganimate package to show my dissertation data (below), but this is not crucial for data processing/analysis.</p>
+<pre class="r"><code>library(tidyverse)
+library(mgcv)
+library(itsadug)
+library(mgcViz)
+cbPalette &lt;- c(&quot;#999999&quot;, &quot;#E69F00&quot;, &quot;#56B4E9&quot;, &quot;#009E73&quot;, &quot;#F0E442&quot;, &quot;#0072B2&quot;, &quot;#D55E00&quot;, &quot;#CC79A7&quot;)</code></pre>
+<p><img src="/img/cbpalette.png" /></p>
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<p>The data I am using in this workshop is my dissertation acoustics data. A copy can be found <a href="https://uofi.box.com/s/jtzww0bmgo9216qgpxu6d7avpaa15sey">here</a>. The data has the following variables:</p>
+<ul>
+<li>Speaker</li>
+<li>Vowel</li>
+<li>Nasality</li>
+<li>Repetiton Number</li>
+<li>Normalized Time</li>
+<li>F1</li>
+<li>F2</li>
+<li>F3</li>
+<li>F3-F2 difference</li>
+</ul>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Speaker = col_character(),
+##   Word = col_character(),
+##   Vowel = col_character(),
+##   Nasality = col_character(),
+##   RepNo = col_double(),
+##   NormTime = col_double(),
+##   Type = col_character(),
+##   label = col_character(),
+##   Time = col_double(),
+##   F1 = col_double(),
+##   F2 = col_double(),
+##   F3 = col_double(),
+##   F2_3 = col_double()
+## )</code></pre>
+<pre class="r"><code>head(normtimeBP) </code></pre>
+<pre><code>## # A tibble: 6 x 9
+## # Groups:   Speaker [1]
+##   Speaker Vowel Nasality RepNo NormTime    F1    F2    F3  F2_3
+##   &lt;fct&gt;   &lt;fct&gt; &lt;fct&gt;    &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 BP02    u     nasal    1          0.1  569. 2372. 3130.  379.
+## 2 BP02    u     nasal    1          0.2  364. 2297. 2692.  197.
+## 3 BP02    u     nasal    1          0.3  373. 2258. 2882.  312.
+## 4 BP02    u     nasal    1          0.4  303. 2165. 2918.  376.
+## 5 BP02    u     nasal    1          0.5  415. 2247. 2893.  323.
+## 6 BP02    u     nasal    1          0.6  336. 2098. 2623.  263.</code></pre>
+<pre class="r"><code>str(normtimeBP, give.attr = FALSE)</code></pre>
+<pre><code>## Classes &#39;grouped_df&#39;, &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:  46876 obs. of  9 variables:
+##  $ Speaker : Factor w/ 12 levels &quot;BP02&quot;,&quot;BP04&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ Vowel   : Factor w/ 3 levels &quot;a&quot;,&quot;i&quot;,&quot;u&quot;: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ Nasality: Factor w/ 4 levels &quot;nasal&quot;,&quot;nasal_final&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ RepNo   : Factor w/ 70 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ NormTime: num  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 ...
+##  $ F1      : num  569 364 373 303 415 ...
+##  $ F2      : num  2372 2297 2258 2165 2247 ...
+##  $ F3      : num  3130 2692 2882 2918 2893 ...
+##  $ F2_3    : num  379 197 312 376 323 ...</code></pre>
+<pre class="r"><code>dim(normtimeBP)</code></pre>
+<pre><code>## [1] 46876     9</code></pre>
+<pre class="r"><code>levels(normtimeBP$Nasality)</code></pre>
+<pre><code>## [1] &quot;nasal&quot;       &quot;nasal_final&quot; &quot;nasalized&quot;   &quot;oral&quot;</code></pre>
+<pre class="r"><code>animate(BP02_animation, height=450, width = 450)</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-3-1.gif" /><!-- --></p>
+</div>
+<div id="what-is-a-generalized-additive-model" class="section level1">
+<h1>What is a generalized additive model?</h1>
+<p>A generalized additive model (henceforth, GAM) is a model that relaxes the assumption of a linear relaiton between the dependent variable and a predictor or set of predictors. The relationship between dependent and independent variables is instead estimated by a smooth function, which is created by an addition (hence additive model!) of multiple basis functions.</p>
+<p>GAM has a number of advantages over linear and polynomial regressions. For instance, the optimal shape of the non-linearity is determined automatically by the model, as opposed to comparing various shapes of models. The appropriate smoothness is determined by combining calculations for minimizations of error in addition to penalizing “wiggliness” of the model. This combination of error minimization and non-linearity penalty is done in order to avoid overfitting.GAM models non-linearities by incorporating one or more smooths of predictor variables, which have their own basis functions. The basic smooth in a GAM is a thin plate regression spline, which combines increasingly complex basis functions. GAM also allows for multiple dimensions of a predictor to be incorporated onto a (hyper) surface smooth.</p>
+</div>
+<div id="running-a-gam-in-r" class="section level1">
+<h1>Running a GAM in R</h1>
+<div id="fitting-a-basic-gam" class="section level2">
+<h2>Fitting a basic GAM</h2>
+<p>The first GAM I am going to fit looks at differences in F1 for different nasality conditions. For this particular question, I will begin by looking only at one speaker’s data, and only at the vowel /a/.</p>
+<p>What does this mean? The output should look quite similar to that of a linear (mixed effects) model.</p>
+<pre class="r"><code>BP02a = normtimeBP%&gt;% filter(Speaker==&quot;BP02&quot;&amp; Vowel==&quot;a&quot;)
+
+BP02gam1 = gam(F1~Nasality, data = BP02a)
+summary(BP02gam1)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## F1 ~ Nasality
+## 
+## Parametric coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        358.257      4.634   77.32   &lt;2e-16 ***
+## Nasalitynasalized  131.894      6.592   20.01   &lt;2e-16 ***
+## Nasalityoral       321.441      6.831   47.05   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## 
+## R-sq.(adj) =  0.699   Deviance explained =   70%
+## GCV = 7279.5  Scale est. = 7256.7    n = 956</code></pre>
+<p>Now, let’s add in a smooth term. This is a thin plate regression spline, where we are smoothing over time.</p>
+<pre class="r"><code>BP02gam2 = gam(F1~Nasality + s(NormTime), data = BP02a)
+summary(BP02gam2)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## F1 ~ Nasality + s(NormTime)
+## 
+## Parametric coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        357.859      3.419  104.68   &lt;2e-16 ***
+## Nasalitynasalized  131.831      4.864   27.11   &lt;2e-16 ***
+## Nasalityoral       322.833      5.042   64.03   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##               edf Ref.df     F p-value    
+## s(NormTime) 6.693  7.846 101.5  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.836   Deviance explained = 83.8%
+## GCV = 3989.9  Scale est. = 3949.5    n = 956</code></pre>
+<p>What do we have here? We have two sections of the model - parametric coefficients, and non-parametric coefficients.</p>
+<p>Let’s go over the following:</p>
+<ul>
+<li>Meaning of parametric coefficients</li>
+<li>Meaning of non-parametric coefficients</li>
+<li>Model statistics (Deviance explained, etc.)</li>
+<li>Effective degrees of freedom</li>
+</ul>
+<p>What if we want to add in time dynamics separately for each nasality condition? Let’s build a third model:</p>
+<pre class="r"><code>BP02gam3 = gam(F1~ Nasality + s(NormTime, by = Nasality), data = BP02a)
+summary(BP02gam3)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## F1 ~ Nasality + s(NormTime, by = Nasality)
+## 
+## Parametric coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        358.481      1.847  194.04   &lt;2e-16 ***
+## Nasalitynasalized  131.150      2.629   49.89   &lt;2e-16 ***
+## Nasalityoral       324.388      2.726  119.00   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                                 edf Ref.df     F p-value    
+## s(NormTime):Nasalitynasal     6.513  7.686 215.5  &lt;2e-16 ***
+## s(NormTime):Nasalitynasalized 7.544  8.497  59.9  &lt;2e-16 ***
+## s(NormTime):Nasalityoral      7.048  8.136 352.6  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.952   Deviance explained = 95.3%
+## GCV =   1183  Scale est. = 1153.1    n = 956</code></pre>
+</div>
+<div id="visualizing-gam-results" class="section level2">
+<h2>Visualizing GAM results</h2>
+<p>GAM interpretation relies heavily on visualization. There are a number of methods available for plotting GAM results. One is to use the plot function in R, which passes your model to plot.GAM. Note the difference between plotting the fits for these two models.</p>
+<pre class="r"><code>plot(BP02gam2)</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-7-1.png" width="480" /></p>
+<pre class="r"><code>plot(BP02gam3, pages = 1)</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-7-2.png" width="480" /></p>
+<p>Another method for plotting GAM results is the <em>mgcViz</em> package. This package utilizes ggplot2 as a plotting basis, which allows customization of plots. In order to utilize this package, the visualization of a model needs to be extracted, and then the model can be plotted.</p>
+<pre class="r"><code>BP02gam3viz = getViz(BP02gam3, nsim = 0)
+print(plot(BP02gam3viz), pages = 1)</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-8-1.png" width="480" /></p>
+<p>The method that has been adopted for plotting is using the <em>itsadug</em> package, which was actually developed in part by linguists. The <em>itsadug</em> package allows for plotting of different smooths, as well as differences between conditions.</p>
+<p>We will go through how to plot results of a gam using the plot_smooth and plot_diff functions. Note the difference between plotting the model without and with individual smooths by Nasality.</p>
+<p>We will begin by using the plot_smooth() function. This takes the following arguments:</p>
+<ul>
+<li>model name</li>
+<li>view (name of your smoothed independent x-axis variable)</li>
+<li>cond (named list of the values to use for the other predictor terms) OR plot_all (vector with the name(s) of model predictors, for which all levels should be plotted)</li>
+<li>rm.ranef (whether or not to remove random effects, if they are included in the model. Default is TRUE)</li>
+<li>Other plotting specifications (xlab, ylab, xlim, ylim, col, main, etc.)</li>
+</ul>
+<p>We will then use the plot_diff() function, which plots a difference curve based on model predictions. The plot_diff() function takes the following arguments:</p>
+<ul>
+<li>model name</li>
+<li>view (name of your smoothed independent x-axis variable)</li>
+<li>comp (list of the grouping predictor variable, and the two levels of this variable to calculate the difference for)</li>
+<li>cond (named list of the values to use for the other predictor terms) OR plot_all (vector with the name(s) of model predictors, for which all levels should be plotted)</li>
+<li>rm.ranef (whether or not to remove random effects, if they are included in the model. Default is TRUE)</li>
+<li>Other plotting specifications (xlab, ylab, xlim, ylim, col, main, etc.)</li>
+</ul>
+<p>Note that these plotting methods in <em>itsadug</em> are plotting summed effects. That is, it is plotting the smooth of the different conditions, with a constant y-axis shift of the parametric coefficients.</p>
+<pre class="r"><code>par(mfrow = c(2,2))
+
+#Model 2: Without different smooths for nasality
+plot_smooth(BP02gam2, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), main = &quot;model 2, nasal&quot;)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000.</code></pre>
+<pre class="r"><code>plot_smooth(BP02gam2, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasalized&quot;), main = &quot;model 2, nasalized&quot;)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasalized. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000.</code></pre>
+<pre class="r"><code>plot_smooth(BP02gam2, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;oral&quot;), main = &quot;model 2, oral&quot;)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): oral. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000.</code></pre>
+<pre class="r"><code>plot_smooth(BP02gam2, view = &quot;NormTime&quot;, plot_all = c(&quot;Nasality&quot;), main = &quot;model 2&quot;, col = cbPalette[1:3])</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal, nasalized, oral. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-9-1.png" width="480" /></p>
+<pre class="r"><code>#Model 3: With different smooths for nasality
+
+plot_smooth(BP02gam3, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), main = &quot;model 3, nasal&quot;)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000.</code></pre>
+<pre class="r"><code>plot_smooth(BP02gam3, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasalized&quot;), main = &quot;model 3, nasalized&quot;)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasalized. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000.</code></pre>
+<pre class="r"><code>plot_smooth(BP02gam3, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;oral&quot;), main = &quot;model 3, oral&quot;)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): oral. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000.</code></pre>
+<pre class="r"><code>plot_smooth(BP02gam3, view = &quot;NormTime&quot;, plot_all = c(&quot;Nasality&quot;), main = &quot;model 3&quot;, col = cbPalette[1:3])</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal, nasalized, oral. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-9-2.png" width="480" /></p>
+<pre class="r"><code>par(mfrow = c(1, 1))
+plot_diff(BP02gam3, view = &quot;NormTime&quot;, comp = list(Nasality = c(&quot;nasal&quot;, &quot;nasalized&quot;)), main = &quot;model 3, nasal minus nasalized&quot;)</code></pre>
+<pre><code>## Summary:
+##  * NormTime : numeric predictor; with 100 values ranging from 0.100000 to 1.000000.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-9-3.png" width="480" /></p>
+<pre><code>## 
+## NormTime window(s) of significant difference(s):
+##  0.181818 - 1.000000</code></pre>
+</div>
+<div id="random-effects" class="section level2">
+<h2>Random effects</h2>
+<p>Recall that fixed effects factors are categorical, with a small number of levels, all of which are included in our data and are used to answer a research question. Random effects, on the other hand, introduce systematic variation into the model. There are generally a larger number of categorical levels, and we are generally interested in generalizing over these levels. These levels are generally sampled from a larger population.</p>
+<div id="random-intercepts" class="section level3">
+<h3>Random intercepts</h3>
+<p>Random intercepts allow for differences in the “baseline” across all levels of a random effect. However, the relationship between the predictor and the response variables maintains the same structure - they are just shifted up or down along the y-axis. Hence, the intercept of the line differs for each participant/word/other random variable.</p>
+<p>In <em>lme4</em>, a random intercept is included with the syntax (1|Participant) (where participant is the random effect in question). In <em>mgcv</em>, a random intercept is included with the syntax s(Participant, bs=“re”). Here, participant is the random effect, and bs=“re” tells R that the basis function here is a random effect structure.</p>
+<p>Let’s build a model with a random intercept, and show how to interpret it and plot the results. First, there is a model run with no random effect, then a model with a random intercept. First, notice the differences in the summaries of these models. Then, is there a difference in deviance explained?</p>
+<p>Here, I am including only a subset of the speakers from my dataset, because otherwise it takes forever to compile this document!</p>
+<pre class="r"><code>BPa = normtimeBP%&gt;% filter(Vowel==&quot;a&quot;, Speaker %in% c(&quot;BP02&quot;, &quot;BP04&quot;, &quot;BP05&quot;, &quot;BP10&quot;, &quot;BP14&quot;))
+BPgama0 = gam(F1~ Nasality + s(NormTime, by = Nasality) , data = BPa, method = &quot;REML&quot;)
+summary(BPgama0)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## F1 ~ Nasality + s(NormTime, by = Nasality)
+## 
+## Parametric coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        374.497      1.558  240.38   &lt;2e-16 ***
+## Nasalitynasalized   46.917      2.217   21.16   &lt;2e-16 ***
+## Nasalityoral       201.992      2.209   91.45   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                                 edf Ref.df      F p-value    
+## s(NormTime):Nasalitynasal     4.181  5.159 229.94  &lt;2e-16 ***
+## s(NormTime):Nasalitynasalized 5.160  6.294  32.99  &lt;2e-16 ***
+## s(NormTime):Nasalityoral      7.576  8.517 361.24  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =   0.66   Deviance explained = 66.1%
+## -REML =  40153  Scale est. = 5718.3    n = 6988</code></pre>
+<pre class="r"><code>BPgama1 = gam(F1~ Nasality + s(NormTime, by = Nasality) + s(Speaker, bs = &quot;re&quot;), data = BPa, method = &quot;REML&quot;)
+summary(BPgama1)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## F1 ~ Nasality + s(NormTime, by = Nasality) + s(Speaker, bs = &quot;re&quot;)
+## 
+## Parametric coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        376.576     13.662   27.57   &lt;2e-16 ***
+## Nasalitynasalized   46.979      2.105   22.32   &lt;2e-16 ***
+## Nasalityoral       203.208      2.098   96.86   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                                 edf Ref.df      F p-value    
+## s(NormTime):Nasalitynasal     4.317  5.321 247.49  &lt;2e-16 ***
+## s(NormTime):Nasalitynasalized 5.320  6.472  35.59  &lt;2e-16 ***
+## s(NormTime):Nasalityoral      7.692  8.588 402.36  &lt;2e-16 ***
+## s(Speaker)                    3.983  4.000 189.74  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.694   Deviance explained = 69.5%
+## -REML =  39804  Scale est. = 5156.4    n = 6988</code></pre>
+<p>As you can see, there is a difference in deviance explained, as well as in the summary - there is an extra line in the smooth terms for s(Speaker).</p>
+<p>Now, let’s talk about visualization of these terms. Let’s first visualize the fit for nasal /a/, for the models with and without random term. What is the default setting for the model with the random effect?</p>
+<pre class="r"><code>plot_smooth(BPgama0, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;))</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-11-1.png" width="480" /></p>
+<pre class="r"><code>plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;))</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP04.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-11-2.png" width="480" /></p>
+<p>As you can see, the models look pretty similar, except for model <em>BPgama1</em>, the plot is set to Speaker = “BP04”. What if we wanted to see another speaker’s data?</p>
+<pre class="r"><code>plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;, Speaker = &quot;BP10&quot;))</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP10.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-12-1.png" width="480" /></p>
+<p>What if we wanted to plot the data for a few speakers? Or all of them? If you would like to plot only a subset of your speakers, you need to specify that you want to plot “all” speakers, then list the ones you want to plot specifically.</p>
+<p>Notice that the relationship between time and F1 is the same for all speakers - just the baseline has been moved up or down!</p>
+<pre class="r"><code>plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), plot_all = &quot;Speaker&quot;)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-13-1.png" width="480" /></p>
+<pre class="r"><code>plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;,Speaker = c(&quot;BP02&quot;, &quot;BP05&quot;, &quot;BP10&quot;)), plot_all = &quot;Speaker&quot;)</code></pre>
+<pre><code>## Warning in plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality
+## = &quot;nasal&quot;, : Speaker in cond and in plot_all. Not all levels are being
+## plotted.</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP02, BP05, BP10.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-13-2.png" width="480" /></p>
+<p>What if we wanted to see the overall trend, rather than a particular speaker’s data? In both plot_smooth() and plot_diff(), you can use rm.ranef = TRUE to show the overall shape of the model. Notice the difference in the size of the confidence intervals.</p>
+<pre class="r"><code>par(mfrow = c(1,2))
+plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;))</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP04.</code></pre>
+<pre class="r"><code>plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), rm.ranef = TRUE)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP04. (Might be canceled as random effect, check below.) 
+##  * NOTE : The following random effects columns are canceled: s(Speaker)
+## </code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-14-1.png" width="480" /></p>
+<pre class="r"><code>plot_diff(BPgama1, view = &quot;NormTime&quot;, comp = list(Nasality =c(&quot;oral&quot;, &quot;nasal&quot;)))</code></pre>
+<pre><code>## Summary:
+##  * NormTime : numeric predictor; with 100 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP04.</code></pre>
+<pre><code>## 
+## NormTime window(s) of significant difference(s):
+##  0.100000 - 1.000000</code></pre>
+<pre class="r"><code>plot_diff(BPgama1, view = &quot;NormTime&quot;, comp = list(Nasality =c(&quot;oral&quot;, &quot;nasal&quot;)),  rm.ranef = TRUE)</code></pre>
+<pre><code>## Summary:
+##  * NormTime : numeric predictor; with 100 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP04. (Might be canceled as random effect, check below.) 
+##  * NOTE : The following random effects columns are canceled: s(Speaker)
+## </code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-14-2.png" width="480" /></p>
+<pre><code>## 
+## NormTime window(s) of significant difference(s):
+##  0.100000 - 1.000000</code></pre>
+<pre class="r"><code>par(mfrow = c(1,1))</code></pre>
+</div>
+<div id="random-slopes" class="section level3">
+<h3>Random slopes</h3>
+<p>Random slopes allow for differences in the relationship between a predictor variable and the response variable, for each level of the random effect. These are often used if there are possible individual differences in these relationships, which could have an influence on the model. For example, differences in anatomical structure could lead to differences in vowel space (i.e. the distance in F1 between /a/ and /i/ could be bigger for a male speaker, due to having a larger oral cavity). Or, there could be social influences on the magnitude of the difference between oral and nasal vowels. Therefore, random slopes should be used.</p>
+<p>In <em>lme4</em>, a random slope with correlated random intercept is included with the syntax (1+Nasality|Participant), and a random slope with no variation in intercept is included with the syntax (0+Nasality|Participant) where participant is the random effect in question, and the random slope is built for each level of Nasality). In <em>mgcv</em>, a random slope is included with the syntax s(Participant,Nasality, bs=“re”). Here, participant is the random effect, the random slope is being built over Nasality, and bs=“re” tells R that the basis function here is a random effect structure. Note that this is the analog of (0+Nasality|Participant) for lme4 syntax. The structure (1+Nasality|Participant) is not possible in <em>mgcv</em>, so a random slope <em>and</em> random intercept must be specified.</p>
+<p>First, what is the difference in these models, and their summaries?</p>
+<pre class="r"><code>BPgama1 = gam(F1~ Nasality + s(NormTime, by = Nasality) + s(Speaker, bs = &quot;re&quot;), data = BPa, method = &quot;REML&quot;)
+summary(BPgama1)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## F1 ~ Nasality + s(NormTime, by = Nasality) + s(Speaker, bs = &quot;re&quot;)
+## 
+## Parametric coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        376.576     13.662   27.57   &lt;2e-16 ***
+## Nasalitynasalized   46.979      2.105   22.32   &lt;2e-16 ***
+## Nasalityoral       203.208      2.098   96.86   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                                 edf Ref.df      F p-value    
+## s(NormTime):Nasalitynasal     4.317  5.321 247.49  &lt;2e-16 ***
+## s(NormTime):Nasalitynasalized 5.320  6.472  35.59  &lt;2e-16 ***
+## s(NormTime):Nasalityoral      7.692  8.588 402.36  &lt;2e-16 ***
+## s(Speaker)                    3.983  4.000 189.74  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.694   Deviance explained = 69.5%
+## -REML =  39804  Scale est. = 5156.4    n = 6988</code></pre>
+<pre class="r"><code>BPgama2 = gam(F1~ Nasality + s(NormTime, by = Nasality)+ s(Speaker, Nasality, bs = &quot;re&quot;), data = BPa, method = &quot;REML&quot;)
+summary(BPgama2)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## F1 ~ Nasality + s(NormTime, by = Nasality) + s(Speaker, Nasality, 
+##     bs = &quot;re&quot;)
+## 
+## Parametric coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         372.83      22.28  16.732  &lt; 2e-16 ***
+## Nasalitynasalized    51.05      31.51   1.620    0.105    
+## Nasalityoral        211.98      31.51   6.727 1.87e-11 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                                  edf Ref.df      F p-value    
+## s(NormTime):Nasalitynasal      4.715  5.787 285.48  &lt;2e-16 ***
+## s(NormTime):Nasalitynasalized  5.654  6.833  42.75  &lt;2e-16 ***
+## s(NormTime):Nasalityoral       7.909  8.706 503.12  &lt;2e-16 ***
+## s(Speaker,Nasality)           11.955 12.000 225.29  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.755   Deviance explained = 75.6%
+## -REML =  39044  Scale est. = 4119.1    n = 6988</code></pre>
+<pre class="r"><code>BPgama3 = gam(F1~ Nasality + s(NormTime, by = Nasality) + s(Speaker, bs = &quot;re&quot;)+ s(Speaker, Nasality, bs = &quot;re&quot;), data = BPa, method = &quot;REML&quot;)
+summary(BPgama3)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## F1 ~ Nasality + s(NormTime, by = Nasality) + s(Speaker, bs = &quot;re&quot;) + 
+##     s(Speaker, Nasality, bs = &quot;re&quot;)
+## 
+## Parametric coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         372.83      22.28  16.733  &lt; 2e-16 ***
+## Nasalitynasalized    51.05      31.51   1.620    0.105    
+## Nasalityoral        211.98      31.51   6.728 1.86e-11 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                                     edf Ref.df       F p-value    
+## s(NormTime):Nasalitynasal      4.714905  5.787 285.490  &lt;2e-16 ***
+## s(NormTime):Nasalitynasalized  5.653945  6.833  42.747  &lt;2e-16 ***
+## s(NormTime):Nasalityoral       7.908816  8.706 503.121  &lt;2e-16 ***
+## s(Speaker)                     0.003491  4.000   0.041   0.569    
+## s(Speaker,Nasality)           11.951036 12.000 239.903  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.755   Deviance explained = 75.6%
+## -REML =  39044  Scale est. = 4119.1    n = 6988</code></pre>
+<p>Next, let’s look at all of the speakers’ data for each of these models, for nasal vowels.</p>
+<pre class="r"><code>plot_smooth(BPgama1, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), plot_all = &quot;Speaker&quot;)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-16-1.png" width="480" /></p>
+<pre class="r"><code>plot_smooth(BPgama2, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), plot_all = &quot;Speaker&quot;)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-16-2.png" width="480" /></p>
+<pre class="r"><code>plot_smooth(BPgama3, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), plot_all = &quot;Speaker&quot;)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-16-3.png" width="480" /></p>
+</div>
+<div id="random-factor-smooths" class="section level3">
+<h3>Random factor smooths</h3>
+<p>Up until now the random effects structures we’ve been including have had the same general shape across random variables. That is, the random intercepts move the splines up and down, but have the same shape. Random slopes tilt the splines, but do not change their general shape.</p>
+<p>With GAMs, we can actually include non-linear random effects. That is, individual variability can be taken into account across time or another smoothed predictor. These non-linear random effects are called “factor smooths” and are denoted with the syntax s(NormTime, Speaker, bs = “fs”, m = 1). Here, “fs” (standing for “factor smooth”) is the basis function. m indicates the order of the non-linearity penalty. Setting m = 1 indicates that the first derivative of the smooth (i.e., velocity) is penalized, rather than the second derivative, which is the default. According to Wieling (2018), “this, in turn, means that the estimated non-linear differences for the levels of the random-effect factor are assumed to be somewhat less ‘wiggly’ than their actual patterns.” Here, we are replacing the random intercept with the factor smooth, as this included the intercept shift implicitly (as the factor smooth is not centered).</p>
+<p>While including non-linear differences over time is important, this model only includes one non-linearity per speaker, rather than looking at individual variability in each category over time, per speaker. Therefore, we can replace the random slope of s(Speaker, Nasality, bs = “re”) with an edit made to the random factor smooth: s(NormTime, Speaker, by = Nasality, bs = “fs”, m=1). This is replacing the random slope because the difference between nasality conditions are taken into account by the (non-centered) factor smooth. That is, the random factor smooth incorporates a non-centered smooth per nasality condition per speaker, which accounts for both the random intercept and random slope, as well as non-linear differences between categories across time.</p>
+<p>What do you notice is different in the summary of these models?</p>
+<pre class="r"><code>BPgama4 = gam(F1~ Nasality + s(NormTime, by = Nasality) + s(Speaker, Nasality, bs = &quot;re&quot;) + s(NormTime, Speaker, bs = &quot;fs&quot;, m =1), data = BPa, method = &quot;REML&quot;)
+summary(BPgama4)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## F1 ~ Nasality + s(NormTime, by = Nasality) + s(Speaker, Nasality, 
+##     bs = &quot;re&quot;) + s(NormTime, Speaker, bs = &quot;fs&quot;, m = 1)
+## 
+## Parametric coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         371.16      22.45  16.532  &lt; 2e-16 ***
+## Nasalitynasalized    51.08      29.78   1.715   0.0864 .  
+## Nasalityoral        211.81      29.78   7.113 1.25e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                                  edf Ref.df      F  p-value    
+## s(NormTime):Nasalitynasal      4.034  4.762  32.95  &lt; 2e-16 ***
+## s(NormTime):Nasalitynasalized  5.139  6.097  11.66 3.72e-13 ***
+## s(NormTime):Nasalityoral       7.734  8.529 124.59  &lt; 2e-16 ***
+## s(Speaker,Nasality)           10.910 12.000 149.44  &lt; 2e-16 ***
+## s(NormTime,Speaker)           24.609 44.000 338.60    0.495    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =   0.76   Deviance explained = 76.2%
+## -REML =  38996  Scale est. = 4036.1    n = 6988</code></pre>
+<pre class="r"><code>BPgama5 = gam(F1~ Nasality + s(NormTime, by = Nasality)  + s(NormTime, Speaker, by = Nasality, bs = &quot;fs&quot;, m =1), data = BPa, method = &quot;REML&quot;)</code></pre>
+<pre><code>## Warning in gam.side(sm, X, tol = .Machine$double.eps^0.5): model has
+## repeated 1-d smooths of same variable.</code></pre>
+<pre class="r"><code>summary(BPgama5)</code></pre>
+<pre><code>## 
+## Family: gaussian 
+## Link function: identity 
+## 
+## Formula:
+## F1 ~ Nasality + s(NormTime, by = Nasality) + s(NormTime, Speaker, 
+##     by = Nasality, bs = &quot;fs&quot;, m = 1)
+## 
+## Parametric coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         367.92      12.83  28.670  &lt; 2e-16 ***
+## Nasalitynasalized    54.27      19.66   2.760  0.00579 ** 
+## Nasalityoral        216.16      28.62   7.552 4.85e-14 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Approximate significance of smooth terms:
+##                                          edf Ref.df      F  p-value    
+## s(NormTime):Nasalitynasal              2.295  2.438 11.372 3.25e-06 ***
+## s(NormTime):Nasalitynasalized          4.599  5.175  7.003 9.33e-07 ***
+## s(NormTime):Nasalityoral               7.482  8.078 60.148  &lt; 2e-16 ***
+## s(NormTime,Speaker):Nasalitynasal     33.471 44.000 17.428  &lt; 2e-16 ***
+## s(NormTime,Speaker):Nasalitynasalized 27.419 44.000 28.959  &lt; 2e-16 ***
+## s(NormTime,Speaker):Nasalityoral      26.352 44.000 35.235  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## R-sq.(adj) =  0.776   Deviance explained = 77.9%
+## -REML =  38816  Scale est. = 3774.4    n = 6988</code></pre>
+<p>Now what happens when we plot each speaker’s nasal vowel condition?</p>
+<pre class="r"><code>plot_smooth(BPgama3, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), plot_all = &quot;Speaker&quot;)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-18-1.png" width="480" /></p>
+<pre class="r"><code>plot_smooth(BPgama4, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), plot_all = &quot;Speaker&quot;)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-18-2.png" width="480" /></p>
+<pre class="r"><code>plot_smooth(BPgama5, view = &quot;NormTime&quot;, cond = list(Nasality = &quot;nasal&quot;), plot_all = &quot;Speaker&quot;)</code></pre>
+<pre><code>## Summary:
+##  * Nasality : factor; set to the value(s): nasal. 
+##  * NormTime : numeric predictor; with 30 values ranging from 0.100000 to 1.000000. 
+##  * Speaker : factor; set to the value(s): BP02, BP04, BP05, BP10, BP14.</code></pre>
+<p><img src="/portfolio/GAM_files/figure-html/unnamed-chunk-18-3.png" width="480" /></p>
+<p>You can use the plot_diff() function as well, in order to look at differences in categories across speakers.</p>
+</div>
+</div>
+</div>
+<div id="other-topics-to-consider" class="section level1">
+<h1>Other topics to consider</h1>
+<p>Due to time constraints, I have elected to only discuss the basics of GAM, and how to include random effects. However, there are many other things to consider in utilizing the GAM method.</p>
+<p>First, we only discussed two-dimensional smooths. That is, we discussed a smooth over an independent variable (in this case, time) for a dependent variable (in this case, F1). What happens if we have an interaction between two independent variables? This comes into play when dealing with multidimensional data. Baayen et al. (2016) use trial number to show how the “human factor” has a non-linear relationship with variables such as reaction time.</p>
+<p>Second, we did not discuss model checking and the number of knots necessary for a smooth. In short, the number of knots correlates with “turning points” in the smooth. The number of knots used depends on the size of data and number of points per spline given. More knots indicates more “wiggliness” but can make the model subject to overfitting. Determining the optimal number of knots is important for creating a good model.</p>
+<p>Third, we did not discuss model comparison. Wieling (2018) suggests, as do many others, that a maximal effects structure is not necessarily the best, and that various models should be compared to ensure the “best” model is fit to your data.</p>
+<p>Finally, we did not discuss autocorrelation. If you recall from learning about linear models, one of the assumptions behind these models is that the residuals are not correlated. That is, the residual of one point does not affect the residual of another point. This is usually the case, as linear regressions generally are looking at the data from one point in time. However, when looking at data that will be modeled with a GAM, such as time-series data, there will be some inherent correlation between the residuals. That’s because time points <span class="math inline">\(t_x\)</span> and <span class="math inline">\(t_{x+1}\)</span> will somehow be related to one another. Autocorelation is what we call the temporal (or spatial!) dependence in the model. This needs to be accounted for in the model.</p>
+<p>If you would like to discuss any of these topics further, please let me know! I am happy to meet with you and discuss how GAM can be used to analyze your data. You can set up a meeting <a href="calendly.com/marissabarlaz">here</a>. I also would recommend reading Wieling’s 2018 tutorial on how to run GAM in R, published in the Journal of Phonetics. The article can be found <a href="https://www.sciencedirect.com/science/article/pii/S0095447017301377">here</a>.</p>
+</div>
+
+         
+      </div>
+    </div>
+  </div>
+</div>
+
+          </div>
+      </div>
+  </div>
+  <script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.cookie.js"> </script>
+<script src="/js/ekko-lightbox.js"></script>
+<script src="/js/jquery.scrollTo.min.js"></script>
+<script src="/js/masonry.pkgd.min.js"></script>
+<script src="/js/imagesloaded.pkgd.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/front.js"></script>
+
+
+
+</body>
+</html>

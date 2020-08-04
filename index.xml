@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Dr. Marissa Barlaz</title>
+    <title>Marissa Barlaz, PhD</title>
     <link>/</link>
-    <description>Recent content on Dr. Marissa Barlaz</description>
+    <description>Recent content on Marissa Barlaz, PhD</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 May 2016 21:48:51 -0700</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
@@ -150,15 +149,6 @@ head(lesmis, 30) ## # A tibble: 30 x 7 ## track_title track_n line lyric element
       
       <guid>/portfolio/latex/</guid>
       <description>Introduction to LaTeX What is LaTeX? What’s so great about LaTeX? What’s not so great about LaTeX? Editors  Basics of LaTeX Important symbols and commands  The preamble Document classes Page formatting Packages  Body Title page Sections Font styles Figures Tables  Bibliographies Other possibilities with LaTeX   Introduction to LaTeX What is LaTeX? LaTeX is a document preparation system, that is becoming the de-facto method in STEM fields, such as math, physics and computer science.</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>/about/</link>
-      <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
-      
-      <guid>/about/</guid>
-      <description>This is a &amp;ldquo;hello world&amp;rdquo; example website for the blogdown package. The theme was forked from @jrutheiser/hugo-lithium-theme and modified by Yihui Xie.</description>
     </item>
     
     <item>

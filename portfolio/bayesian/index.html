@@ -148,16 +148,16 @@ library(ggmcmc)</code></pre>
 ## 5 BP02    u     nasal    5          0.5  336. 1252. 2441.  595.
 ## 6 BP02    u     nasal    6          0.5  310. 2077. 2696.  309.</code></pre>
 <pre class="r"><code>str(normtimeBP, give.attr = FALSE)</code></pre>
-<pre><code>## Classes &#39;grouped_df&#39;, &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:  4655 obs. of  9 variables:
+<pre><code>## tibble [4,655 × 9] (S3: grouped_df/tbl_df/tbl/data.frame)
 ##  $ Speaker : Factor w/ 12 levels &quot;BP02&quot;,&quot;BP04&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
 ##  $ Vowel   : Factor w/ 3 levels &quot;a&quot;,&quot;i&quot;,&quot;u&quot;: 3 3 3 3 3 3 3 3 3 3 ...
 ##  $ Nasality: Factor w/ 3 levels &quot;nasal&quot;,&quot;nasalized&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
 ##  $ RepNo   : Factor w/ 70 levels &quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,..: 1 2 3 4 5 6 7 8 9 10 ...
-##  $ NormTime: num  0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 ...
-##  $ F1      : num  415 367 315 301 336 ...
-##  $ F2      : num  2247 2301 1508 1369 1252 ...
-##  $ F3      : num  2893 2898 2549 2374 2441 ...
-##  $ F2_3    : num  323 298 521 502 595 ...</code></pre>
+##  $ NormTime: num [1:4655] 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 ...
+##  $ F1      : num [1:4655] 415 367 315 301 336 ...
+##  $ F2      : num [1:4655] 2247 2301 1508 1369 1252 ...
+##  $ F3      : num [1:4655] 2893 2898 2549 2374 2441 ...
+##  $ F2_3    : num [1:4655] 323 298 521 502 595 ...</code></pre>
 <pre class="r"><code>summary(normtimeBP)</code></pre>
 <pre><code>##     Speaker     Vowel         Nasality        RepNo         NormTime  
 ##  BP04   : 608   a:1492   nasal    :1586   6      : 108   Min.   :0.5  
@@ -182,8 +182,10 @@ library(ggmcmc)</code></pre>
 <p>Informally, Bayes’ theorem is: Posterior ∝ Prior × Likelihood.</p>
 <div id="a-simple-bayesian-analysis" class="section level2">
 <h2>A simple Bayesian analysis</h2>
-<pre><code>## Warning: `data_frame()` is deprecated, use `tibble()`.
-## This warning is displayed once per session.</code></pre>
+<pre><code>## Warning: `data_frame()` is deprecated as of tibble 1.1.0.
+## Please use `tibble()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <p><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-3-1.png" width="576" /><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-3-2.png" width="576" /><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-3-3.png" width="576" /><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-3-4.png" width="576" /><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-3-5.png" width="576" /></p>
 </div>
 <div id="why-use-bayesian-analysis" class="section level2">
@@ -279,35 +281,35 @@ Complex model: F1~ Vowel*Nasality + (Vowel*Nasality|Speaker)</p>
 <p>For each coefficient in your model, you have the option of specifying a prior. Note that when using dummy coding, we get an intercept (i.e., the baseline) and then for each level of a factor we get the “difference” estimate - how much do we expect this level to differ from the baseline? We need to specify the priors for that difference coefficient as well.</p>
 <p>In order to get the list of priors we can specify, we can use the <em>get_prior()</em> function:</p>
 <pre class="r"><code>get_prior(F1~Nasality* Vowel + (1|Speaker), data = normtimeBP, family = gaussian())</code></pre>
-<pre><code>##                     prior     class                     coef   group resp
-## 1                                 b                                      
-## 2                                 b        Nasalitynasalized             
-## 3                                 b Nasalitynasalized:Voweli             
-## 4                                 b Nasalitynasalized:Vowelu             
-## 5                                 b             Nasalityoral             
-## 6                                 b      Nasalityoral:Voweli             
-## 7                                 b      Nasalityoral:Vowelu             
-## 8                                 b                   Voweli             
-## 9                                 b                   Vowelu             
-## 10 student_t(3, 368, 100) Intercept                                      
-## 11   student_t(3, 0, 100)        sd                                      
-## 12                               sd                          Speaker     
-## 13                               sd                Intercept Speaker     
-## 14   student_t(3, 0, 100)     sigma                                      
-##    dpar nlpar bound
-## 1                  
-## 2                  
-## 3                  
-## 4                  
-## 5                  
-## 6                  
-## 7                  
-## 8                  
-## 9                  
-## 10                 
-## 11                 
-## 12                 
-## 13                 
+<pre><code>##                     prior     class                     coef   group resp dpar
+## 1                                 b                                           
+## 2                                 b        Nasalitynasalized                  
+## 3                                 b Nasalitynasalized:Voweli                  
+## 4                                 b Nasalitynasalized:Vowelu                  
+## 5                                 b             Nasalityoral                  
+## 6                                 b      Nasalityoral:Voweli                  
+## 7                                 b      Nasalityoral:Vowelu                  
+## 8                                 b                   Voweli                  
+## 9                                 b                   Vowelu                  
+## 10 student_t(3, 368, 100) Intercept                                           
+## 11   student_t(3, 0, 100)        sd                                           
+## 12                               sd                          Speaker          
+## 13                               sd                Intercept Speaker          
+## 14   student_t(3, 0, 100)     sigma                                           
+##    nlpar bound
+## 1             
+## 2             
+## 3             
+## 4             
+## 5             
+## 6             
+## 7             
+## 8             
+## 9             
+## 10            
+## 11            
+## 12            
+## 13            
 ## 14</code></pre>
 <p>This gives the class and coefficient type for each variable. Class <em>b</em> (or, <span class="math inline">\(\beta\)</span>) is a fixed effect coefficient parameter. Class <em>sd</em> (or, <span class="math inline">\(\sigma\)</span>), is the standard deviation of the random effects. Class <em>sigma</em> is the standard deviation of the residual error. R automatically constrains <em>sd</em> and <em>sigma</em> to not have coefficients lower than 0 (since by definition standard deviations are always positive.)</p>
 <p>To set a list of priors, we can use the <em>set_prior()</em> function. We need to do this for each prior we set, so it is easiest to create a list of priors and save that as a variable, then use that as the prior specification in the model.</p>
@@ -357,10 +359,10 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 <pre><code>## Compiling the C++ model</code></pre>
 <pre><code>## Start sampling</code></pre>
 <pre><code>## 
-## SAMPLING FOR MODEL &#39;c8a3effe26c1f8c03b4106663bb7911c&#39; NOW (CHAIN 1).
+## SAMPLING FOR MODEL &#39;6b7dcf02f647cde107e41a9508afb413&#39; NOW (CHAIN 1).
 ## Chain 1: 
-## Chain 1: Gradient evaluation took 0.00017 seconds
-## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.7 seconds.
+## Chain 1: Gradient evaluation took 6.9e-05 seconds
+## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.69 seconds.
 ## Chain 1: Adjust your expectations accordingly!
 ## Chain 1: 
 ## Chain 1: 
@@ -377,15 +379,15 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ## Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 ## Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
 ## Chain 1: 
-## Chain 1:  Elapsed Time: 1.13181 seconds (Warm-up)
-## Chain 1:                0.654538 seconds (Sampling)
-## Chain 1:                1.78635 seconds (Total)
+## Chain 1:  Elapsed Time: 0.529783 seconds (Warm-up)
+## Chain 1:                0.643061 seconds (Sampling)
+## Chain 1:                1.17284 seconds (Total)
 ## Chain 1: 
 ## 
-## SAMPLING FOR MODEL &#39;c8a3effe26c1f8c03b4106663bb7911c&#39; NOW (CHAIN 2).
+## SAMPLING FOR MODEL &#39;6b7dcf02f647cde107e41a9508afb413&#39; NOW (CHAIN 2).
 ## Chain 2: 
-## Chain 2: Gradient evaluation took 9e-05 seconds
-## Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.9 seconds.
+## Chain 2: Gradient evaluation took 5.2e-05 seconds
+## Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.52 seconds.
 ## Chain 2: Adjust your expectations accordingly!
 ## Chain 2: 
 ## Chain 2: 
@@ -402,15 +404,15 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ## Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 ## Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
 ## Chain 2: 
-## Chain 2:  Elapsed Time: 0.923116 seconds (Warm-up)
-## Chain 2:                0.90861 seconds (Sampling)
-## Chain 2:                1.83173 seconds (Total)
+## Chain 2:  Elapsed Time: 0.695492 seconds (Warm-up)
+## Chain 2:                0.572328 seconds (Sampling)
+## Chain 2:                1.26782 seconds (Total)
 ## Chain 2: 
 ## 
-## SAMPLING FOR MODEL &#39;c8a3effe26c1f8c03b4106663bb7911c&#39; NOW (CHAIN 3).
+## SAMPLING FOR MODEL &#39;6b7dcf02f647cde107e41a9508afb413&#39; NOW (CHAIN 3).
 ## Chain 3: 
-## Chain 3: Gradient evaluation took 8.6e-05 seconds
-## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.86 seconds.
+## Chain 3: Gradient evaluation took 5e-05 seconds
+## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.5 seconds.
 ## Chain 3: Adjust your expectations accordingly!
 ## Chain 3: 
 ## Chain 3: 
@@ -427,15 +429,15 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ## Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 ## Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)
 ## Chain 3: 
-## Chain 3:  Elapsed Time: 0.990938 seconds (Warm-up)
-## Chain 3:                0.924206 seconds (Sampling)
-## Chain 3:                1.91514 seconds (Total)
+## Chain 3:  Elapsed Time: 0.610774 seconds (Warm-up)
+## Chain 3:                0.400948 seconds (Sampling)
+## Chain 3:                1.01172 seconds (Total)
 ## Chain 3: 
 ## 
-## SAMPLING FOR MODEL &#39;c8a3effe26c1f8c03b4106663bb7911c&#39; NOW (CHAIN 4).
+## SAMPLING FOR MODEL &#39;6b7dcf02f647cde107e41a9508afb413&#39; NOW (CHAIN 4).
 ## Chain 4: 
-## Chain 4: Gradient evaluation took 8.6e-05 seconds
-## Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.86 seconds.
+## Chain 4: Gradient evaluation took 5e-05 seconds
+## Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.5 seconds.
 ## Chain 4: Adjust your expectations accordingly!
 ## Chain 4: 
 ## Chain 4: 
@@ -452,18 +454,18 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ## Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 ## Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)
 ## Chain 4: 
-## Chain 4:  Elapsed Time: 1.18948 seconds (Warm-up)
-## Chain 4:                0.988232 seconds (Sampling)
-## Chain 4:                2.17771 seconds (Total)
+## Chain 4:  Elapsed Time: 0.611174 seconds (Warm-up)
+## Chain 4:                0.414826 seconds (Sampling)
+## Chain 4:                1.026 seconds (Total)
 ## Chain 4:</code></pre>
 <pre class="r"><code>f1modelsimple = brm(F1~Vowel, data = normtimeBP,prior = modelpriors1, family = gaussian(), iter = 2000, chains = 4, warmup = 1000, control = list(adapt_delta = 0.99))</code></pre>
 <pre><code>## Compiling the C++ model
 ## Start sampling</code></pre>
 <pre><code>## 
-## SAMPLING FOR MODEL &#39;8ba67ce49c2e85b624184d64894274f8&#39; NOW (CHAIN 1).
+## SAMPLING FOR MODEL &#39;9570cab489e07418ab9f77d031d37716&#39; NOW (CHAIN 1).
 ## Chain 1: 
-## Chain 1: Gradient evaluation took 0.000652 seconds
-## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 6.52 seconds.
+## Chain 1: Gradient evaluation took 2.5e-05 seconds
+## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.25 seconds.
 ## Chain 1: Adjust your expectations accordingly!
 ## Chain 1: 
 ## Chain 1: 
@@ -480,15 +482,15 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ## Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 ## Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
 ## Chain 1: 
-## Chain 1:  Elapsed Time: 6.91249 seconds (Warm-up)
-## Chain 1:                3.43759 seconds (Sampling)
-## Chain 1:                10.3501 seconds (Total)
+## Chain 1:  Elapsed Time: 0.47046 seconds (Warm-up)
+## Chain 1:                0.29452 seconds (Sampling)
+## Chain 1:                0.76498 seconds (Total)
 ## Chain 1: 
 ## 
-## SAMPLING FOR MODEL &#39;8ba67ce49c2e85b624184d64894274f8&#39; NOW (CHAIN 2).
+## SAMPLING FOR MODEL &#39;9570cab489e07418ab9f77d031d37716&#39; NOW (CHAIN 2).
 ## Chain 2: 
-## Chain 2: Gradient evaluation took 0.000247 seconds
-## Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 2.47 seconds.
+## Chain 2: Gradient evaluation took 1.9e-05 seconds
+## Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 0.19 seconds.
 ## Chain 2: Adjust your expectations accordingly!
 ## Chain 2: 
 ## Chain 2: 
@@ -505,15 +507,15 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ## Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 ## Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
 ## Chain 2: 
-## Chain 2:  Elapsed Time: 5.64248 seconds (Warm-up)
-## Chain 2:                3.52134 seconds (Sampling)
-## Chain 2:                9.16382 seconds (Total)
+## Chain 2:  Elapsed Time: 0.541447 seconds (Warm-up)
+## Chain 2:                0.244115 seconds (Sampling)
+## Chain 2:                0.785562 seconds (Total)
 ## Chain 2: 
 ## 
-## SAMPLING FOR MODEL &#39;8ba67ce49c2e85b624184d64894274f8&#39; NOW (CHAIN 3).
+## SAMPLING FOR MODEL &#39;9570cab489e07418ab9f77d031d37716&#39; NOW (CHAIN 3).
 ## Chain 3: 
-## Chain 3: Gradient evaluation took 0.000249 seconds
-## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 2.49 seconds.
+## Chain 3: Gradient evaluation took 1.9e-05 seconds
+## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 0.19 seconds.
 ## Chain 3: Adjust your expectations accordingly!
 ## Chain 3: 
 ## Chain 3: 
@@ -530,15 +532,15 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ## Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 ## Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)
 ## Chain 3: 
-## Chain 3:  Elapsed Time: 5.24729 seconds (Warm-up)
-## Chain 3:                5.3444 seconds (Sampling)
-## Chain 3:                10.5917 seconds (Total)
+## Chain 3:  Elapsed Time: 0.387194 seconds (Warm-up)
+## Chain 3:                0.243468 seconds (Sampling)
+## Chain 3:                0.630662 seconds (Total)
 ## Chain 3: 
 ## 
-## SAMPLING FOR MODEL &#39;8ba67ce49c2e85b624184d64894274f8&#39; NOW (CHAIN 4).
+## SAMPLING FOR MODEL &#39;9570cab489e07418ab9f77d031d37716&#39; NOW (CHAIN 4).
 ## Chain 4: 
-## Chain 4: Gradient evaluation took 0.000377 seconds
-## Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 3.77 seconds.
+## Chain 4: Gradient evaluation took 2e-05 seconds
+## Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 0.2 seconds.
 ## Chain 4: Adjust your expectations accordingly!
 ## Chain 4: 
 ## Chain 4: 
@@ -555,18 +557,18 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ## Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 ## Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)
 ## Chain 4: 
-## Chain 4:  Elapsed Time: 10.2969 seconds (Warm-up)
-## Chain 4:                3.58144 seconds (Sampling)
-## Chain 4:                13.8783 seconds (Total)
+## Chain 4:  Elapsed Time: 0.538498 seconds (Warm-up)
+## Chain 4:                0.287831 seconds (Sampling)
+## Chain 4:                0.826329 seconds (Total)
 ## Chain 4:</code></pre>
 <pre class="r"><code>f1modelcomplex = brm(F1~Nasality* Vowel + (1|Speaker), data = normtimeBP, family = gaussian(), prior = modelpriors2,  iter = 2000, chains = 4, warmup = 1000, control = list(adapt_delta = 0.99))</code></pre>
 <pre><code>## Compiling the C++ model
 ## Start sampling</code></pre>
 <pre><code>## 
-## SAMPLING FOR MODEL &#39;73c58d6421053be67ad995dda9b1201c&#39; NOW (CHAIN 1).
+## SAMPLING FOR MODEL &#39;f17b1ba92cdbff8d0ba076d193397cb7&#39; NOW (CHAIN 1).
 ## Chain 1: 
-## Chain 1: Gradient evaluation took 0.00112 seconds
-## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 11.2 seconds.
+## Chain 1: Gradient evaluation took 0.000596 seconds
+## Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 5.96 seconds.
 ## Chain 1: Adjust your expectations accordingly!
 ## Chain 1: 
 ## Chain 1: 
@@ -583,15 +585,15 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ## Chain 1: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 ## Chain 1: Iteration: 2000 / 2000 [100%]  (Sampling)
 ## Chain 1: 
-## Chain 1:  Elapsed Time: 435.784 seconds (Warm-up)
-## Chain 1:                487.133 seconds (Sampling)
-## Chain 1:                922.917 seconds (Total)
+## Chain 1:  Elapsed Time: 209.311 seconds (Warm-up)
+## Chain 1:                257.796 seconds (Sampling)
+## Chain 1:                467.107 seconds (Total)
 ## Chain 1: 
 ## 
-## SAMPLING FOR MODEL &#39;73c58d6421053be67ad995dda9b1201c&#39; NOW (CHAIN 2).
+## SAMPLING FOR MODEL &#39;f17b1ba92cdbff8d0ba076d193397cb7&#39; NOW (CHAIN 2).
 ## Chain 2: 
-## Chain 2: Gradient evaluation took 0.000452 seconds
-## Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 4.52 seconds.
+## Chain 2: Gradient evaluation took 0.000246 seconds
+## Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 2.46 seconds.
 ## Chain 2: Adjust your expectations accordingly!
 ## Chain 2: 
 ## Chain 2: 
@@ -608,15 +610,15 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ## Chain 2: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 ## Chain 2: Iteration: 2000 / 2000 [100%]  (Sampling)
 ## Chain 2: 
-## Chain 2:  Elapsed Time: 386.674 seconds (Warm-up)
-## Chain 2:                439.425 seconds (Sampling)
-## Chain 2:                826.099 seconds (Total)
+## Chain 2:  Elapsed Time: 218.323 seconds (Warm-up)
+## Chain 2:                245.731 seconds (Sampling)
+## Chain 2:                464.054 seconds (Total)
 ## Chain 2: 
 ## 
-## SAMPLING FOR MODEL &#39;73c58d6421053be67ad995dda9b1201c&#39; NOW (CHAIN 3).
+## SAMPLING FOR MODEL &#39;f17b1ba92cdbff8d0ba076d193397cb7&#39; NOW (CHAIN 3).
 ## Chain 3: 
-## Chain 3: Gradient evaluation took 0.00048 seconds
-## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 4.8 seconds.
+## Chain 3: Gradient evaluation took 0.000247 seconds
+## Chain 3: 1000 transitions using 10 leapfrog steps per transition would take 2.47 seconds.
 ## Chain 3: Adjust your expectations accordingly!
 ## Chain 3: 
 ## Chain 3: 
@@ -633,15 +635,15 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ## Chain 3: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 ## Chain 3: Iteration: 2000 / 2000 [100%]  (Sampling)
 ## Chain 3: 
-## Chain 3:  Elapsed Time: 404.392 seconds (Warm-up)
-## Chain 3:                442.949 seconds (Sampling)
-## Chain 3:                847.341 seconds (Total)
+## Chain 3:  Elapsed Time: 217.101 seconds (Warm-up)
+## Chain 3:                250.19 seconds (Sampling)
+## Chain 3:                467.291 seconds (Total)
 ## Chain 3: 
 ## 
-## SAMPLING FOR MODEL &#39;73c58d6421053be67ad995dda9b1201c&#39; NOW (CHAIN 4).
+## SAMPLING FOR MODEL &#39;f17b1ba92cdbff8d0ba076d193397cb7&#39; NOW (CHAIN 4).
 ## Chain 4: 
-## Chain 4: Gradient evaluation took 0.000464 seconds
-## Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 4.64 seconds.
+## Chain 4: Gradient evaluation took 0.000265 seconds
+## Chain 4: 1000 transitions using 10 leapfrog steps per transition would take 2.65 seconds.
 ## Chain 4: Adjust your expectations accordingly!
 ## Chain 4: 
 ## Chain 4: 
@@ -658,13 +660,22 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ## Chain 4: Iteration: 1800 / 2000 [ 90%]  (Sampling)
 ## Chain 4: Iteration: 2000 / 2000 [100%]  (Sampling)
 ## Chain 4: 
-## Chain 4:  Elapsed Time: 363.79 seconds (Warm-up)
-## Chain 4:                449.564 seconds (Sampling)
-## Chain 4:                813.354 seconds (Total)
+## Chain 4:  Elapsed Time: 213.968 seconds (Warm-up)
+## Chain 4:                242.756 seconds (Sampling)
+## Chain 4:                456.724 seconds (Total)
 ## Chain 4:</code></pre>
-<pre><code>## Warning: There were 3665 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See
+<pre><code>## Warning: There were 3676 transitions after warmup that exceeded the maximum treedepth. Increase max_treedepth above 10. See
 ## http://mc-stan.org/misc/warnings.html#maximum-treedepth-exceeded</code></pre>
 <pre><code>## Warning: Examine the pairs() plot to diagnose sampling problems</code></pre>
+<pre><code>## Warning: The largest R-hat is 1.07, indicating chains have not mixed.
+## Running the chains for more iterations may help. See
+## http://mc-stan.org/misc/warnings.html#r-hat</code></pre>
+<pre><code>## Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+## Running the chains for more iterations may help. See
+## http://mc-stan.org/misc/warnings.html#bulk-ess</code></pre>
+<pre><code>## Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
+## Running the chains for more iterations may help. See
+## http://mc-stan.org/misc/warnings.html#tail-ess</code></pre>
 </div>
 <div id="step-4-check-model-convergence" class="section level2">
 <h2>Step 4: Check model convergence</h2>
@@ -679,15 +690,15 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ##          total post-warmup samples = 4000
 ## 
 ## Population-Level Effects: 
-##           Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
-## Intercept   399.89      1.89   396.22   403.58       2330 1.00
+##           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept   399.88      1.92   396.10   403.78 1.00     2087     2010
 ## 
 ## Family Specific Parameters: 
-##       Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
-## sigma   128.39      1.34   125.81   131.00       2311 1.00
+##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sigma   128.33      1.32   125.80   130.86 1.00     2498     2090
 ## 
-## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
-## is a crude measure of effective sample size, and Rhat is the potential 
+## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
+## and Tail_ESS are effective sample size measures, and Rhat is the potential
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <pre class="r"><code>mcmc_rhat(rhat(f1modelnull))+ yaxis_text(hjust = 1)</code></pre>
 <p><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-15-1.png" width="576" /></p>
@@ -700,21 +711,24 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ##          total post-warmup samples = 4000
 ## 
 ## Population-Level Effects: 
-##           Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
-## Intercept   524.60      2.49   519.63   529.44       2535 1.00
-## Voweli     -186.30      3.45  -193.13  -179.44       2664 1.00
-## Vowelu     -181.05      3.51  -187.87  -174.15       2579 1.00
+##           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept   524.52      2.45   519.67   529.34 1.00     2569     2374
+## Voweli     -186.22      3.40  -192.86  -179.46 1.00     2659     2477
+## Vowelu     -180.87      3.41  -187.53  -174.08 1.00     2782     2688
 ## 
 ## Family Specific Parameters: 
-##       Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
-## sigma    95.14      0.96    93.32    97.04       3406 1.00
+##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sigma    95.16      0.95    93.33    97.09 1.00     3848     2491
 ## 
-## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
-## is a crude measure of effective sample size, and Rhat is the potential 
+## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
+## and Tail_ESS are effective sample size measures, and Rhat is the potential
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <pre class="r"><code>mcmc_rhat(rhat(f1modelsimple))+ yaxis_text(hjust = 1)</code></pre>
 <p><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-15-2.png" width="576" /></p>
 <pre class="r"><code>summary(f1modelcomplex)</code></pre>
+<pre><code>## Warning: Parts of the model have not converged (some Rhats are &gt; 1.05). Be
+## careful when analysing the results! We recommend running more iterations and/or
+## setting stronger priors.</code></pre>
 <pre><code>##  Family: gaussian 
 ##   Links: mu = identity; sigma = identity 
 ## Formula: F1 ~ Nasality * Vowel + (1 | Speaker) 
@@ -724,37 +738,37 @@ modelpriors2 = c(set_prior(&quot;normal(2500,150)&quot;, class = &quot;Intercept
 ## 
 ## Group-Level Effects: 
 ## ~Speaker (Number of levels: 12) 
-##               Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
-## sd(Intercept)  1098.98    137.65   857.20  1384.07         37 1.07
+##               Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sd(Intercept)  1083.28    116.68   864.27  1321.35 1.07       63      317
 ## 
 ## Population-Level Effects: 
-##                          Estimate Est.Error l-95% CI u-95% CI Eff.Sample
-## Intercept                 2133.66    153.87  1833.24  2422.32        147
-## Nasalitynasalized           50.87      3.96    43.03    58.48        196
-## Nasalityoral               211.98      4.25   203.84   220.19        200
-## Voweli                    -104.05      4.03  -112.09   -96.44        194
-## Vowelu                    -110.94      4.12  -119.38  -103.18        201
-## Nasalitynasalized:Voweli   -63.40      5.55   -74.07   -52.59        206
-## Nasalityoral:Voweli       -222.34      5.75  -233.22  -210.66        203
-## Nasalitynasalized:Vowelu   -40.40      5.80   -51.54   -28.25        201
-## Nasalityoral:Vowelu       -208.14      5.97  -219.56  -196.58        219
-##                          Rhat
-## Intercept                1.02
-## Nasalitynasalized        1.01
-## Nasalityoral             1.01
-## Voweli                   1.02
-## Vowelu                   1.01
-## Nasalitynasalized:Voweli 1.02
-## Nasalityoral:Voweli      1.02
-## Nasalitynasalized:Vowelu 1.01
-## Nasalityoral:Vowelu      1.01
+##                          Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+## Intercept                 2153.41    148.12  1868.13  2455.41 1.00      283
+## Nasalitynasalized           50.93      3.97    43.35    58.86 1.02      177
+## Nasalityoral               211.88      4.10   203.79   219.59 1.03      182
+## Voweli                    -104.26      3.94  -112.01   -96.73 1.02      161
+## Vowelu                    -111.28      3.84  -119.32  -104.07 1.04      156
+## Nasalitynasalized:Voweli   -63.49      5.67   -75.31   -52.84 1.02      188
+## Nasalityoral:Voweli       -222.06      5.80  -233.20  -210.06 1.03      165
+## Nasalitynasalized:Vowelu   -40.25      5.66   -51.03   -29.08 1.03      167
+## Nasalityoral:Vowelu       -207.81      5.71  -218.16  -196.21 1.05      130
+##                          Tail_ESS
+## Intercept                     782
+## Nasalitynasalized             502
+## Nasalityoral                  541
+## Voweli                        294
+## Vowelu                        262
+## Nasalitynasalized:Voweli      624
+## Nasalityoral:Voweli           519
+## Nasalitynasalized:Vowelu      325
+## Nasalityoral:Vowelu           324
 ## 
 ## Family Specific Parameters: 
-##       Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
-## sigma    65.12      0.68    63.86    66.50        484 1.01
+##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sigma    65.10      0.70    63.76    66.57 1.01      504      949
 ## 
-## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
-## is a crude measure of effective sample size, and Rhat is the potential 
+## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
+## and Tail_ESS are effective sample size measures, and Rhat is the potential
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <pre class="r"><code>mcmc_rhat(rhat(f1modelcomplex))+ yaxis_text(hjust = 1)</code></pre>
 <p><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-15-3.png" width="576" />
@@ -769,21 +783,24 @@ In addition, we can look at the chains - when they are plotted, they should over
 <pre><code>## Warning in custom.sort(D$Parameter): NAs introduced by coercion
 
 ## Warning in custom.sort(D$Parameter): NAs introduced by coercion</code></pre>
-<pre><code>## Scale for &#39;colour&#39; is already present. Adding another scale for
-## &#39;colour&#39;, which will replace the existing scale.</code></pre>
+<pre><code>## Warning: `tbl_df()` is deprecated as of dplyr 1.0.0.
+## Please use `tibble::as_tibble()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
+<pre><code>## Scale for &#39;colour&#39; is already present. Adding another scale for &#39;colour&#39;,
+## which will replace the existing scale.</code></pre>
 <p><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-16-6.png" width="576" /></p>
 <pre class="r"><code>#here I am only lookng for the fixed effects parameters, or beta parameters. Otherwise we would end up with plots for every participant&#39;s intercept.
 
 ggsf1modelcomplex = ggs(f1modelcomplex) %&gt;% dplyr::filter(str_detect(Parameter, &quot;^b&quot;))</code></pre>
-<pre><code>## Warning in custom.sort(D$Parameter): NAs introduced by coercion
-
-## Warning in custom.sort(D$Parameter): NAs introduced by coercion</code></pre>
+<pre><code>## Warning in custom.sort(D$Parameter): NAs introduced by coercion</code></pre>
+<pre><code>## Warning in custom.sort(D$Parameter): NAs introduced by coercion</code></pre>
 <pre class="r"><code>ggs_traceplot(ggsf1modelcomplex, original_burnin = FALSE)+ scale_color_manual(values = cbPalette)  + xlim(c(1000,2000)) + ggtitle(&quot;Model 4&quot;)</code></pre>
-<pre><code>## Scale for &#39;colour&#39; is already present. Adding another scale for
-## &#39;colour&#39;, which will replace the existing scale.</code></pre>
-<pre><code>## Scale for &#39;x&#39; is already present. Adding another scale for &#39;x&#39;, which
-## will replace the existing scale.</code></pre>
-<pre><code>## Warning: Removed 3996 rows containing missing values (geom_path).</code></pre>
+<pre><code>## Scale for &#39;colour&#39; is already present. Adding another scale for &#39;colour&#39;,
+## which will replace the existing scale.</code></pre>
+<pre><code>## Scale for &#39;x&#39; is already present. Adding another scale for &#39;x&#39;, which will
+## replace the existing scale.</code></pre>
+<pre><code>## Warning: Removed 3996 row(s) containing missing values (geom_path).</code></pre>
 <p><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-16-7.png" width="576" /></p>
 </div>
 <div id="step-5-carry-out-inference" class="section level2">
@@ -803,9 +820,9 @@ ggsf1modelcomplex = ggs(f1modelcomplex) %&gt;% dplyr::filter(str_detect(Paramete
 ## Computed from 4000 by 4655 log-likelihood matrix
 ## 
 ##          Estimate    SE
-## elpd_loo -29206.4  59.2
+## elpd_loo -29206.4  59.3
 ## p_loo         2.5   0.1
-## looic     58412.9 118.5
+## looic     58412.9 118.6
 ## ------
 ## Monte Carlo SE of elpd_loo is 0.0.
 ## 
@@ -813,16 +830,14 @@ ggsf1modelcomplex = ggs(f1modelcomplex) %&gt;% dplyr::filter(str_detect(Paramete
 ## See help(&#39;pareto-k-diagnostic&#39;) for details.</code></pre>
 <p>In order to compare multiple models, you used to be able to include multiple into the model and say compare = TRUE, but this seems to be deprecated and doesn’t show you <span class="math inline">\(\Delta\)</span>LOOIC values.</p>
 <pre class="r"><code>brms::loo(f1modelnull, f1modelsimple, f1modelcomplex, compare = T)</code></pre>
-<pre><code>## Warning: Passing multiple brmsfit objects to &#39;loo&#39; and related methods is
-## deprecated. Please see ?loo.brmsfit for the recommended workflow.</code></pre>
 <pre><code>## Output of model &#39;f1modelnull&#39;:
 ## 
 ## Computed from 4000 by 4655 log-likelihood matrix
 ## 
 ##          Estimate    SE
-## elpd_loo -29206.4  59.2
+## elpd_loo -29206.4  59.3
 ## p_loo         2.5   0.1
-## looic     58412.9 118.5
+## looic     58412.9 118.6
 ## ------
 ## Monte Carlo SE of elpd_loo is 0.0.
 ## 
@@ -834,9 +849,9 @@ ggsf1modelcomplex = ggs(f1modelcomplex) %&gt;% dplyr::filter(str_detect(Paramete
 ## Computed from 4000 by 4655 log-likelihood matrix
 ## 
 ##          Estimate    SE
-## elpd_loo -27812.4  55.2
-## p_loo         4.4   0.1
-## looic     55624.7 110.4
+## elpd_loo -27812.2  55.2
+## p_loo         4.2   0.1
+## looic     55624.4 110.4
 ## ------
 ## Monte Carlo SE of elpd_loo is 0.0.
 ## 
@@ -848,11 +863,11 @@ ggsf1modelcomplex = ggs(f1modelcomplex) %&gt;% dplyr::filter(str_detect(Paramete
 ## Computed from 4000 by 4655 log-likelihood matrix
 ## 
 ##          Estimate    SE
-## elpd_loo -26055.1  75.2
-## p_loo        23.1   1.0
-## looic     52110.1 150.3
+## elpd_loo -26055.5  75.2
+## p_loo        23.7   1.0
+## looic     52111.0 150.5
 ## ------
-## Monte Carlo SE of elpd_loo is 0.1.
+## Monte Carlo SE of elpd_loo is 0.2.
 ## 
 ## All Pareto k estimates are good (k &lt; 0.5).
 ## See help(&#39;pareto-k-diagnostic&#39;) for details.
@@ -860,8 +875,8 @@ ggsf1modelcomplex = ggs(f1modelcomplex) %&gt;% dplyr::filter(str_detect(Paramete
 ## Model comparisons:
 ##                elpd_diff se_diff
 ## f1modelcomplex     0.0       0.0
-## f1modelsimple  -1757.3      64.1
-## f1modelnull    -3151.4      80.2</code></pre>
+## f1modelsimple  -1756.7      64.2
+## f1modelnull    -3151.0      80.3</code></pre>
 <p>Another method we can use is to we can add the loo comparison criteria to each model (it doesn’t change the model itself!) and use <em>loo_compare()</em>. Unfortunately, this doesn’t seem to give <span class="math inline">\(\Delta\)</span>LOOIC values either - but it does give ELPD-loo (expected log pointwise predictive density) differences. In this case, the model at the top “wins”, as when elpd_diff is positive then the expected predictive accuracy for the second model is higher. A negative elpd_diff favors the first model.</p>
 <pre class="r"><code>f1modelnull = add_criterion(f1modelnull, &quot;loo&quot;)
 f1modelsimple = add_criterion(f1modelsimple, &quot;loo&quot;)
@@ -870,26 +885,41 @@ f1modelcomplex = add_criterion(f1modelcomplex, &quot;loo&quot;)
 loo_compare(f1modelnull, f1modelsimple, f1modelcomplex, criterion = &quot;loo&quot;)</code></pre>
 <pre><code>##                elpd_diff se_diff
 ## f1modelcomplex     0.0       0.0
-## f1modelsimple  -1757.3      64.1
-## f1modelnull    -3151.4      80.2</code></pre>
+## f1modelsimple  -1756.7      64.2
+## f1modelnull    -3151.0      80.3</code></pre>
 <p>Other methods include Watanabe-Akaike information criterion (WAIC), kfold, marginal likelihood and R<sup>2</sup>. WE can add these validation criteria to the models simultaneously. Once again,a negative elpd_diff favors the first model.</p>
 <p>Note we cannot use loo_compare to compare R<sup>2</sup> values - we need to extract those manually. Note that while this is technically possible to do, Bayesian analyses often do not include R<sup>2</sup> in their writeups (see <a href="https://www.r-bloggers.com/how-do-i-calculate-the-r-squared-metric-for-a-bayesian-model/">this</a> conversation.)</p>
-<pre class="r"><code>f1modelnull = add_criterion(f1modelnull, c(&quot;R2&quot;, &quot;waic&quot;))
-f1modelsimple = add_criterion(f1modelsimple, c(&quot;R2&quot;, &quot;waic&quot;))
-f1modelcomplex = add_criterion(f1modelcomplex, c(&quot;R2&quot;, &quot;waic&quot;))
-
-
-loo_compare(f1modelnull, f1modelsimple, f1modelcomplex,  criterion = &quot;waic&quot;)</code></pre>
+<pre class="r"><code>f1modelnull = add_criterion(f1modelnull, c(&quot;R2&quot;, &quot;waic&quot;))</code></pre>
+<pre><code>## Warning: Criterion &#39;R2&#39; is deprecated. Please use &#39;bayes_R2&#39; instead.</code></pre>
+<pre class="r"><code>f1modelsimple = add_criterion(f1modelsimple, c(&quot;R2&quot;, &quot;waic&quot;))</code></pre>
+<pre><code>## Warning: Criterion &#39;R2&#39; is deprecated. Please use &#39;bayes_R2&#39; instead.</code></pre>
+<pre class="r"><code>f1modelcomplex = add_criterion(f1modelcomplex, c(&quot;R2&quot;, &quot;waic&quot;))</code></pre>
+<pre><code>## Warning: Criterion &#39;R2&#39; is deprecated. Please use &#39;bayes_R2&#39; instead.</code></pre>
+<pre class="r"><code>loo_compare(f1modelnull, f1modelsimple, f1modelcomplex,  criterion = &quot;waic&quot;)</code></pre>
 <pre><code>##                elpd_diff se_diff
 ## f1modelcomplex     0.0       0.0
-## f1modelsimple  -1757.3      64.1
-## f1modelnull    -3151.4      80.2</code></pre>
+## f1modelsimple  -1756.7      64.2
+## f1modelnull    -3151.0      80.3</code></pre>
 <pre class="r"><code>loo_compare(f1modelnull, f1modelsimple, f1modelcomplex,  criterion = &quot;R2&quot;)</code></pre>
 <pre><code>## Error in match.arg(criterion): &#39;arg&#39; should be one of &quot;loo&quot;, &quot;waic&quot;, &quot;kfold&quot;</code></pre>
 <pre class="r"><code>sapply(list(f1modelnull, f1modelsimple, f1modelcomplex), function(x) median(x$R2))</code></pre>
-<pre><code>## [1] 4.051523e-26 4.487503e-01 7.425240e-01</code></pre>
+<pre><code>## [[1]]
+## NULL
+## 
+## [[2]]
+## NULL
+## 
+## [[3]]
+## NULL</code></pre>
 <pre class="r"><code>sapply(list(f1modelnull, f1modelsimple, f1modelcomplex), function(x) round(median(x$R2)*100, 2))</code></pre>
-<pre><code>## [1]  0.00 44.88 74.25</code></pre>
+<pre><code>## [[1]]
+## numeric(0)
+## 
+## [[2]]
+## numeric(0)
+## 
+## [[3]]
+## numeric(0)</code></pre>
 <p>In all of these cases, our most complex model, f1modelcomplex, is favored.</p>
 </div>
 <div id="summarize-and-display-posterior-distributions" class="section level3">
@@ -898,6 +928,9 @@ loo_compare(f1modelnull, f1modelsimple, f1modelcomplex,  criterion = &quot;waic&
 <p>There are a few different ways of interpreting a model. The first, and most common, is to both plot and report the posterior distributions. When I say plot, I mean we literally plot the distribution, usually with a histogram. When I say report the posterior distributions, I mean plot the estimate of each parameter (aka the mode of the density plot), along with the 95% credible interval (abbreviated as CrI, rather than CI).</p>
 <p>First, to get the posterior distributions, we use <em>summary()</em> from base R and <em>posterior_summary()</em> from <em>brms</em>.</p>
 <pre class="r"><code>summary(f1modelcomplex)</code></pre>
+<pre><code>## Warning: Parts of the model have not converged (some Rhats are &gt; 1.05). Be
+## careful when analysing the results! We recommend running more iterations and/or
+## setting stronger priors.</code></pre>
 <pre><code>##  Family: gaussian 
 ##   Links: mu = identity; sigma = identity 
 ## Formula: F1 ~ Nasality * Vowel + (1 | Speaker) 
@@ -907,98 +940,77 @@ loo_compare(f1modelnull, f1modelsimple, f1modelcomplex,  criterion = &quot;waic&
 ## 
 ## Group-Level Effects: 
 ## ~Speaker (Number of levels: 12) 
-##               Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
-## sd(Intercept)  1098.98    137.65   857.20  1384.07         37 1.07
+##               Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sd(Intercept)  1083.28    116.68   864.27  1321.35 1.07       63      317
 ## 
 ## Population-Level Effects: 
-##                          Estimate Est.Error l-95% CI u-95% CI Eff.Sample
-## Intercept                 2133.66    153.87  1833.24  2422.32        147
-## Nasalitynasalized           50.87      3.96    43.03    58.48        196
-## Nasalityoral               211.98      4.25   203.84   220.19        200
-## Voweli                    -104.05      4.03  -112.09   -96.44        194
-## Vowelu                    -110.94      4.12  -119.38  -103.18        201
-## Nasalitynasalized:Voweli   -63.40      5.55   -74.07   -52.59        206
-## Nasalityoral:Voweli       -222.34      5.75  -233.22  -210.66        203
-## Nasalitynasalized:Vowelu   -40.40      5.80   -51.54   -28.25        201
-## Nasalityoral:Vowelu       -208.14      5.97  -219.56  -196.58        219
-##                          Rhat
-## Intercept                1.02
-## Nasalitynasalized        1.01
-## Nasalityoral             1.01
-## Voweli                   1.02
-## Vowelu                   1.01
-## Nasalitynasalized:Voweli 1.02
-## Nasalityoral:Voweli      1.02
-## Nasalitynasalized:Vowelu 1.01
-## Nasalityoral:Vowelu      1.01
+##                          Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+## Intercept                 2153.41    148.12  1868.13  2455.41 1.00      283
+## Nasalitynasalized           50.93      3.97    43.35    58.86 1.02      177
+## Nasalityoral               211.88      4.10   203.79   219.59 1.03      182
+## Voweli                    -104.26      3.94  -112.01   -96.73 1.02      161
+## Vowelu                    -111.28      3.84  -119.32  -104.07 1.04      156
+## Nasalitynasalized:Voweli   -63.49      5.67   -75.31   -52.84 1.02      188
+## Nasalityoral:Voweli       -222.06      5.80  -233.20  -210.06 1.03      165
+## Nasalitynasalized:Vowelu   -40.25      5.66   -51.03   -29.08 1.03      167
+## Nasalityoral:Vowelu       -207.81      5.71  -218.16  -196.21 1.05      130
+##                          Tail_ESS
+## Intercept                     782
+## Nasalitynasalized             502
+## Nasalityoral                  541
+## Voweli                        294
+## Vowelu                        262
+## Nasalitynasalized:Voweli      624
+## Nasalityoral:Voweli           519
+## Nasalitynasalized:Vowelu      325
+## Nasalityoral:Vowelu           324
 ## 
 ## Family Specific Parameters: 
-##       Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
-## sigma    65.12      0.68    63.86    66.50        484 1.01
+##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sigma    65.10      0.70    63.76    66.57 1.01      504      949
 ## 
-## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
-## is a crude measure of effective sample size, and Rhat is the potential 
+## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
+## and Tail_ESS are effective sample size measures, and Rhat is the potential
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
 <p>Note that here, we get similar results to a lme4 model in terms of estimate, except we also get the 95% CrI. These are known as the <span class="math inline">\(\beta\)</span> (or b_) coefficients, as they are changes in the fixed effects. For the mixed effects model, we are given the standard deviation for any group-level effects, meaning the varying intercept for subject. If we had included a random slope as well, we would get that sd also.</p>
 <pre class="r"><code>posterior_summary(f1modelcomplex)</code></pre>
-<pre><code>##                                Estimate   Est.Error         Q2.5
-## b_Intercept                  2133.65571 153.8734045   1833.23825
-## b_Nasalitynasalized            50.86970   3.9596440     43.02728
-## b_Nasalityoral                211.98114   4.2482219    203.84243
-## b_Voweli                     -104.05394   4.0286959   -112.08792
-## b_Vowelu                     -110.93761   4.1209932   -119.38327
-## b_Nasalitynasalized:Voweli    -63.39982   5.5466475    -74.06662
-## b_Nasalityoral:Voweli        -222.34166   5.7464513   -233.22153
-## b_Nasalitynasalized:Vowelu    -40.40425   5.8013950    -51.54099
-## b_Nasalityoral:Vowelu        -208.13651   5.9681798   -219.56019
-## sd_Speaker__Intercept        1098.98031 137.6496154    857.19865
-## sigma                          65.12471   0.6792422     63.86344
-## r_Speaker[BP02,Intercept]   -1695.44657 153.6869911  -1983.35884
-## r_Speaker[BP04,Intercept]   -1715.53968 153.6542963  -2001.91409
-## r_Speaker[BP05,Intercept]   -1741.64587 153.6481789  -2029.15250
-## r_Speaker[BP06,Intercept]   -1740.11198 153.7098773  -2027.84941
-## r_Speaker[BP07,Intercept]   -1660.92739 153.6144952  -1948.16650
-## r_Speaker[BP10,Intercept]   -1711.35343 153.6266748  -1998.12569
-## r_Speaker[BP14,Intercept]   -1737.32896 153.6766550  -2025.29745
-## r_Speaker[BP17,Intercept]   -1663.79088 153.6293897  -1950.61335
-## r_Speaker[BP18,Intercept]   -1672.01609 153.5695496  -1958.39252
-## r_Speaker[BP19,Intercept]   -1657.06151 153.6434487  -1946.19639
-## r_Speaker[BP20,Intercept]   -1595.19774 153.6819163  -1884.31372
-## r_Speaker[BP21,Intercept]   -1577.03324 153.6860618  -1863.79645
-## lp__                       -26146.35861   3.7695283 -26155.03279
-##                                   Q97.5
-## b_Intercept                  2422.32457
-## b_Nasalitynasalized            58.47724
-## b_Nasalityoral                220.18786
-## b_Voweli                      -96.43828
-## b_Vowelu                     -103.17576
-## b_Nasalitynasalized:Voweli    -52.58637
-## b_Nasalityoral:Voweli        -210.66400
-## b_Nasalitynasalized:Vowelu    -28.25208
-## b_Nasalityoral:Vowelu        -196.57558
-## sd_Speaker__Intercept        1384.07096
-## sigma                          66.49996
-## r_Speaker[BP02,Intercept]   -1395.55831
-## r_Speaker[BP04,Intercept]   -1416.26928
-## r_Speaker[BP05,Intercept]   -1441.67154
-## r_Speaker[BP06,Intercept]   -1441.96805
-## r_Speaker[BP07,Intercept]   -1361.75794
-## r_Speaker[BP10,Intercept]   -1411.62660
-## r_Speaker[BP14,Intercept]   -1437.01062
-## r_Speaker[BP17,Intercept]   -1363.86056
-## r_Speaker[BP18,Intercept]   -1373.48242
-## r_Speaker[BP19,Intercept]   -1357.22236
-## r_Speaker[BP20,Intercept]   -1294.20756
-## r_Speaker[BP21,Intercept]   -1279.33012
-## lp__                       -26140.04233</code></pre>
+<pre><code>##                                Estimate   Est.Error         Q2.5        Q97.5
+## b_Intercept                  2153.41155 148.1173024   1868.13001   2455.41256
+## b_Nasalitynasalized            50.93425   3.9732706     43.34835     58.86375
+## b_Nasalityoral                211.87510   4.1039767    203.79385    219.58893
+## b_Voweli                     -104.25611   3.9380220   -112.01409    -96.72973
+## b_Vowelu                     -111.28066   3.8403194   -119.32143   -104.07029
+## b_Nasalitynasalized:Voweli    -63.48802   5.6671545    -75.31267    -52.83967
+## b_Nasalityoral:Voweli        -222.05743   5.8003207   -233.19982   -210.05878
+## b_Nasalitynasalized:Vowelu    -40.24645   5.6643593    -51.02810    -29.07994
+## b_Nasalityoral:Vowelu        -207.81080   5.7108474   -218.16077   -196.21244
+## sd_Speaker__Intercept        1083.27593 116.6822902    864.27356   1321.34940
+## sigma                          65.10084   0.6995072     63.76068     66.56675
+## r_Speaker[BP02,Intercept]   -1715.14292 148.2232729  -2018.48105  -1433.66773
+## r_Speaker[BP04,Intercept]   -1735.15296 148.2746493  -2037.51348  -1452.22254
+## r_Speaker[BP05,Intercept]   -1761.29357 148.2487198  -2065.59114  -1478.45290
+## r_Speaker[BP06,Intercept]   -1759.76345 148.2101623  -2061.33097  -1476.00718
+## r_Speaker[BP07,Intercept]   -1680.50978 148.2429723  -1982.69333  -1396.38984
+## r_Speaker[BP10,Intercept]   -1731.13629 148.3097315  -2034.68753  -1447.11622
+## r_Speaker[BP14,Intercept]   -1756.92660 148.2915959  -2058.84001  -1471.61129
+## r_Speaker[BP17,Intercept]   -1683.46135 148.2971795  -1986.61921  -1397.61356
+## r_Speaker[BP18,Intercept]   -1691.68505 148.2250169  -1994.87118  -1409.10091
+## r_Speaker[BP19,Intercept]   -1676.72877 148.3404551  -1979.59427  -1393.14374
+## r_Speaker[BP20,Intercept]   -1614.73609 148.2620248  -1918.01236  -1330.16615
+## r_Speaker[BP21,Intercept]   -1596.79766 148.2473929  -1897.73069  -1311.63348
+## lp__                       -26146.34047   3.7118996 -26154.42795 -26140.02229</code></pre>
 <p>Here, we get the estimate, error, and 95% CrI for each of the beta coefficients, the sd of the random effect, the deviation for each level of the random effect, and sigma (which is the standard deviation of the residual error, and is automatically bounded to be a positive value by brms).</p>
 <p>To plot the results, we can use <em>stanplot()</em> from brms, and create a histogram or interval plot, or we can use the tidybayes function <em>add_fitted_draws()</em> to create interval plots. We can also use the brms function <em>marginal_effects()</em>.There are a number of other ways to do this, but these are (IMHO) the most straight forward.</p>
 <pre class="r"><code>stanplot(f1modelcomplex, pars = c(&quot;^b&quot;,&quot;sd&quot;,&quot;sigma&quot;), type=&quot;hist&quot;)</code></pre>
+<pre><code>## Warning: Method &#39;stanplot&#39; is deprecated. Please use &#39;mcmc_plot&#39; instead.</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-24-1.png" width="576" /></p>
 <pre class="r"><code>stanplot(f1modelcomplex, pars = c(&quot;^b&quot;,&quot;sd&quot;,&quot;sigma&quot;), type=&quot;intervals&quot;)</code></pre>
+<pre><code>## Warning: Method &#39;stanplot&#39; is deprecated. Please use &#39;mcmc_plot&#39; instead.</code></pre>
 <p><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-24-2.png" width="576" /></p>
 <pre class="r"><code>marginal_effects(f1modelcomplex)</code></pre>
+<pre><code>## Warning: Method &#39;marginal_effects&#39; is deprecated. Please use
+## &#39;conditional_effects&#39; instead.</code></pre>
 <p><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-24-3.png" width="576" /><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-24-4.png" width="576" /><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-24-5.png" width="576" /></p>
 <p>Note that there is a great interactive way to explore your models, using the <em>shinystan</em> package (though this cannot be run through HTML, so you will have to bear with me while I open it in my browser during class):</p>
 <pre class="r"><code>shinyml4 = launch_shinystan(f1modelcomplex)</code></pre>
@@ -1017,75 +1029,83 @@ colnames(f1modelcomplexfit) = mylevels$PL
 
 
 head(f1modelcomplexfit)</code></pre>
-<pre><code>##     anasal   inasal   unasal anasalized inasalized unasalized    aoral
-## 1 2227.396 2135.571 2121.136   2281.639   2116.342   2134.698 2437.793
-## 2 2214.900 2119.483 2109.565   2270.334   2101.871   2122.775 2428.929
-## 3 2167.847 2071.886 2059.866   2223.355   2051.488   2071.408 2383.708
-## 4 2167.376 2070.596 2058.594   2221.972   2049.187   2070.821 2382.284
-## 5 2073.983 1975.355 1965.080   2130.286   1957.591   1979.972 2287.661
-## 6 2126.669 2027.829 2017.393   2182.084   2006.822   2028.459 2343.829
-##      ioral    uoral
-## 1 2117.688 2123.325
-## 2 2099.638 2116.142
-## 3 2058.516 2066.807
-## 4 2056.338 2063.271
-## 5 1962.866 1970.216
-## 6 2012.817 2019.091</code></pre>
+<pre><code>##     anasal   inasal   unasal anasalized inasalized unasalized    aoral    ioral
+## 1 1970.769 1862.541 1864.281   2025.140   1856.671   1872.579 2188.868 1860.258
+## 2 2146.422 2043.369 2041.686   2195.662   2033.509   2048.600 2360.478 2039.744
+## 3 2214.192 2111.770 2110.704   2262.647   2101.415   2118.879 2427.431 2106.283
+## 4 2115.435 2007.839 2004.231   2169.349   1998.529   2011.101 2325.257 1994.175
+## 5 2072.223 1963.479 1963.754   2121.961   1956.402   1972.644 2282.970 1954.022
+## 6 1963.610 1856.974 1851.487   2012.519   1844.078   1861.560 2174.925 1852.669
+##      uoral
+## 1 1866.579
+## 2 2043.784
+## 3 2110.943
+## 4 2001.746
+## 5 1963.003
+## 6 1852.065</code></pre>
 <pre class="r"><code>f1modelcomplexfit = f1modelcomplexfit %&gt;% mutate(anasoraldiff = (anasal - aoral), inasaldiff = inasal - (ioral + inasalized)/2, uioraldiff = uoral - ioral)
 ggplot(f1modelcomplexfit, aes(x = anasoraldiff)) + geom_histogram()</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-26-1.png" width="576" /></p>
 <pre class="r"><code>quantile(f1modelcomplexfit$anasoraldiff, c(0.5, 0.025, 0.975))</code></pre>
 <pre><code>##       50%      2.5%     97.5% 
-## -211.9657 -220.1879 -203.8424</code></pre>
+## -211.9408 -219.5889 -203.7939</code></pre>
 <pre class="r"><code>ggplot(f1modelcomplexfit, aes(x = inasaldiff)) + geom_histogram()</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-26-2.png" width="576" /></p>
 <pre class="r"><code>quantile(f1modelcomplexfit$inasaldiff, c(0.5, 0.025, 0.975))</code></pre>
-<pre><code>##       50%      2.5%     97.5% 
-## 11.478094  4.589711 18.216585</code></pre>
+<pre><code>##      50%     2.5%    97.5% 
+## 11.42271  4.53596 17.96095</code></pre>
 <pre class="r"><code>ggplot(f1modelcomplexfit, aes(x = uioraldiff)) + geom_histogram()</code></pre>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
 <p><img src="/portfolio/Bayesian_files/figure-html/unnamed-chunk-26-3.png" width="576" /></p>
 <pre class="r"><code>quantile(f1modelcomplexfit$uioraldiff, c(0.5, 0.025, 0.975))</code></pre>
-<pre><code>##       50%      2.5%     97.5% 
-##  7.395677 -0.698861 14.959760</code></pre>
+<pre><code>##        50%       2.5%      97.5% 
+##  7.2411039 -0.4768654 15.0091204</code></pre>
 <p>We can ask some research questions using the hypothesis function:</p>
 <pre class="r"><code>hypothesis(f1modelcomplex, &quot;Intercept - Voweli = 0&quot;)</code></pre>
 <pre><code>## Hypothesis Tests for class b:
 ##               Hypothesis Estimate Est.Error CI.Lower CI.Upper Evid.Ratio
-## 1 (Intercept-Voweli) = 0  2237.71    154.31  1934.33  2526.89         NA
+## 1 (Intercept-Voweli) = 0  2257.67    148.17  1975.21  2559.32         NA
 ##   Post.Prob Star
 ## 1        NA    *
 ## ---
-## &#39;*&#39;: The expected value under the hypothesis lies outside the 95%-CI.
+## &#39;CI&#39;: 90%-CI for one-sided and 95%-CI for two-sided hypotheses.
+## &#39;*&#39;: For one-sided hypotheses, the posterior probability exceeds 95%;
+## for two-sided hypotheses, the value tested against lies outside the 95%-CI.
 ## Posterior probabilities of point hypotheses assume equal prior probabilities.</code></pre>
 <pre class="r"><code>hypothesis(f1modelcomplex, &quot;Intercept - Nasalitynasalized = 0&quot;)</code></pre>
 <pre><code>## Hypothesis Tests for class b:
 ##                 Hypothesis Estimate Est.Error CI.Lower CI.Upper Evid.Ratio
-## 1 (Intercept-Nasali... = 0  2082.79    154.31  1777.81  2374.22         NA
+## 1 (Intercept-Nasali... = 0  2102.48    147.93  1818.77  2404.06         NA
 ##   Post.Prob Star
 ## 1        NA    *
 ## ---
-## &#39;*&#39;: The expected value under the hypothesis lies outside the 95%-CI.
+## &#39;CI&#39;: 90%-CI for one-sided and 95%-CI for two-sided hypotheses.
+## &#39;*&#39;: For one-sided hypotheses, the posterior probability exceeds 95%;
+## for two-sided hypotheses, the value tested against lies outside the 95%-CI.
 ## Posterior probabilities of point hypotheses assume equal prior probabilities.</code></pre>
 <pre class="r"><code>hypothesis(f1modelcomplex, &quot;Intercept - Nasalityoral &gt; 0&quot;)</code></pre>
 <pre><code>## Hypothesis Tests for class b:
 ##                 Hypothesis Estimate Est.Error CI.Lower CI.Upper Evid.Ratio
-## 1 (Intercept-Nasali... &gt; 0  1921.67    154.29  1665.61      Inf        Inf
+## 1 (Intercept-Nasali... &gt; 0  1941.54    148.05   1700.8  2188.85        Inf
 ##   Post.Prob Star
 ## 1         1    *
 ## ---
-## &#39;*&#39;: The expected value under the hypothesis lies outside the 95%-CI.
+## &#39;CI&#39;: 90%-CI for one-sided and 95%-CI for two-sided hypotheses.
+## &#39;*&#39;: For one-sided hypotheses, the posterior probability exceeds 95%;
+## for two-sided hypotheses, the value tested against lies outside the 95%-CI.
 ## Posterior probabilities of point hypotheses assume equal prior probabilities.</code></pre>
 <pre class="r"><code>hypothesis(f1modelcomplex, &quot;Voweli - Vowelu= 0&quot;)</code></pre>
 <pre><code>## Hypothesis Tests for class b:
-##            Hypothesis Estimate Est.Error CI.Lower CI.Upper Evid.Ratio
-## 1 (Voweli-Vowelu) = 0     6.88      4.08    -1.14    14.87         NA
-##   Post.Prob Star
-## 1        NA     
+##            Hypothesis Estimate Est.Error CI.Lower CI.Upper Evid.Ratio Post.Prob
+## 1 (Voweli-Vowelu) = 0     7.02      4.11    -1.19     14.9         NA        NA
+##   Star
+## 1     
 ## ---
-## &#39;*&#39;: The expected value under the hypothesis lies outside the 95%-CI.
+## &#39;CI&#39;: 90%-CI for one-sided and 95%-CI for two-sided hypotheses.
+## &#39;*&#39;: For one-sided hypotheses, the posterior probability exceeds 95%;
+## for two-sided hypotheses, the value tested against lies outside the 95%-CI.
 ## Posterior probabilities of point hypotheses assume equal prior probabilities.</code></pre>
 </div>
 </div>

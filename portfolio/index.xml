@@ -34,7 +34,8 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/portfolio/textminingr/</guid>
-      <description>Setting up an API Mining and Processing Searching for tweets  Comparing three Twitter Users Processing Data Word Ratios Frequencies of key words Sentiment analysis  Comparing tweets with certain search terms Processing data Locations and time series  Another example of multiple search terms Time and Space Sentiments  A few final words   Setting up an API The first thing to do with R when getting ready to do Twitter mining is to set up your credentials.</description>
+      <description>#Setting up an API The first thing to do with R when getting ready to do Twitter mining is to set up your credentials. I won’t go through this process right now, but it is outlined here. You need to first become a Twitter developer and create an app. It only takes a few moments.
+There are a couple of different types of flows you can work with, depending on what your question is.</description>
     </item>
     
     <item>

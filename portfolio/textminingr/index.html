@@ -103,55 +103,22 @@
          <h1>Text Mining with R</h1>
          
 
-<div id="TOC">
-<ul>
-<li><a href="#setting-up-an-api">Setting up an API</a></li>
-<li><a href="#mining-and-processing">Mining and Processing</a><ul>
-<li><a href="#searching-for-tweets">Searching for tweets</a></li>
-</ul></li>
-<li><a href="#comparing-three-twitter-users">Comparing three Twitter Users</a><ul>
-<li><a href="#processing-data">Processing Data</a></li>
-<li><a href="#word-ratios">Word Ratios</a></li>
-<li><a href="#frequencies-of-key-words">Frequencies of key words</a></li>
-<li><a href="#sentiment-analysis">Sentiment analysis</a></li>
-</ul></li>
-<li><a href="#comparing-tweets-with-certain-search-terms">Comparing tweets with certain search terms</a><ul>
-<li><a href="#processing-data-1">Processing data</a></li>
-<li><a href="#locations-and-time-series">Locations and time series</a></li>
-</ul></li>
-<li><a href="#another-example-of-multiple-search-terms">Another example of multiple search terms</a><ul>
-<li><a href="#time-and-space">Time and Space</a></li>
-<li><a href="#sentiments">Sentiments</a></li>
-</ul></li>
-<li><a href="#a-few-final-words">A few final words</a></li>
-</ul>
-</div>
 
-<div id="setting-up-an-api" class="section level1">
-<h1>Setting up an API</h1>
-<p>The first thing to do with R when getting ready to do Twitter mining is to set up your credentials. I won’t go through this process right now, but it is outlined <a href="https://github.com/mkearney/rtweet">here</a>. You need to first become a Twitter developer and create an app. It only takes a few moments.</p>
+<p>#Setting up an API
+The first thing to do with R when getting ready to do Twitter mining is to set up your credentials. I won’t go through this process right now, but it is outlined <a href="https://github.com/mkearney/rtweet">here</a>. You need to first become a Twitter developer and create an app. It only takes a few moments.</p>
 <p>There are a couple of different types of flows you can work with, depending on what your question is. For example, if you want to look at word counts and frequencies, your workflow will look something like this:</p>
-<div class="figure">
-<img src="/img/tidyflow-ch-1.png" style="width:95.0%" />
-
-</div>
+<p><img src="/img/tidyflow-ch-1.png" style="width:95.0%" /></p>
 <p>If you want to do sentiment analysis, your workflow will look something like this:</p>
-<div class="figure">
-<img src="/img/tidyflow-ch-2.png" style="width:95.0%" />
-
-</div>
-</div>
-<div id="mining-and-processing" class="section level1">
-<h1>Mining and Processing</h1>
-<div id="searching-for-tweets" class="section level2">
-<h2>Searching for tweets</h2>
+<p><img src="/img/tidyflow-ch-2.png" style="width:95.0%" /></p>
+<p>#Mining and Processing</p>
+<p>##Searching for tweets</p>
 <p>There are a number of functions/packages that allow you to search for tweets:</p>
 <ul>
 <li>searchTwitteR in the TwitteR package (I’ve had a lot of problems with this package and limitations on number of tweets allowed to be grabbed.)</li>
 <li>search_tweets in the rtweet package</li>
 <li>filterStream in the streamR package</li>
 </ul>
-<p>For this example, I will show you the results from the <em>rtweet</em> package. Note that these packages will only give recent tweets, generally from the past week. (Note, I collected these tweets on Sept. 5, 2018.)</p>
+<p>For this example, I will show you the results from the <em>rtweet</em> package. Note that these packages will only give recent tweets, generally from the past week. (Note, I collected these tweets on Sept. 5, 2018.)</p>
 <pre class="r"><code>#This gets the 5000 most recent tweets from each of the handles listed.
 timelines &lt;- get_timelines(c(&quot;nbcsports&quot;, &quot;cbssports&quot;, &quot;bbcsport&quot;), n = 5000, retryonratelimit = TRUE)
 
@@ -177,12 +144,8 @@ save(cuteanimals, file = &quot;cuteanimals.Rda&quot;)</code></pre>
 <pre class="r"><code>#CBStweets = searchTwitteR(&quot;from:@cbssports&quot;, n = 1000)
 #BBCtweets = searchTwitteR(&quot;from:@bbcsport&quot;, n = 1000)
 #NBCtweets = searchTwitteR(&quot;from:@nbcsports&quot;, n = 1000)</code></pre>
-</div>
-</div>
-<div id="comparing-three-twitter-users" class="section level1">
-<h1>Comparing three Twitter Users</h1>
-<div id="processing-data" class="section level2">
-<h2>Processing Data</h2>
+<p>#Comparing three Twitter Users
+##Processing Data</p>
 <p>As you can see, there is a LOT of information we’re given when we download tweets. We only need a small subset of it, so we will use the tidyverse to select out the data we need, and we will forget the rest.</p>
 <pre class="r"><code>head(timelines)</code></pre>
 <pre><code>## # A tibble: 6 x 88
@@ -194,37 +157,34 @@ save(cuteanimals, file = &quot;cuteanimals.Rda&quot;)</code></pre>
 ## 4 118563… 10371322… 2018-09-05 00:16:05 NBCSports   Is i… Spred…
 ## 5 118563… 10371246… 2018-09-04 23:46:04 NBCSports   Andr… Spred…
 ## 6 118563… 10371186… 2018-09-04 23:22:17 NBCSports   PHIL… Twitt…
-## # ... with 82 more variables: display_text_width &lt;dbl&gt;,
-## #   reply_to_status_id &lt;chr&gt;, reply_to_user_id &lt;chr&gt;,
-## #   reply_to_screen_name &lt;chr&gt;, is_quote &lt;lgl&gt;, is_retweet &lt;lgl&gt;,
-## #   favorite_count &lt;int&gt;, retweet_count &lt;int&gt;, hashtags &lt;list&gt;,
-## #   symbols &lt;chr&gt;, urls_url &lt;list&gt;, urls_t.co &lt;list&gt;,
+## # … with 82 more variables: display_text_width &lt;dbl&gt;, reply_to_status_id &lt;chr&gt;,
+## #   reply_to_user_id &lt;chr&gt;, reply_to_screen_name &lt;chr&gt;, is_quote &lt;lgl&gt;,
+## #   is_retweet &lt;lgl&gt;, favorite_count &lt;int&gt;, retweet_count &lt;int&gt;,
+## #   hashtags &lt;list&gt;, symbols &lt;chr&gt;, urls_url &lt;list&gt;, urls_t.co &lt;list&gt;,
 ## #   urls_expanded_url &lt;list&gt;, media_url &lt;list&gt;, media_t.co &lt;list&gt;,
 ## #   media_expanded_url &lt;list&gt;, media_type &lt;list&gt;, ext_media_url &lt;list&gt;,
-## #   ext_media_t.co &lt;list&gt;, ext_media_expanded_url &lt;list&gt;,
-## #   ext_media_type &lt;chr&gt;, mentions_user_id &lt;list&gt;,
-## #   mentions_screen_name &lt;list&gt;, lang &lt;chr&gt;, quoted_status_id &lt;chr&gt;,
-## #   quoted_text &lt;chr&gt;, quoted_created_at &lt;dttm&gt;, quoted_source &lt;chr&gt;,
-## #   quoted_favorite_count &lt;int&gt;, quoted_retweet_count &lt;int&gt;,
-## #   quoted_user_id &lt;chr&gt;, quoted_screen_name &lt;chr&gt;, quoted_name &lt;chr&gt;,
-## #   quoted_followers_count &lt;int&gt;, quoted_friends_count &lt;int&gt;,
-## #   quoted_statuses_count &lt;int&gt;, quoted_location &lt;chr&gt;,
-## #   quoted_description &lt;chr&gt;, quoted_verified &lt;lgl&gt;,
-## #   retweet_status_id &lt;chr&gt;, retweet_text &lt;chr&gt;,
-## #   retweet_created_at &lt;dttm&gt;, retweet_source &lt;chr&gt;,
-## #   retweet_favorite_count &lt;int&gt;, retweet_retweet_count &lt;int&gt;,
-## #   retweet_user_id &lt;chr&gt;, retweet_screen_name &lt;chr&gt;, retweet_name &lt;chr&gt;,
+## #   ext_media_t.co &lt;list&gt;, ext_media_expanded_url &lt;list&gt;, ext_media_type &lt;chr&gt;,
+## #   mentions_user_id &lt;list&gt;, mentions_screen_name &lt;list&gt;, lang &lt;chr&gt;,
+## #   quoted_status_id &lt;chr&gt;, quoted_text &lt;chr&gt;, quoted_created_at &lt;dttm&gt;,
+## #   quoted_source &lt;chr&gt;, quoted_favorite_count &lt;int&gt;,
+## #   quoted_retweet_count &lt;int&gt;, quoted_user_id &lt;chr&gt;, quoted_screen_name &lt;chr&gt;,
+## #   quoted_name &lt;chr&gt;, quoted_followers_count &lt;int&gt;,
+## #   quoted_friends_count &lt;int&gt;, quoted_statuses_count &lt;int&gt;,
+## #   quoted_location &lt;chr&gt;, quoted_description &lt;chr&gt;, quoted_verified &lt;lgl&gt;,
+## #   retweet_status_id &lt;chr&gt;, retweet_text &lt;chr&gt;, retweet_created_at &lt;dttm&gt;,
+## #   retweet_source &lt;chr&gt;, retweet_favorite_count &lt;int&gt;,
+## #   retweet_retweet_count &lt;int&gt;, retweet_user_id &lt;chr&gt;,
+## #   retweet_screen_name &lt;chr&gt;, retweet_name &lt;chr&gt;,
 ## #   retweet_followers_count &lt;int&gt;, retweet_friends_count &lt;int&gt;,
 ## #   retweet_statuses_count &lt;int&gt;, retweet_location &lt;chr&gt;,
 ## #   retweet_description &lt;chr&gt;, retweet_verified &lt;lgl&gt;, place_url &lt;chr&gt;,
-## #   place_name &lt;chr&gt;, place_full_name &lt;chr&gt;, place_type &lt;chr&gt;,
-## #   country &lt;chr&gt;, country_code &lt;chr&gt;, geo_coords &lt;list&gt;,
-## #   coords_coords &lt;list&gt;, bbox_coords &lt;list&gt;, status_url &lt;chr&gt;,
-## #   name &lt;chr&gt;, location &lt;chr&gt;, description &lt;chr&gt;, url &lt;chr&gt;,
-## #   protected &lt;lgl&gt;, followers_count &lt;int&gt;, friends_count &lt;int&gt;,
-## #   listed_count &lt;int&gt;, statuses_count &lt;int&gt;, favourites_count &lt;int&gt;,
-## #   account_created_at &lt;dttm&gt;, verified &lt;lgl&gt;, profile_url &lt;chr&gt;,
-## #   profile_expanded_url &lt;chr&gt;, account_lang &lt;chr&gt;,
+## #   place_name &lt;chr&gt;, place_full_name &lt;chr&gt;, place_type &lt;chr&gt;, country &lt;chr&gt;,
+## #   country_code &lt;chr&gt;, geo_coords &lt;list&gt;, coords_coords &lt;list&gt;,
+## #   bbox_coords &lt;list&gt;, status_url &lt;chr&gt;, name &lt;chr&gt;, location &lt;chr&gt;,
+## #   description &lt;chr&gt;, url &lt;chr&gt;, protected &lt;lgl&gt;, followers_count &lt;int&gt;,
+## #   friends_count &lt;int&gt;, listed_count &lt;int&gt;, statuses_count &lt;int&gt;,
+## #   favourites_count &lt;int&gt;, account_created_at &lt;dttm&gt;, verified &lt;lgl&gt;,
+## #   profile_url &lt;chr&gt;, profile_expanded_url &lt;chr&gt;, account_lang &lt;chr&gt;,
 ## #   profile_banner_url &lt;chr&gt;, profile_background_url &lt;chr&gt;,
 ## #   profile_image_url &lt;chr&gt;</code></pre>
 <pre class="r"><code>dim(timelines)</code></pre>
@@ -232,16 +192,15 @@ save(cuteanimals, file = &quot;cuteanimals.Rda&quot;)</code></pre>
 <pre class="r"><code>timelines_processed = timelines %&gt;% select(screen_name, created_at, text, is_retweet, is_quote, favorite_count, retweet_count, hashtags)
 
 timelines_processed %&gt;% group_by(screen_name) %&gt;% summarise(number = n())</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 3 x 2
 ##   screen_name number
 ##   &lt;chr&gt;        &lt;int&gt;
 ## 1 BBCSport      2400
 ## 2 CBSSports     3227
 ## 3 NBCSports     3200</code></pre>
-</div>
-<div id="word-ratios" class="section level2">
-<h2>Word Ratios</h2>
-<p>Here, we are going to look at some words and see what the odds ratios are that these words belong to one user over another. This analysis is based on those found in <a href="www.tidytextmining.com">Tidy Text Mining with R</a>.</p>
+<p>##Word Ratios
+Here, we are going to look at some words and see what the odds ratios are that these words belong to one user over another. This analysis is based on those found in <a href="www.tidytextmining.com">Tidy Text Mining with R</a>.</p>
 <p>First, I have a list of symbols I would like to remove from any of the text. Those include ampersands, hash tags, at sign, etc. Then, we will also get rid of stop words and anything with numbers or other characers.</p>
 <pre class="r"><code>remove_reg &lt;- &quot;#|&amp;|@|&lt;|&gt;&quot;
 
@@ -252,6 +211,7 @@ timelines_tidy_tweets &lt;- timelines_processed %&gt;%
   filter(!word %in% stop_words$word,
          !word %in% str_remove_all(stop_words$word, &quot;&#39;&quot;),
          str_detect(word, &quot;[a-z]&quot;))</code></pre>
+<pre><code>## Using `to_lower = TRUE` with `token = &#39;tweets&#39;` may not preserve URLs.</code></pre>
 <p>Then, we are going to find the relative frequency for each word, by user name. We will find the log odds for each pairwise comparison of user names.</p>
 <pre class="r"><code>timelines_frequency &lt;- timelines_tidy_tweets %&gt;% 
   group_by(screen_name) %&gt;% 
@@ -260,6 +220,7 @@ timelines_tidy_tweets &lt;- timelines_processed %&gt;%
               group_by(screen_name) %&gt;% 
               summarise(total = n())) %&gt;%
   mutate(freq = n/total)</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## Joining, by = &quot;screen_name&quot;</code></pre>
 <pre class="r"><code>timelines_word_ratios &lt;- timelines_tidy_tweets %&gt;%
   filter(!str_detect(word, &quot;^@&quot;)) %&gt;%
@@ -270,6 +231,19 @@ timelines_tidy_tweets &lt;- timelines_processed %&gt;%
   spread(screen_name, n, fill = 0) %&gt;%
   mutate_if(is.numeric, funs((. + 1) / (sum(.) + 1))) %&gt;%
   mutate(logratioBBCNBC = log(BBCSport / NBCSports), logratioCBSNBC = log(CBSSports / NBCSports),logratioBBCCBS = log(BBCSport / CBSSports))</code></pre>
+<pre><code>## Warning: `funs()` is deprecated as of dplyr 0.8.0.
+## Please use a list of either functions or lambdas: 
+## 
+##   # Simple named list: 
+##   list(mean = mean, median = median)
+## 
+##   # Auto named with `tibble::lst()`: 
+##   tibble::lst(mean, median)
+## 
+##   # Using lambdas
+##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
 <p>And finally, we will visualize the results. Here, if the number is positive, it is more likely to be a word used of the first group than the second group. If the log ratio is negative, it is more likely to be a word used by the second group than the first group. I took the top 15 positive and negative log odds, ordered them, and then plotted them. I did this for all three pairs possible from this dataset.</p>
 <pre class="r"><code>timelines_word_ratios %&gt;%
   group_by(logratioCBSNBC &lt; 0) %&gt;%
@@ -304,9 +278,7 @@ timelines_tidy_tweets &lt;- timelines_processed %&gt;%
   ylab(&quot;log odds ratio (BBC/CBS)&quot;) +
   scale_fill_discrete(name = &quot;&quot;, labels = c(&quot;BBC&quot;, &quot;CBS&quot;))</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-8-3.png" width="576" /></p>
-</div>
-<div id="frequencies-of-key-words" class="section level2">
-<h2>Frequencies of key words</h2>
+<p>##Frequencies of key words</p>
 <p>Here, I have chosen a list of seven “key words” - that is, seven sports that are played in the US and UK. I filtered the list of frequencies for each word to only look for these words. Note that there are a few words that do not show up for a couple of the user names. Because these don’t show up, if we leave them out, the bar plot looks a bit weird.</p>
 <pre class="r"><code>#IF there are 0s, they won&#39;t show up in the bar plot
 sportslist = c(&quot;football&quot;, &quot;soccer&quot;, &quot;baseball&quot;, &quot;basketball&quot;, &quot;tennis&quot;, &quot;rugby&quot;, &quot;cricket&quot;)
@@ -324,17 +296,13 @@ sportslist = data.frame(word = rep(c(&quot;football&quot;, &quot;soccer&quot;, &
 
 frequentsports = timelines_frequency %&gt;% filter(word %in% sportslist$word)
 
-fullsports_timelines = full_join(frequentsports, sportslist, by = c(&quot;screen_name&quot;, &quot;word&quot;), fill = 0)  %&gt;% replace(., is.na(.), 0)</code></pre>
-<pre><code>## Warning: Column `screen_name` joining character vector and factor, coercing
-## into character vector</code></pre>
-<pre><code>## Warning: Column `word` joining character vector and factor, coercing into
-## character vector</code></pre>
-<pre class="r"><code>ggplot(fullsports_timelines, aes(x = word, fill = screen_name)) + geom_bar(aes(weight = n), position = &quot;dodge&quot;)</code></pre>
+fullsports_timelines = full_join(frequentsports, sportslist, by = c(&quot;screen_name&quot;, &quot;word&quot;), fill = 0)  %&gt;% replace(., is.na(.), 0)
+
+
+ggplot(fullsports_timelines, aes(x = word, fill = screen_name)) + geom_bar(aes(weight = n), position = &quot;dodge&quot;)</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-10-1.png" width="576" /></p>
-</div>
-<div id="sentiment-analysis" class="section level2">
-<h2>Sentiment analysis</h2>
-<p>In order to do sentiment analysis, we will use a few datasets from R’s tidytext package: the sentiments dataset, and the stop_words dataset, which comes with three general-purpose lexicons:</p>
+<p>##Sentiment analysis
+In order to do sentiment analysis, we will use a few datasets from R’s tidytext package: the sentiments dataset, and the stop_words dataset, which comes with three general-purpose lexicons:</p>
 <ul>
 <li><em>FINN</em> from Finn Årup Nielsen,</li>
 <li><em>bing</em> from Bing Liu and collaborators, and</li>
@@ -368,14 +336,14 @@ sports_sentiments_bing &lt;- timelines_frequency %&gt;%
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-11-1.png" width="576" /></p>
 <p>For the afinn sentiment dataset, we calculate sentiment by multiplying the score given by the dataset (ranging form -5 to 5) by the number of instances of that word. Once again, the top 30 words are chosen.</p>
 <pre class="r"><code>sports_sentiments_afinn &lt;- timelines_frequency %&gt;%
-  inner_join(get_sentiments(&quot;afinn&quot;)) %&gt;% mutate(sentiment = n*score) %&gt;%
+  inner_join(tidytext::get_sentiments(&quot;afinn&quot;)) %&gt;% mutate(sentiment = n*value) %&gt;%
   top_n(30, abs(sentiment)) </code></pre>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
 <pre class="r"><code>head(sports_sentiments_afinn)</code></pre>
 <pre><code>## # A tibble: 6 x 7
 ## # Groups:   screen_name [3]
-##   screen_name word      n total    freq score sentiment
-##   &lt;chr&gt;       &lt;chr&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt; &lt;int&gt;     &lt;int&gt;
+##   screen_name word      n total    freq value sentiment
+##   &lt;chr&gt;       &lt;chr&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 NBCSports   win     122 27818 0.00439     4       488
 ## 2 CBSSports   win      85 26080 0.00326     4       340
 ## 3 BBCSport    win      79 27662 0.00286     4       316
@@ -418,19 +386,17 @@ sports_sentiments_bing &lt;- timelines_frequency %&gt;%
   count(word) %&gt;%
   with(wordcloud(word, n, max.words = 100))</code></pre>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
+<pre><code>## Warning in wordcloud(word, n, max.words = 100): themasters could not be fit on
+## page. It will not be plotted.</code></pre>
+<pre><code>## Warning in wordcloud(word, n, max.words = 100): premierleague could not be fit
+## on page. It will not be plotted.</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-14-1.png" width="576" /></p>
-</div>
-</div>
-<div id="comparing-tweets-with-certain-search-terms" class="section level1">
-<h1>Comparing tweets with certain search terms</h1>
-<div id="processing-data-1" class="section level2">
-<h2>Processing data</h2>
-<p>Now we will go on to searching for tweets that have certain words included. Once again, I processed the data to get rid of the extraneous information.</p>
+<p>#Comparing tweets with certain search terms
+##Processing data
+Now we will go on to searching for tweets that have certain words included. Once again, I processed the data to get rid of the extraneous information.</p>
 <pre class="r"><code>footballterms_processed = footballterms %&gt;% select(screen_name, created_at, text, is_retweet, is_quote, favorite_count, retweet_count, hashtags, lat, lng)</code></pre>
-</div>
-<div id="locations-and-time-series" class="section level2">
-<h2>Locations and time series</h2>
-<p>What if we want to see where/when tweets are being produced? I used previously the <em>lat_lng()</em> function from the rtweet package. This converts the geocoded information that is buried in the huge dataset into latitude and longitude. Note that I didn’t search specifically for geotagged tweets, so only a subset of my tweets have latitudes and longitudes. If you want to search for geotagged tweets, you can give <em>search_tweets()</em> a latitude, longitude and radius to geographically bound your search results, as such:</p>
+<p>##Locations and time series
+What if we want to see where/when tweets are being produced? I used previously the <em>lat_lng()</em> function from the rtweet package. This converts the geocoded information that is buried in the huge dataset into latitude and longitude. Note that I didn’t search specifically for geotagged tweets, so only a subset of my tweets have latitudes and longitudes. If you want to search for geotagged tweets, you can give <em>search_tweets()</em> a latitude, longitude and radius to geographically bound your search results, as such:</p>
 <pre class="r"><code>#not run
 rt &lt;- search_tweets(&quot;rstats&quot;, n = 500, include_rts = FALSE, geocode = &quot;37.78,-122.40,1mi&quot;)</code></pre>
 <p>Here, I am first filtering my data so that I only include data with values for latitude and longitude. (I am filtering only on latitude, with the presumption that if I have a value for latitude, I will have one for longitude as well.)</p>
@@ -439,21 +405,21 @@ rt &lt;- search_tweets(&quot;rstats&quot;, n = 500, include_rts = FALSE, geocode
 <pre><code>## # A tibble: 6 x 10
 ##   screen_name created_at          text  is_retweet is_quote favorite_count
 ##   &lt;chr&gt;       &lt;dttm&gt;              &lt;chr&gt; &lt;lgl&gt;      &lt;lgl&gt;             &lt;int&gt;
-## 1 RampartapD  2018-09-05 14:22:19 Just… TRUE       FALSE                 0
-## 2 TDMindsTA   2018-09-05 14:22:19 @dee… FALSE      FALSE                 0
-## 3 leahcimekim 2018-09-05 14:22:19 @Bre… FALSE      FALSE                 0
-## 4 leahcimekim 2018-09-05 14:14:16 @Bre… FALSE      FALSE                 0
-## 5 leahcimekim 2018-09-05 14:13:50 @Bre… FALSE      FALSE                 0
+## 1 RampartapD  2018-09-05 14:22:19 &quot;Jus… TRUE       FALSE                 0
+## 2 TDMindsTA   2018-09-05 14:22:19 &quot;@de… FALSE      FALSE                 0
+## 3 leahcimekim 2018-09-05 14:22:19 &quot;@Br… FALSE      FALSE                 0
+## 4 leahcimekim 2018-09-05 14:14:16 &quot;@Br… FALSE      FALSE                 0
+## 5 leahcimekim 2018-09-05 14:13:50 &quot;@Br… FALSE      FALSE                 0
 ## 6 D_Valladar… 2018-09-05 14:22:19 &quot;4 D… TRUE       FALSE                 0
-## # ... with 4 more variables: retweet_count &lt;int&gt;, hashtags &lt;list&gt;,
-## #   lat &lt;dbl&gt;, lng &lt;dbl&gt;</code></pre>
+## # … with 4 more variables: retweet_count &lt;int&gt;, hashtags &lt;list&gt;, lat &lt;dbl&gt;,
+## #   lng &lt;dbl&gt;</code></pre>
 <pre class="r"><code>dim(footballterms_processed[!is.na(footballterms_processed$lat),])</code></pre>
 <pre><code>## [1] 1075   10</code></pre>
 <pre class="r"><code>footballgeo = footballterms_processed %&gt;% filter(!is.na(lat))
 UScode = geocode(&quot;United States&quot;)</code></pre>
-<pre><code>## Information from URL : http://maps.googleapis.com/maps/api/geocode/json?address=United%20States&amp;sensor=false</code></pre>
+<pre><code>## Source : https://maps.googleapis.com/maps/api/geocode/json?address=United+States&amp;key=xxx</code></pre>
 <pre class="r"><code>usmap&lt;-get_map(location=UScode, zoom=4, maptype = &quot;terrain&quot;, source = &quot;google&quot;)</code></pre>
-<pre><code>## Map from URL : http://maps.googleapis.com/maps/api/staticmap?center=37.09024,-95.712891&amp;zoom=4&amp;size=640x640&amp;scale=2&amp;maptype=terrain&amp;language=en-EN&amp;sensor=false</code></pre>
+<pre><code>## Source : https://maps.googleapis.com/maps/api/staticmap?center=37.09024,-95.712891&amp;zoom=4&amp;size=640x640&amp;scale=2&amp;maptype=terrain&amp;language=en-EN&amp;key=xxx</code></pre>
 <pre class="r"><code>ggmap(usmap) + geom_point(data = footballgeo, aes(x = lng, y = lat, color = is_retweet))</code></pre>
 <pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-17-1.png" width="576" /></p>
@@ -470,9 +436,9 @@ football_tweets &lt;- footballterms_processed %&gt;%
          !word %in% str_remove_all(stop_words$word, &quot;&#39;&quot;),
          str_detect(word, &quot;[a-z]&quot;),
          !str_detect(word, &quot;^http&quot;), 
-         !word==&quot;amp&quot;)
-
-head(football_tweets)</code></pre>
+         !word==&quot;amp&quot;)</code></pre>
+<pre><code>## Using `to_lower = TRUE` with `token = &#39;tweets&#39;` may not preserve URLs.</code></pre>
+<pre class="r"><code>head(football_tweets)</code></pre>
 <pre><code>## # A tibble: 6 x 10
 ##   screen_name created_at          is_retweet is_quote favorite_count
 ##   &lt;chr&gt;       &lt;dttm&gt;              &lt;lgl&gt;      &lt;lgl&gt;             &lt;int&gt;
@@ -482,8 +448,8 @@ head(football_tweets)</code></pre>
 ## 4 TDMindsTA   2018-09-05 14:22:19 FALSE      FALSE                 0
 ## 5 TDMindsTA   2018-09-05 14:22:19 FALSE      FALSE                 0
 ## 6 TDMindsTA   2018-09-05 14:22:19 FALSE      FALSE                 0
-## # ... with 5 more variables: retweet_count &lt;int&gt;, hashtags &lt;list&gt;,
-## #   lat &lt;dbl&gt;, lng &lt;dbl&gt;, word &lt;chr&gt;</code></pre>
+## # … with 5 more variables: retweet_count &lt;int&gt;, hashtags &lt;list&gt;, lat &lt;dbl&gt;,
+## #   lng &lt;dbl&gt;, word &lt;chr&gt;</code></pre>
 <pre class="r"><code>football_frequency &lt;- football_tweets %&gt;% 
 #  group_by(screen_name) %&gt;% 
   count(word, sort = TRUE) %&gt;% 
@@ -493,9 +459,11 @@ head(football_tweets)</code></pre>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
 <p>Here, I am plotting the top 20 most frequent words.</p>
 <pre class="r"><code>football_frequency %&gt;% group_by(word) %&gt;% summarise(number = max(number)) %&gt;% arrange(desc(number)) %&gt;% top_n(20, number) %&gt;% ggplot(aes(reorder(word, number), number)) +geom_col() +coord_flip()</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-19-1.png" width="576" /></p>
 <p>And here, I am doing a time-series plot using the <em>ts_plot</em> function from the rtweet package. First, I am looking at the data by hour, and then by minute. Because I collected this data from a small window of time, these aren’t particularly informative, but if you had a larger dataset, you could do some cool time series work. <a href="https://www.tidytextmining.com/twitter.html">Tidy Text Mining with R</a> gives another example of time-dynamic analyses.</p>
 <pre class="r"><code>football10 = football_frequency %&gt;% group_by(word) %&gt;% summarise(number = max(number)) %&gt;% arrange(desc(number))%&gt;%top_n(10,number)%&gt;% left_join(football_frequency) %&gt;% group_by(word)</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## Joining, by = c(&quot;word&quot;, &quot;number&quot;)</code></pre>
 <pre class="r"><code>ts_plot(football10, &quot;hours&quot;)</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-20-1.png" width="576" /></p>
@@ -507,12 +475,11 @@ head(football_tweets)</code></pre>
   group_by(word) %&gt;% summarise(number = max(number)) %&gt;% top_n(100, number)%&gt;%
   with(wordcloud(word, number, max.words = 100))</code></pre>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-21-1.png" width="576" /></p>
-</div>
-</div>
-<div id="another-example-of-multiple-search-terms" class="section level1">
-<h1>Another example of multiple search terms</h1>
-<p>Finally, I am looking at the relative distributions of dogs, cats and hamsters on Twitter. Note that I created a variable a while ago on my dataset, called <em>animalmentioned</em>, which pulled out which of my three search terms is mentioned in the tweet. I created the tokenized tweets file one more. ##Data processing</p>
+<p>#Another example of multiple search terms</p>
+<p>Finally, I am looking at the relative distributions of dogs, cats and hamsters on Twitter. Note that I created a variable a while ago on my dataset, called <em>animalmentioned</em>, which pulled out which of my three search terms is mentioned in the tweet. I created the tokenized tweets file one more.
+##Data processing</p>
 <pre class="r"><code>animals_processed = cuteanimals %&gt;% select(screen_name, animalmentioned, created_at, text, is_retweet, is_quote, favorite_count, retweet_count, hashtags, lat, lng)
 
 head(animals_processed)</code></pre>
@@ -520,12 +487,12 @@ head(animals_processed)</code></pre>
 ##   screen_name animalmentioned created_at          text  is_retweet is_quote
 ##   &lt;chr&gt;       &lt;chr&gt;           &lt;dttm&gt;              &lt;chr&gt; &lt;lgl&gt;      &lt;lgl&gt;   
 ## 1 denisngahu  cat             2018-09-05 17:07:18 &quot;Rem… TRUE       FALSE   
-## 2 AnimalAnge… cat             2018-09-05 17:07:18 Plea… TRUE       FALSE   
-## 3 pecanacres  &lt;NA&gt;            2018-09-05 17:07:15 Feve… FALSE      FALSE   
-## 4 RufnekBob   dog             2018-09-05 17:07:15 Dog … TRUE       FALSE   
-## 5 JesionekSa… cat             2018-09-05 17:07:15 @Jen… FALSE      FALSE   
-## 6 badgaIzak   cat             2018-09-05 17:07:13 I ju… TRUE       FALSE   
-## # ... with 5 more variables: favorite_count &lt;int&gt;, retweet_count &lt;int&gt;,
+## 2 AnimalAnge… cat             2018-09-05 17:07:18 &quot;Ple… TRUE       FALSE   
+## 3 pecanacres  &lt;NA&gt;            2018-09-05 17:07:15 &quot;Fev… FALSE      FALSE   
+## 4 RufnekBob   dog             2018-09-05 17:07:15 &quot;Dog… TRUE       FALSE   
+## 5 JesionekSa… cat             2018-09-05 17:07:15 &quot;@Je… FALSE      FALSE   
+## 6 badgaIzak   cat             2018-09-05 17:07:13 &quot;I j… TRUE       FALSE   
+## # … with 5 more variables: favorite_count &lt;int&gt;, retweet_count &lt;int&gt;,
 ## #   hashtags &lt;list&gt;, lat &lt;dbl&gt;, lng &lt;dbl&gt;</code></pre>
 <pre class="r"><code>  remove_reg &lt;- &quot;@|&amp;|#&quot;
 animal_tweets &lt;- animals_processed %&gt;% 
@@ -537,9 +504,9 @@ animal_tweets &lt;- animals_processed %&gt;%
          str_detect(word, &quot;[a-z]&quot;),
          !str_detect(word, &quot;^http&quot;), 
          !word ==&quot;amp&quot;)</code></pre>
-<div id="time-and-space" class="section level2">
-<h2>Time and Space</h2>
-<p>Here, I am looking at tweets over time and space by the animal mentioned. As you can see, not a lot of people are talking about hamsters!</p>
+<pre><code>## Using `to_lower = TRUE` with `token = &#39;tweets&#39;` may not preserve URLs.</code></pre>
+<p>##Time and Space
+Here, I am looking at tweets over time and space by the animal mentioned. As you can see, not a lot of people are talking about hamsters!</p>
 <pre class="r"><code>animalgeo = animals_processed %&gt;% filter(!is.na(lat), !is.na(animalmentioned))
 ggmap(usmap) + geom_point(data = animalgeo, aes(x = lng, y = lat, color = animalmentioned))</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-23-1.png" width="576" /></p>
@@ -552,15 +519,14 @@ ggmap(usmap) + geom_point(data = animalgeo, aes(x = lng, y = lat, color = animal
   mutate(freq = number/n(), date = strftime(created_at, format = &quot;%m/%d/%y&quot;), time = strftime(created_at, format=&quot;%H:%M:%S&quot;)) %&gt;% select(screen_name, created_at, word, number, freq, everything()) %&gt;% select(-hashtags) </code></pre>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
 <pre class="r"><code>animal10 = animal_frequency %&gt;% group_by(word) %&gt;% summarise(number = max(number)) %&gt;% arrange(desc(number))%&gt;%top_n(10,number)%&gt;% left_join(animal_frequency) %&gt;% group_by(word)</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre><code>## Joining, by = c(&quot;word&quot;, &quot;number&quot;)</code></pre>
 <pre class="r"><code>ts_plot(animal10, &quot;hours&quot;)</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-24-1.png" width="576" /></p>
 <pre class="r"><code>ts_plot(animal10, &quot;mins&quot;)</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-24-2.png" width="576" /></p>
-</div>
-<div id="sentiments" class="section level2">
-<h2>Sentiments</h2>
-<p>Let’s look at sentiments in reference to animals. Once again I will use the Bing sentiment corpus. I also have created another dataset, animals_bing_time, that looks at sentiments over time by dividing the timestamps into 40 windows.</p>
+<p>##Sentiments
+Let’s look at sentiments in reference to animals. Once again I will use the Bing sentiment corpus. I also have created another dataset, animals_bing_time, that looks at sentiments over time by dividing the timestamps into 40 windows.</p>
 <pre class="r"><code>data(&quot;sentiments&quot;)
 
 animals_bing &lt;- animal_tweets %&gt;%
@@ -587,7 +553,7 @@ animals_bing &lt;- animal_tweets %&gt;%
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-25-3.png" width="576" /></p>
 <p>Again, I am using the afinn sentiment corpus.</p>
 <pre class="r"><code>animals_sentiments_afinn &lt;- animal_frequency %&gt;%
-  inner_join(get_sentiments(&quot;afinn&quot;)) %&gt;% mutate(sentiment = number*score, index = as.numeric(cut(created_at, 40))) %&gt;%count(word, sentiment, sort = TRUE)</code></pre>
+  inner_join(get_sentiments(&quot;afinn&quot;)) %&gt;% mutate(sentiment = number*value, index = as.numeric(cut(created_at, 40))) %&gt;%count(word, sentiment, sort = TRUE)</code></pre>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
 <pre class="r"><code>animals_sentiments_afinn   %&gt;% top_n(10) %&gt;%
   ggplot( aes(reorder(word, desc(sentiment)), sentiment, fill = sentiment&lt;0)) +
@@ -620,23 +586,21 @@ animals_bing &lt;- animal_tweets %&gt;%
        x = NULL) +
   coord_flip()</code></pre>
 <pre><code>## Selecting by n</code></pre>
-<p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-26-2.png" width="576" /> And a word cloud!</p>
+<p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-26-2.png" width="576" />
+And a word cloud!</p>
 <pre class="r"><code>animal_tweets %&gt;%
   anti_join(stop_words) %&gt;%
   count(word) %&gt;%
   with(wordcloud(word, n, max.words = 100))</code></pre>
 <pre><code>## Joining, by = &quot;word&quot;</code></pre>
 <p><img src="/portfolio/TextMiningR_files/figure-html/unnamed-chunk-27-1.png" width="576" /></p>
-</div>
-</div>
-<div id="a-few-final-words" class="section level1">
-<h1>A few final words</h1>
-<p>Using the other packages I mentioned, as well as rtweet, you can do a lot - you can stream tweets, follow users, etc. Here, I used a bounding box I determined interactively <a href="http://boundingbox.klokantech.com/">here</a> to stream tweets found in Chicago. (I tried Champaign, but we don’t seem to tweet much!)</p>
+<p>#A few final words</p>
+<p>Using the other packages I mentioned, as well as rtweet, you can do a lot - you can stream tweets, follow users, etc.
+Here, I used a bounding box I determined interactively <a href="http://boundingbox.klokantech.com/">here</a> to stream tweets found in Chicago. (I tried Champaign, but we don’t seem to tweet much!)</p>
 <pre class="r"><code>champaignbox = c(-88.290213,40.06123,-88.178074,40.166118)
 chicagobox = c(-87.741984,41.790998,-87.528422,41.989486)
 filterStream( file=&quot;tweets_rstats.json&quot;, locations=chicagobox, timeout=60, oauth=my_oauth )
 tweets.df &lt;- parseTweets(&quot;tweets_rstats.json&quot;)</code></pre>
-</div>
 
          
       </div>

@@ -129,22 +129,22 @@
 <div id="data-processing" class="section level1">
 <h1>Data processing</h1>
 <p>For this tutorial, I am using my dissertation data. I am using one speaker’s data so we don’t have to account for individual differences, and I am only using the midpoint of the vowel.</p>
-<pre class="r"><code>normtimeBP02 = normtimedata %&gt;% filter(Speaker ==&quot;BP02&quot;, NormTime==0.5)
+<pre class="r"><code>normtimeBP02 = normtimedata %&gt;% filter(Speaker ==&quot;BP02&quot;, NormTime==0.5) %&gt;% mutate(Vowel = as.factor(Vowel), Nasality = as.factor(Nasality))
 head(normtimeBP02)</code></pre>
-<pre><code>##   Speaker   Word Vowel Nasality RepNo NormTime  Type label      Time
-## 1    BP02 abunda     u    nasal     1      0.5 clean    un  3.482666
-## 2    BP02 abunda     u    nasal     2      0.5 clean    un  5.903856
-## 3    BP02 abunda     u    nasal     3      0.5 clean    un  8.508366
-## 4    BP02 abunda     u    nasal     4      0.5 clean    un 11.229561
-## 5    BP02 abunda     u    nasal     5      0.5 clean    un 14.017535
-## 6    BP02 abunda     u    nasal     6      0.5 clean    un 16.364416
-##         F1       F2       F3     F2_3
-## 1 415.2112 2247.165 2892.599 322.7169
-## 2 367.2511 2300.860 2897.852 298.4962
-## 3 314.8519 1507.593 2549.471 520.9387
-## 4 301.0646 1368.582 2373.538 502.4779
-## 5 335.9188 1251.865 2441.061 594.5982
-## 6 310.0842 2077.428 2695.539 309.0552</code></pre>
+<pre><code>##   Speaker   Word Vowel Nasality RepNo NormTime  Type label      Time       F1
+## 1    BP02 abunda     u    nasal     1      0.5 clean    un  3.482666 415.2112
+## 2    BP02 abunda     u    nasal     2      0.5 clean    un  5.903856 367.2511
+## 3    BP02 abunda     u    nasal     3      0.5 clean    un  8.508366 314.8519
+## 4    BP02 abunda     u    nasal     4      0.5 clean    un 11.229561 301.0646
+## 5    BP02 abunda     u    nasal     5      0.5 clean    un 14.017535 335.9188
+## 6    BP02 abunda     u    nasal     6      0.5 clean    un 16.364416 310.0842
+##         F2       F3     F2_3
+## 1 2247.165 2892.599 322.7169
+## 2 2300.860 2897.852 298.4962
+## 3 1507.593 2549.471 520.9387
+## 4 1368.582 2373.538 502.4779
+## 5 1251.865 2441.061 594.5982
+## 6 2077.428 2695.539 309.0552</code></pre>
 </div>
 <div id="what-is-a-contrast" class="section level1">
 <h1>What is a contrast?</h1>
@@ -566,13 +566,9 @@ Estimated marginal means are a common way of looking at main effects and interac
 <p>If you have used the <em>lsmeans</em> package in the past, you are probably familiar with <em>emmeans</em>. The two packages are very similar, just with some back-end changes that won’t affect your analysis.</p>
 <div id="dummy-coding-1" class="section level2">
 <h2>Dummy coding</h2>
-<pre class="r"><code>library(emmeans)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;emmeans&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:multcomp&#39;:
-## 
-##     cld</code></pre>
-<pre class="r"><code>contrasts(normtimeBP02$Nasality) = contr.treatment(4)
+<pre class="r"><code>library(emmeans)
+
+contrasts(normtimeBP02$Nasality) = contr.treatment(4)
 contrasts(normtimeBP02$Vowel) =contr.treatment(3)
 nasal_lm1 = lm(F1~Vowel + Nasality, data = normtimeBP02)
 summary(nasal_lm1)</code></pre>

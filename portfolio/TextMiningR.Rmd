@@ -16,6 +16,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(textdata)
 library(tidytext)
 library(rtweet)
 library(wordcloud)
@@ -33,11 +34,11 @@ library(twitteR)
 #Setting up an API
 The first thing to do with R when getting ready to do Twitter mining is to set up your credentials. I won't go through this process right now, but it is outlined [here](https://github.com/mkearney/rtweet). You need to first become a Twitter developer and create an app. It only takes a few moments.
 
-```{r include=FALSE}
+```{r eval = FALSE, include=FALSE}
 
 #my_oauth <- OAuthFactory$new(consumerKey = consumer_key, consumerSecret = consumer_secret, requestURL = requestURL, accessURL = accessURL, authURL = authURL)
 #my_oauth$handshake(cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl"))
-load("~/Desktop/Other Materials/Git/MSB89/content/portfolio/my_oauth")
+load("/Users/marissabarlaz/Desktop/Work/Workshop site/content/portfolio/my_oauth")
 
 ```
 
@@ -251,8 +252,9 @@ ggplot(sports_sentiments_bing, aes(word, sentiment, fill = sentiment<0)) +  geom
 
 For the afinn sentiment dataset, we calculate sentiment by multiplying the score given by the dataset (ranging form -5 to 5) by the number of instances of that word. Once again, the top 30 words are chosen.
 ```{r}
+ 
 sports_sentiments_afinn <- timelines_frequency %>%
-  inner_join(get_sentiments("afinn")) %>% mutate(sentiment = n*score) %>%
+  inner_join(tidytext::get_sentiments("afinn")) %>% mutate(sentiment = n*value) %>%
   top_n(30, abs(sentiment)) 
   
 head(sports_sentiments_afinn)
@@ -467,7 +469,7 @@ animals_bing_time %>%  top_n(50, abs(sentiment)) %>%ggplot(aes(index, sentiment,
 Again, I am using the afinn sentiment corpus.
 ```{r}
 animals_sentiments_afinn <- animal_frequency %>%
-  inner_join(get_sentiments("afinn")) %>% mutate(sentiment = number*score, index = as.numeric(cut(created_at, 40))) %>%count(word, sentiment, sort = TRUE)
+  inner_join(get_sentiments("afinn")) %>% mutate(sentiment = number*value, index = as.numeric(cut(created_at, 40))) %>%count(word, sentiment, sort = TRUE)
 
 animals_sentiments_afinn   %>% top_n(10) %>%
   ggplot( aes(reorder(word, desc(sentiment)), sentiment, fill = sentiment<0)) +

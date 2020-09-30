@@ -121,13 +121,14 @@ dat5 <- transform_to_elogit(dat4, NoIA = 4, ObsPerBin = 20)
 
 ```
 
-And finally, we create our final dataset by selecting out the columns we want to keep.
+And finally, we create our final dataset by relabeling the columns we want to keep.
 ```{r}
-FinalDat <- dat5 %>% 
-  # Select just the columns you want
-  select(., Subject, Item, Time, starts_with("IA"), Event, TRIAL_INDEX, Rating, talker, Exp,
-         InteractChinese, Exp, target, rhymecomp, onsetcomp, distractor) %>%
-  # Order the data by Subject, Trial, and Time
+dat6 <- rename_columns(dat5, Labels = c(IA1="Target", IA2="Rhyme", 
+                                       IA3="OnsetComp", IA4="Distractor")) 
+
+FinalDat <- dat6 %>% 
+  
+
   arrange(., Subject, TRIAL_INDEX, Time)
 
 head(FinalDat)
@@ -205,12 +206,12 @@ Each of these packages includes a built-in function that allows for plotting pro
 The plot_avg() function plots the grand mean of proportion over time. Here, I specified three different plots - one with 'outside' looks included, one with 'outside' looks excluded, and one with just target vs. other proportions. I am setting VWPreTheme = FALSE to use other ggplot2 themes. Note that I am leaving condition1 and condition2 = NULL for now. These are included as ways to facet the data - more on that in a moment.
 
 ```{r}
-plot_avg(data = FinalDat, type = "proportion", xlim = c(-100, 1000), IAColumns = c(IA_0_P = "Outside", IA_1_P = "Target", IA_2_P = "Rhyme", IA_3_P = "OnsetComp", IA_4_P = "Distractor"),Condition1 = NULL, Condition2 = NULL, Cond1Labels = NA, Cond2Labels = NA, ErrorBar = TRUE, VWPreTheme = FALSE) + theme_minimal() + scale_color_manual(values = cbPalette, labels = c("Outside", "Target", "Rhyme", "OnsetComp", "Distractor"))
+plot_avg(data = FinalDat, type = "proportion", xlim = c(-100, 1000), IAColumns = c(IA_outside_P = "Outside", IA_Target_P = "Target", IA_Rhyme_P = "Rhyme", IA_OnsetComp_P = "OnsetComp", IA_Distractor_P = "Distractor"),Condition1 = NULL, Condition2 = NULL, Cond1Labels = NA, Cond2Labels = NA, ErrorBar = TRUE, VWPreTheme = FALSE) + theme_minimal() + scale_color_manual(values = cbPalette, labels = c("Outside", "Target", "Rhyme", "OnsetComp", "Distractor"))
 
-plot_avg(data = FinalDat, type = "proportion", xlim = c(-100, 1000), IAColumns = c(IA_1_P = "Target", IA_2_P = "Rhyme", IA_3_P = "OnsetComp", IA_4_P = "Distractor"),Condition1 = NULL, Condition2 = NULL, Cond1Labels = NA, Cond2Labels = NA, ErrorBar = TRUE, VWPreTheme = FALSE) + theme_minimal() + scale_color_manual(values = cbPalette, labels = c("Target", "Rhyme", "OnsetComp", "Distractor"))
+plot_avg(data = FinalDat, type = "proportion", xlim = c(-100, 1000), IAColumns = c(IA_Target_P = "Target", IA_Rhyme_P = "Rhyme", IA_OnsetComp_P = "OnsetComp", IA_Distractor_P = "Distractor"),Condition1 = NULL, Condition2 = NULL, Cond1Labels = NA, Cond2Labels = NA, ErrorBar = TRUE, VWPreTheme = FALSE) + theme_minimal() + scale_color_manual(values = cbPalette, labels = c("Target", "Rhyme", "OnsetComp", "Distractor"))
 
-FinalDat2 = mutate(FinalDat, IA_234_P = IA_2_P + IA_3_P + IA_4_P)
-plot_avg(data = FinalDat2, type = "proportion", xlim = c(-100, 1000), IAColumns = c(IA_1_P = "Target", IA_234_P = "Non-Targets"),Condition1 = NULL, Condition2 = NULL, Cond1Labels = NA, Cond2Labels = NA, ErrorBar = TRUE, VWPreTheme = FALSE) + theme_minimal() + scale_color_manual(values = cbPalette, labels = c("Target", "Non-Target"))
+FinalDat2 = mutate(FinalDat, IA_234_P = IA_Rhyme_P + IA_OnsetComp_P + IA_Distractor_P)
+plot_avg(data = FinalDat2, type = "proportion", xlim = c(-100, 1000), IAColumns = c(IA_Target_P = "Target", IA_234_P = "Non-Targets"),Condition1 = NULL, Condition2 = NULL, Cond1Labels = NA, Cond2Labels = NA, ErrorBar = TRUE, VWPreTheme = FALSE) + theme_minimal() + scale_color_manual(values = cbPalette, labels = c("Target", "Non-Target"))
 
 ```
 
@@ -277,7 +278,7 @@ head(etRdata5c)
 
 Now, we can run a linear model using *lmer()*. Here, I will see if the talker and listener experience has an influence on proportion of looks to the target word in each of the three time windows. There are 4 talkers (CH3, lowest proficiency in English, CH9 and CH10 (higher proficiency in English), and EN3, a native speaker) and 2 levels of listener experience (high, low).
 
-```{r}
+```{r, eval = FALSE}
 library(lme4)
 library(lmerTest)
 
@@ -314,7 +315,7 @@ ggplot(timecodes, aes(x=num, y=ot1)) +
                scale_y_continuous(name="") + theme_minimal()
 ```
 
-```{r}
+```{r, eval = FALSE}
 etRlmerGCA = lmer(Prop~talker*Exp*(ot1 + ot2 + ot3 + ot4)+ (1|RECORDING_SESSION_LABEL), data = subset(etRdata3, AOI =="Target"))
 summary(etRlmerGCA)
 
@@ -329,9 +330,9 @@ GCA can tell you that your conditions had some predictive value (i.e., changed d
 
 
 ## Generalized additive modeling
-Generalized additive modeling (GAM) is a new nonlinear regression method, which relaxies the assumption of a linear relationship between predictors and predicted values. It has an advantage over growth curve analysis in that you can account for autocorrelation. I will not get into the nitty gritty details of GAM now, but I will show you the possible use of a GAM for this data.
+Generalized additive modeling (GAM) is a new nonlinear regression method, which relaxies the assumption of a linear relationship between predictors and predicted values. It has an advantage over growth curve analysis in that you can account for autocorrelation. I will not get into the nitty gritty details of GAM now, but I will show you the code for possible use of a GAM for this data.
 
-```{r}
+```{r, eval = FALSE}
 library(mgcv)
 library(itsadug)
 

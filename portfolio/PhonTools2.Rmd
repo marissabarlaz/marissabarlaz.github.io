@@ -28,7 +28,7 @@ library(gss)
 ```
 
 ```{r}
-absdir = "/Users/goldrch2/Desktop/Research/FemaleBP/"
+absdir = "/Users/marissabarlaz/Desktop/FemaleBP/"
 mydir = list.files(absdir, "*.WAV")
 mydir
 testwav = paste0(absdir, mydir[1])
@@ -53,13 +53,13 @@ praat( "Down to PitchTier", input=testpitch, output=testpitchtier, overwrite=TRU
 praat( "To Intensity...", arguments = list(100, 0), input=testwav, output=testint, overwrite=TRUE )
 praat( "Down to IntensityTier", input=testint, output=testinttier, overwrite=TRUE, filetype="text" )
 
-praat( "To Formant (burg)...", arguments = list(0, 5, 5500, 0.025, 50), input=testwav, output=testformant, overwrite=TRUE )
+praat( "To Formant (burg)...", arguments = list(0.01, 4, 5000, 0.05, 50), input=testwav, output=testformant, overwrite=TRUE )
 ```
 
 # Dygraphs
 ## Create shorter examples from long audio
 ```{r readin}
-form.test = formant.read(testformant)
+#form.test = formant.read(testformant)
 tg.test = tg.read(testtext)
 pt.test = pt.read(testpitchtier)
 it.test = it.read(testinttier)
@@ -67,14 +67,14 @@ it.test = it.read(testinttier)
 tg.testmini = tg.cut0(tg.test, tStart = 0, tEnd = 5)
 pt.testmini = pt.cut0(pt.test, tStart = 0, tEnd = 5)
 it.testmini = it.cut0(it.test, tStart = 0, tEnd = 5)
-mylength = length(form.test$t[form.test$t<=5])
-form.testmini = form.test
-form.testmini$t = form.testmini$t[1:mylength]
-form.testmini$xmax = form.testmini$t[mylength]
-form.testmini$frame = form.test$frame[1:mylength] 
-form.testmini$nx = mylength
+#mylength = length(form.test$t[form.test$t<=5])
+# form.testmini = form.test
+# form.testmini$t = form.testmini$t[1:mylength]
+# form.testmini$xmax = form.testmini$t[mylength]
+# form.testmini$frame = form.test$frame[1:mylength] 
+# form.testmini$nx = mylength
 
-formlist = data.frame(form.test$t, do.call("rbind", form.test$frame)) %>% mutate(frequency = str_replace_all(frequency, "(^[^[:digit:]]+|\\)$)", ""), bandwidth = str_replace_all(bandwidth, "(^[^[:digit:]]+|\\)$)", "")) %>% separate(frequency, into =c("f1", "f2", "f3", "f4", "f5"), sep = ",") %>% separate(bandwidth, into =c("f1_bw", "f2_bw", "f3_bw", "f4_bw", "f5_bw"), sep = ",") %>% mutate_at(.vars = c(4:13), .funs  = "as.numeric")
+# formlist = data.frame(form.test$t, do.call("rbind", form.test$frame)) %>% mutate(frequency = str_replace_all(frequency, "(^[^[:digit:]]+|\\)$)", ""), bandwidth = str_replace_all(bandwidth, "(^[^[:digit:]]+|\\)$)", "")) %>% separate(frequency, into =c("f1", "f2", "f3", "f4", "f5"), sep = ",") %>% separate(bandwidth, into =c("f1_bw", "f2_bw", "f3_bw", "f4_bw", "f5_bw"), sep = ",") %>% mutate_at(.vars = c(4:13), .funs  = "as.numeric")
 ```
 
 ## Create dygraphs
@@ -89,8 +89,8 @@ formlist = data.frame(form.test$t, do.call("rbind", form.test$frame)) %>% mutate
 tg.plot(tg.testmini, group = "testplot2")
 pt.plot(pt.testmini, group = "testplot2")
 it.plot(it.testmini, group = "testplot2")
-formant.plot(form.testmini, group = "testplot2", scaleIntensity = TRUE, drawBandwidth = TRUE)
-tg.plot(tg.testmini, formant = form.testmini)
+# formant.plot(form.testmini, group = "testplot2", scaleIntensity = TRUE, drawBandwidth = TRUE)
+#tg.plot(tg.testmini, formant = form.testmini)
 tg.plot(tg.testmini, pt = pt.testmini, it = it.testmini)
 
 
@@ -102,7 +102,7 @@ t <- seqM(0, (length(snd)-1)/fs, by = 1/fs)
 
 snddf = data.frame(t, snd) %>% filter(t <=5)
 dygraph(snddf, xlab = "Time (sec)", group = "testplot")%>% dyRangeSelector(height = 20)
-tg.plot(tg.testmini, formant = form.testmini, group = "testplot")
+#tg.plot(tg.testmini, formant = form.testmini, group = "testplot")
 
 
 ```

@@ -269,7 +269,7 @@ There's a lot to be said about different color palettes in R. You can specify yo
 
 ```{r colors}
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000")
-
+cbPalette10= c("#543005", "#8c510a", "#bf812d", "#dfc27d", "#f6e8c3" ,"#c7eae5" ,"#80cdc1", "#35978f" ,"#01665e" ,"#003c30")
 #To use for fills, add  scale_fill_manual(values=cbPalette)
 
 # To use for line and point colors, add  scale_colour_manual(values=cbPalette)
@@ -295,10 +295,10 @@ ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color 
 
 ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(position = "top")+scale_y_reverse(position = "right")+ xlab("F2!!!!") + ylab("F1!!!!!") + ggtitle("My vowel plot")
 
-ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(position = "top", limits = c(2500,1000))+scale_y_reverse(position = "right", limits = c(2500,0))+ xlab("F2!!!!") + ylab("F1!!!!!") + ggtitle("My vowel plot")
+ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(position = "top", limits = c(2000,1000))+scale_y_reverse(position = "right", limits = c(2000,0))+ xlab("F2!!!!") + ylab("F1!!!!!") + ggtitle("My vowel plot")
 
 
-ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(sec.axis = dup_axis()) + scale_y_reverse(limits = (c(0,1500)),sec.axis = dup_axis())+ xlab("F2!!!!") + ylab("F1!!!!!") + ggtitle("My vowel plot")
+ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette10, )+scale_x_reverse(sec.axis = dup_axis()) + scale_y_reverse(limits = (c(NULL,1500)),sec.axis = dup_axis())+ xlab("F2!!!!") + ylab("F1!!!!!") + ggtitle("My vowel plot")
 
 
 ```

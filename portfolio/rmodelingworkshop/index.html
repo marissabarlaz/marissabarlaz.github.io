@@ -148,76 +148,63 @@
 </ul>
 <pre class="r"><code>ubdb = read.csv(&quot;ubdb.csv&quot;, header = T)
 head(ubdb)</code></pre>
-<pre><code>##    v       f0      f1       f2      f3      f4   ulx   uly   llx    lly
-## 1 AA 117.9440 685.407 1197.050 2191.48 3336.96 13932 18276  6539 -30434
-## 2 IH 112.8280 418.372  985.526 2487.43 3011.10 20501 20067  5382 -22754
-## 3 AO  93.0954 590.657  972.832 2020.60 2789.85 19325 19404 13488 -16881
-## 4 EH 102.2070 614.993 1477.480 2312.54 3231.13 14055 18779  8355 -31634
-## 5 AO  95.1051 560.905 1071.830 1815.31 2777.59 19559 21403 13222 -17716
-## 6 IH 100.8450 201.074 1246.360 2390.22 3494.73 13907 16145 10587 -16234
-##      t1x   t1y    t2x   t2y    t3x   t3y    t4x   t4y  mnix   mniy   mnmx
-## 1 -23064 -4335 -35728  -255 -46156  6775 -57700 13213 -1210 -12864 -42867
-## 2 -19155  5498 -30598 10135 -41026 14935 -55410 17009 -1726  -6362 -44347
-## 3 -27701    85 -36820 10226 -46626 17044 -60265 18089  -646 -11293 -42029
-## 4 -13440 -8626 -25020  -878 -35575  6039 -48541  7436   953 -16019 -40606
-## 5 -23812  3805 -32471 12748 -42574 18192 -56299 15808   191 -11150 -41519
-## 6 -19836  4807 -29710 11789 -40145 17257 -55107 14865 -1886  -7813 -44639
-##     mnmy
-## 1  -8388
-## 2  -3640
-## 3  -7787
-## 4 -10839
-## 5  -7347
-## 6  -4746</code></pre>
+<pre><code>##    v       f0      f1       f2      f3      f4   ulx   uly   llx    lly    t1x
+## 1 AA 117.9440 685.407 1197.050 2191.48 3336.96 13932 18276  6539 -30434 -23064
+## 2 IH 112.8280 418.372  985.526 2487.43 3011.10 20501 20067  5382 -22754 -19155
+## 3 AO  93.0954 590.657  972.832 2020.60 2789.85 19325 19404 13488 -16881 -27701
+## 4 EH 102.2070 614.993 1477.480 2312.54 3231.13 14055 18779  8355 -31634 -13440
+## 5 AO  95.1051 560.905 1071.830 1815.31 2777.59 19559 21403 13222 -17716 -23812
+## 6 IH 100.8450 201.074 1246.360 2390.22 3494.73 13907 16145 10587 -16234 -19836
+##     t1y    t2x   t2y    t3x   t3y    t4x   t4y  mnix   mniy   mnmx   mnmy
+## 1 -4335 -35728  -255 -46156  6775 -57700 13213 -1210 -12864 -42867  -8388
+## 2  5498 -30598 10135 -41026 14935 -55410 17009 -1726  -6362 -44347  -3640
+## 3    85 -36820 10226 -46626 17044 -60265 18089  -646 -11293 -42029  -7787
+## 4 -8626 -25020  -878 -35575  6039 -48541  7436   953 -16019 -40606 -10839
+## 5  3805 -32471 12748 -42574 18192 -56299 15808   191 -11150 -41519  -7347
+## 6  4807 -29710 11789 -40145 17257 -55107 14865 -1886  -7813 -44639  -4746</code></pre>
 <pre class="r"><code>summary(ubdb)</code></pre>
-<pre><code>##        v             f0               f1               f2        
-##  IH     :206   Min.   :  0.00   Min.   :  89.3   Min.   : 684.9  
-##  IY     :197   1st Qu.: 89.19   1st Qu.: 291.2   1st Qu.:1220.0  
-##  AH     :136   Median : 96.81   Median : 430.1   Median :1484.1  
-##  AE     :124   Mean   : 94.07   Mean   : 437.4   Mean   :1497.9  
-##  UX     :110   3rd Qu.:103.18   3rd Qu.: 564.2   3rd Qu.:1758.3  
-##  AO     :109   Max.   :137.50   Max.   :1284.5   Max.   :2572.6  
-##  (Other):191                                                     
-##        f3             f4            ulx             uly       
-##  Min.   :1368   Min.   :2297   Min.   :11793   Min.   :11444  
-##  1st Qu.:2188   1st Qu.:3093   1st Qu.:14134   1st Qu.:17027  
-##  Median :2352   Median :3383   Median :14976   Median :18033  
-##  Mean   :2375   Mean   :3397   Mean   :15366   Mean   :17877  
-##  3rd Qu.:2525   3rd Qu.:3652   3rd Qu.:16201   3rd Qu.:18825  
-##  Max.   :3837   Max.   :4689   Max.   :21092   Max.   :23841  
-##                                                               
-##       llx             lly              t1x              t1y          
-##  Min.   :  461   Min.   :-35268   Min.   :-36533   Min.   :-14089.0  
-##  1st Qu.: 7249   1st Qu.:-24962   1st Qu.:-19836   1st Qu.: -3307.0  
-##  Median : 8931   Median :-22224   Median :-15257   Median :   -54.0  
-##  Mean   : 9000   Mean   :-22393   Mean   :-16737   Mean   :  -218.9  
-##  3rd Qu.:10810   3rd Qu.:-19517   3rd Qu.:-12428   3rd Qu.:  3389.0  
-##  Max.   :17787   Max.   :-11031   Max.   : -5494   Max.   : 14836.0  
-##                                                                      
-##       t2x              t2y             t3x              t3y       
-##  Min.   :-43405   Min.   :-7592   Min.   :-52913   Min.   : 1051  
-##  1st Qu.:-31378   1st Qu.: 4132   1st Qu.:-42054   1st Qu.:11226  
-##  Median :-26343   Median : 8426   Median :-37292   Median :16017  
-##  Mean   :-27558   Mean   : 7863   Mean   :-38021   Mean   :15338  
-##  3rd Qu.:-23596   3rd Qu.:11900   3rd Qu.:-34018   3rd Qu.:20273  
-##  Max.   :-16923   Max.   :19404   Max.   :-27306   Max.   :24056  
-##                                                                   
-##       t4x              t4y             mnix            mniy       
-##  Min.   :-66180   Min.   : 7436   Min.   :-4160   Min.   :-19839  
-##  1st Qu.:-55572   1st Qu.:15148   1st Qu.:-1674   1st Qu.: -9919  
-##  Median :-51926   Median :18906   Median :-1081   Median : -7640  
-##  Mean   :-52621   Mean   :18747   Mean   :-1033   Mean   : -8321  
-##  3rd Qu.:-49451   3rd Qu.:22853   3rd Qu.: -467   3rd Qu.: -6055  
-##  Max.   :-43324   Max.   :25995   Max.   : 3410   Max.   : -3140  
-##                                                                   
-##       mnmx             mnmy       
-##  Min.   :-47257   Min.   :-12229  
-##  1st Qu.:-44127   1st Qu.: -4419  
-##  Median :-43396   Median : -2558  
-##  Mean   :-43309   Mean   : -3030  
-##  3rd Qu.:-42593   3rd Qu.: -1300  
-##  Max.   :-38797   Max.   :  1029  
-## </code></pre>
+<pre><code>##       v                   f0               f1               f2        
+##  Length:1073        Min.   :  0.00   Min.   :  89.3   Min.   : 684.9  
+##  Class :character   1st Qu.: 89.19   1st Qu.: 291.2   1st Qu.:1220.0  
+##  Mode  :character   Median : 96.81   Median : 430.1   Median :1484.1  
+##                     Mean   : 94.07   Mean   : 437.4   Mean   :1497.9  
+##                     3rd Qu.:103.18   3rd Qu.: 564.2   3rd Qu.:1758.3  
+##                     Max.   :137.50   Max.   :1284.5   Max.   :2572.6  
+##        f3             f4            ulx             uly             llx       
+##  Min.   :1368   Min.   :2297   Min.   :11793   Min.   :11444   Min.   :  461  
+##  1st Qu.:2188   1st Qu.:3093   1st Qu.:14134   1st Qu.:17027   1st Qu.: 7249  
+##  Median :2352   Median :3383   Median :14976   Median :18033   Median : 8931  
+##  Mean   :2375   Mean   :3397   Mean   :15366   Mean   :17877   Mean   : 9000  
+##  3rd Qu.:2525   3rd Qu.:3652   3rd Qu.:16201   3rd Qu.:18825   3rd Qu.:10810  
+##  Max.   :3837   Max.   :4689   Max.   :21092   Max.   :23841   Max.   :17787  
+##       lly              t1x              t1y                t2x        
+##  Min.   :-35268   Min.   :-36533   Min.   :-14089.0   Min.   :-43405  
+##  1st Qu.:-24962   1st Qu.:-19836   1st Qu.: -3307.0   1st Qu.:-31378  
+##  Median :-22224   Median :-15257   Median :   -54.0   Median :-26343  
+##  Mean   :-22393   Mean   :-16737   Mean   :  -218.9   Mean   :-27558  
+##  3rd Qu.:-19517   3rd Qu.:-12428   3rd Qu.:  3389.0   3rd Qu.:-23596  
+##  Max.   :-11031   Max.   : -5494   Max.   : 14836.0   Max.   :-16923  
+##       t2y             t3x              t3y             t4x        
+##  Min.   :-7592   Min.   :-52913   Min.   : 1051   Min.   :-66180  
+##  1st Qu.: 4132   1st Qu.:-42054   1st Qu.:11226   1st Qu.:-55572  
+##  Median : 8426   Median :-37292   Median :16017   Median :-51926  
+##  Mean   : 7863   Mean   :-38021   Mean   :15338   Mean   :-52621  
+##  3rd Qu.:11900   3rd Qu.:-34018   3rd Qu.:20273   3rd Qu.:-49451  
+##  Max.   :19404   Max.   :-27306   Max.   :24056   Max.   :-43324  
+##       t4y             mnix            mniy             mnmx       
+##  Min.   : 7436   Min.   :-4160   Min.   :-19839   Min.   :-47257  
+##  1st Qu.:15148   1st Qu.:-1674   1st Qu.: -9919   1st Qu.:-44127  
+##  Median :18906   Median :-1081   Median : -7640   Median :-43396  
+##  Mean   :18747   Mean   :-1033   Mean   : -8321   Mean   :-43309  
+##  3rd Qu.:22853   3rd Qu.: -467   3rd Qu.: -6055   3rd Qu.:-42593  
+##  Max.   :25995   Max.   : 3410   Max.   : -3140   Max.   :-38797  
+##       mnmy       
+##  Min.   :-12229  
+##  1st Qu.: -4419  
+##  Median : -2558  
+##  Mean   : -3030  
+##  3rd Qu.: -1300  
+##  Max.   :  1029</code></pre>
 </div>
 <div id="simple-linear-regression" class="section level2">
 <h2>Simple linear regression</h2>
@@ -245,7 +232,8 @@ summary(lm1)</code></pre>
 ## Residual standard error: 143.1 on 1071 degrees of freedom
 ## Multiple R-squared:  0.2367, Adjusted R-squared:  0.236 
 ## F-statistic: 332.2 on 1 and 1071 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>What does this mean? The intercept (often labeled the constant) is the expected mean value of y (the dependent variable) when all x (the independent variable(s)) equal(s) 0.</p>
+<p>What does this mean?
+The intercept (often labeled the constant) is the expected mean value of y (the dependent variable) when all x (the independent variable(s)) equal(s) 0.</p>
 <p>The estimate for t1y means, if we hold everything else constant, that if we were to raise t1y by one unit, f1 would change by -0.001557 Hz.</p>
 <p>We then need to check to make sure the model is well fit, by ensuring some more criteria are met. First, we need to make sure the residuals of the model are homoscedastic, meaning variance of the residuals does not increase with fitted values. If there is absolutely no heteroscedastity, you should see a completely random, equal distribution of points throughout the range the x axis and a flat red line, for the first and third plots.</p>
 <p>Another way to check to make sure there is no significant heteroscedastity is the Breush-Pagan test.</p>
@@ -266,7 +254,7 @@ plot(lm1)</code></pre>
 ## BP = 0.28531, df = 1, p-value = 0.5932</code></pre>
 <p>Here, we see p &gt; 0.05, so we cannot reject the null hypothesis, and therefore there is no significant heteroscedastity.</p>
 <p>There are more assumptions, which I will not go into for the sake of time, but are discussed here:</p>
-<p><a href="https://www.r-bloggers.com/basic-assumptions-to-be-taken-care-of-when-building-a-predictive-model-2/" class="uri">https://www.r-bloggers.com/basic-assumptions-to-be-taken-care-of-when-building-a-predictive-model-2/</a></p>
+<p><a href="https://www.r-bloggers.com/basic-assumptions-to-be-taken-care-of-when-building-a-predictive-model-2/">https://www.r-bloggers.com/basic-assumptions-to-be-taken-care-of-when-building-a-predictive-model-2/</a></p>
 </div>
 <div id="moving-beyond-simple-linear-regression" class="section level2">
 <h2>Moving beyond simple linear regression</h2>
@@ -507,10 +495,11 @@ pl &lt;- ggplot(ubdb) + geom_point(aes(x=t1y, y=f1), size=2, colour=&quot;#99339
 <p>How do we encode random effects? It depends on what you are trying to do. First, running a null model (with only random effects, but no fixed effects), allows a preliminary understanding of the variance between levels of the random effect. Because the current dataset does not have any random effects, I have “created” them.</p>
 <pre class="r"><code>myspeakers = c(&quot;S1&quot;, &quot;S2&quot;, &quot;S3&quot;, &quot;S4&quot;, &quot;S5&quot;)
 ubdb$speaker = factor(sample(myspeakers, dim(ubdb)[1], replace = TRUE))
-lme1= lmer(f1~1+(1|speaker), data = ubdb, REML = FALSE)
-summary(lme1) </code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use
-##   Satterthwaite&#39;s method [lmerModLmerTest]
+lme1= lmer(f1~1+(1|speaker), data = ubdb, REML = FALSE)</code></pre>
+<pre><code>## boundary (singular) fit: see ?isSingular</code></pre>
+<pre class="r"><code>summary(lme1) </code></pre>
+<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite&#39;s
+##   method [lmerModLmerTest]
 ## Formula: f1 ~ 1 + (1 | speaker)
 ##    Data: ubdb
 ## 
@@ -522,27 +511,29 @@ summary(lme1) </code></pre>
 ## -2.1271 -0.8934 -0.0448  0.7746  5.1757 
 ## 
 ## Random effects:
-##  Groups   Name        Variance  Std.Dev. 
-##  speaker  (Intercept) 1.925e-11 4.388e-06
-##  Residual             2.679e+04 1.637e+02
+##  Groups   Name        Variance Std.Dev.
+##  speaker  (Intercept)     0      0.0   
+##  Residual             26786    163.7   
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error       df t value Pr(&gt;|t|)    
 ## (Intercept)  437.433      4.996 1073.000   87.55   &lt;2e-16 ***
 ## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## convergence code: 0
+## boundary (singular) fit: see ?isSingular</code></pre>
 <p>The variance in random factor tells you how much variability there is between individuals across all vowels, not the level of variance between individuals within each vowel category.</p>
 <p>Now let’s see if we can model f1 based on tongue position and speaker.</p>
 <pre class="r"><code>lme2= lmer(f1~t1y+(1|speaker), data = ubdb, REML = FALSE)</code></pre>
 <pre><code>## Warning: Some predictor variables are on very different scales: consider
-## rescaling
-
-## Warning: Some predictor variables are on very different scales: consider
+## rescaling</code></pre>
+<pre><code>## boundary (singular) fit: see ?isSingular</code></pre>
+<pre><code>## Warning: Some predictor variables are on very different scales: consider
 ## rescaling</code></pre>
 <pre class="r"><code>summary(lme2) </code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use
-##   Satterthwaite&#39;s method [lmerModLmerTest]
+<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite&#39;s
+##   method [lmerModLmerTest]
 ## Formula: f1 ~ t1y + (1 | speaker)
 ##    Data: ubdb
 ## 
@@ -554,9 +545,9 @@ summary(lme1) </code></pre>
 ## -2.2438 -0.7848  0.0085  0.7143  6.2958 
 ## 
 ## Random effects:
-##  Groups   Name        Variance  Std.Dev. 
-##  speaker  (Intercept) 6.402e-13 8.001e-07
-##  Residual             2.044e+04 1.430e+02
+##  Groups   Name        Variance Std.Dev.
+##  speaker  (Intercept)     0      0     
+##  Residual             20445    143     
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
@@ -570,12 +561,15 @@ summary(lme1) </code></pre>
 ##     (Intr)
 ## t1y 0.043 
 ## fit warnings:
-## Some predictor variables are on very different scales: consider rescaling</code></pre>
+## Some predictor variables are on very different scales: consider rescaling
+## convergence code: 0
+## boundary (singular) fit: see ?isSingular</code></pre>
 <pre class="r"><code>ubdb$t1y.z = scale(ubdb$t1y,center = TRUE, scale = TRUE)
-lme3= lmer(f1~t1y.z+(1|speaker), data = ubdb, REML = FALSE)
-summary(lme3) </code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use
-##   Satterthwaite&#39;s method [lmerModLmerTest]
+lme3= lmer(f1~t1y.z+(1|speaker), data = ubdb, REML = FALSE)</code></pre>
+<pre><code>## boundary (singular) fit: see ?isSingular</code></pre>
+<pre class="r"><code>summary(lme3) </code></pre>
+<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite&#39;s
+##   method [lmerModLmerTest]
 ## Formula: f1 ~ t1y.z + (1 | speaker)
 ##    Data: ubdb
 ## 
@@ -587,9 +581,9 @@ summary(lme3) </code></pre>
 ## -2.2438 -0.7848  0.0085  0.7143  6.2958 
 ## 
 ## Random effects:
-##  Groups   Name        Variance  Std.Dev. 
-##  speaker  (Intercept) 6.402e-13 8.001e-07
-##  Residual             2.044e+04 1.430e+02
+##  Groups   Name        Variance Std.Dev.
+##  speaker  (Intercept)     0      0     
+##  Residual             20445    143     
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
@@ -601,11 +595,14 @@ summary(lme3) </code></pre>
 ## 
 ## Correlation of Fixed Effects:
 ##       (Intr)
-## t1y.z 0.000</code></pre>
-<pre class="r"><code>lme5= lmer(f1~t1y.z+v+(1|speaker), data = ubdb, REML = FALSE)
-summary(lme5) </code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use
-##   Satterthwaite&#39;s method [lmerModLmerTest]
+## t1y.z 0.000 
+## convergence code: 0
+## boundary (singular) fit: see ?isSingular</code></pre>
+<pre class="r"><code>lme5= lmer(f1~t1y.z+v+(1|speaker), data = ubdb, REML = FALSE)</code></pre>
+<pre><code>## boundary (singular) fit: see ?isSingular</code></pre>
+<pre class="r"><code>summary(lme5) </code></pre>
+<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite&#39;s
+##   method [lmerModLmerTest]
 ## Formula: f1 ~ t1y.z + v + (1 | speaker)
 ##    Data: ubdb
 ## 
@@ -617,9 +614,9 @@ summary(lme5) </code></pre>
 ## -3.2685 -0.6003  0.0203  0.5899  7.6046 
 ## 
 ## Random effects:
-##  Groups   Name        Variance  Std.Dev. 
-##  speaker  (Intercept) 3.666e-14 1.915e-07
-##  Residual             1.430e+04 1.196e+02
+##  Groups   Name        Variance Std.Dev.
+##  speaker  (Intercept)     0      0.0   
+##  Residual             14300    119.6   
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
@@ -647,62 +644,68 @@ summary(lme5) </code></pre>
 ## vIH   -0.857 -0.247  0.662  0.662  0.639  0.656                     
 ## vIY   -0.852 -0.246  0.658  0.658  0.635  0.652  0.745              
 ## vUW   -0.392 -0.088  0.305  0.306  0.295  0.300  0.339  0.338       
-## vUX   -0.776 -0.149  0.606  0.610  0.587  0.594  0.669  0.666  0.305</code></pre>
+## vUX   -0.776 -0.149  0.606  0.610  0.587  0.594  0.669  0.666  0.305
+## convergence code: 0
+## boundary (singular) fit: see ?isSingular</code></pre>
 <p>In this sets of models, each contains a random intercept shared by individuals that have the same value for speaker - each speaker’s regression line is shifted up/down by a random amount with mean 0. This implies that each speaker shows the same relationship (i.e., slope) between <em>t1y</em> and <em>f1</em>, but at a different “starting” point.</p>
 <p>What if we want to include a random slope, meaning that speaker’s F1 differs at different rates based on t1y. Then we would run the following code:</p>
-<pre class="r"><code>lme6= lmer(f1~t1y.z+v+(1+t1y.z|speaker), data = ubdb, REML = FALSE)
-summary(lme6) </code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use
-##   Satterthwaite&#39;s method [lmerModLmerTest]
+<pre class="r"><code>lme6= lmer(f1~t1y.z+v+(1+t1y.z|speaker), data = ubdb, REML = FALSE)</code></pre>
+<pre><code>## boundary (singular) fit: see ?isSingular</code></pre>
+<pre class="r"><code>summary(lme6) </code></pre>
+<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite&#39;s
+##   method [lmerModLmerTest]
 ## Formula: f1 ~ t1y.z + v + (1 + t1y.z | speaker)
 ##    Data: ubdb
 ## 
 ##      AIC      BIC   logLik deviance df.resid 
-##  13339.5  13409.2  -6655.8  13311.5     1059 
+##  13339.4  13409.1  -6655.7  13311.4     1059 
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -3.2685 -0.6003  0.0203  0.5899  7.6046 
+## -3.2606 -0.5938  0.0191  0.5872  7.6138 
 ## 
 ## Random effects:
-##  Groups   Name        Variance  Std.Dev.  Corr
-##  speaker  (Intercept) 0.000e+00 0.000e+00     
-##           t1y.z       1.404e-10 1.185e-05  NaN
-##  Residual             1.430e+04 1.196e+02     
+##  Groups   Name        Variance  Std.Dev. Corr
+##  speaker  (Intercept)     1.901   1.379      
+##           t1y.z          10.351   3.217  1.00
+##  Residual             14287.549 119.531      
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error       df t value Pr(&gt;|t|)    
-## (Intercept)  591.608     13.967 1073.000  42.358  &lt; 2e-16 ***
-## t1y.z        -53.010      4.084 1073.000 -12.981  &lt; 2e-16 ***
-## vAE          -61.230     17.501 1073.000  -3.499 0.000487 ***
-## vAH         -146.953     17.202 1073.000  -8.543  &lt; 2e-16 ***
-## vAO          -70.465     17.940 1073.000  -3.928 9.12e-05 ***
-## vEH         -113.316     18.281 1073.000  -6.198 8.12e-10 ***
-## vIH         -181.115     16.644 1073.000 -10.882  &lt; 2e-16 ***
-## vIY         -235.341     16.741 1073.000 -14.058  &lt; 2e-16 ***
-## vUW         -216.232     36.066 1073.000  -5.995 2.77e-09 ***
-## vUX         -291.066     18.109 1073.000 -16.073  &lt; 2e-16 ***
+## (Intercept)  591.404     13.979 1002.608  42.305  &lt; 2e-16 ***
+## t1y.z        -52.961      4.329    9.388 -12.234 4.43e-07 ***
+## vAE          -61.218     17.498 1070.462  -3.499 0.000487 ***
+## vAH         -146.782     17.201 1072.187  -8.534  &lt; 2e-16 ***
+## vAO          -70.381     17.936 1070.565  -3.924 9.26e-05 ***
+## vEH         -112.993     18.281 1072.392  -6.181 9.05e-10 ***
+## vIH         -180.996     16.642 1071.561 -10.876  &lt; 2e-16 ***
+## vIY         -235.174     16.736 1069.591 -14.052  &lt; 2e-16 ***
+## vUW         -216.253     36.058 1071.323  -5.997 2.74e-09 ***
+## vUX         -290.908     18.106 1071.196 -16.067  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Correlation of Fixed Effects:
 ##       (Intr) t1y.z  vAE    vAH    vAO    vEH    vIH    vIY    vUW   
-## t1y.z  0.150                                                        
-## vAE   -0.785 -0.031                                                 
-## vAH   -0.791  0.017  0.633                                          
-## vAO   -0.761 -0.001  0.607  0.618                                   
-## vEH   -0.765 -0.119  0.600  0.604  0.581                            
-## vIH   -0.857 -0.247  0.662  0.662  0.639  0.656                     
-## vIY   -0.852 -0.246  0.658  0.658  0.635  0.652  0.745              
-## vUW   -0.392 -0.088  0.305  0.306  0.295  0.300  0.339  0.338       
-## vUX   -0.776 -0.149  0.606  0.610  0.587  0.594  0.669  0.666  0.305</code></pre>
+## t1y.z  0.156                                                        
+## vAE   -0.784 -0.029                                                 
+## vAH   -0.790  0.016  0.633                                          
+## vAO   -0.760 -0.001  0.607  0.618                                   
+## vEH   -0.764 -0.111  0.600  0.605  0.582                            
+## vIH   -0.857 -0.233  0.662  0.662  0.639  0.656                     
+## vIY   -0.852 -0.232  0.658  0.658  0.635  0.652  0.745              
+## vUW   -0.391 -0.083  0.305  0.306  0.295  0.300  0.339  0.338       
+## vUX   -0.776 -0.140  0.606  0.610  0.587  0.594  0.670  0.666  0.305
+## convergence code: 0
+## boundary (singular) fit: see ?isSingular</code></pre>
 <p>This model, in addition to a random intercept, also contains a random slope for t1y. This means that the rate of <em>f1</em> change based on <em>t1y</em> is different from person to person. If an individual has a positive random effect, then their <em>f1</em> increases more quickly with practice than the average, while a negative random effect indicates their <em>f1</em> increases less quickly with practice than the average.</p>
 <p>To constrain the model so that the random slope and random intercept are uncorrelated (and therefore independent, since they are normally distributed), you’d fit the model:</p>
-<pre class="r"><code>lme6= lmer(f1~t1y.z+v+(1|speaker)+(t1y.z-1|speaker), data = ubdb, REML = FALSE)
-summary(lme6) </code></pre>
-<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use
-##   Satterthwaite&#39;s method [lmerModLmerTest]
+<pre class="r"><code>lme6= lmer(f1~t1y.z+v+(1|speaker)+(t1y.z-1|speaker), data = ubdb, REML = FALSE)</code></pre>
+<pre><code>## boundary (singular) fit: see ?isSingular</code></pre>
+<pre class="r"><code>summary(lme6) </code></pre>
+<pre><code>## Linear mixed model fit by maximum likelihood . t-tests use Satterthwaite&#39;s
+##   method [lmerModLmerTest]
 ## Formula: f1 ~ t1y.z + v + (1 | speaker) + (t1y.z - 1 | speaker)
 ##    Data: ubdb
 ## 
@@ -711,41 +714,43 @@ summary(lme6) </code></pre>
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -3.2685 -0.6003  0.0203  0.5899  7.6046 
+## -3.2658 -0.6002  0.0217  0.5882  7.6057 
 ## 
 ## Random effects:
-##  Groups    Name        Variance Std.Dev.
-##  speaker   (Intercept)     0      0.0   
-##  speaker.1 t1y.z           0      0.0   
-##  Residual              14300    119.6   
+##  Groups    Name        Variance  Std.Dev.
+##  speaker   (Intercept)     0.000   0.000 
+##  speaker.1 t1y.z           2.173   1.474 
+##  Residual              14297.609 119.573 
 ## Number of obs: 1073, groups:  speaker, 5
 ## 
 ## Fixed effects:
 ##             Estimate Std. Error       df t value Pr(&gt;|t|)    
-## (Intercept)  591.608     13.967 1073.000  42.358  &lt; 2e-16 ***
-## t1y.z        -53.010      4.084 1073.000 -12.981  &lt; 2e-16 ***
-## vAE          -61.230     17.501 1073.000  -3.499 0.000487 ***
-## vAH         -146.953     17.202 1073.000  -8.543  &lt; 2e-16 ***
-## vAO          -70.465     17.940 1073.000  -3.928 9.12e-05 ***
-## vEH         -113.316     18.281 1073.000  -6.198 8.12e-10 ***
-## vIH         -181.115     16.644 1073.000 -10.882  &lt; 2e-16 ***
-## vIY         -235.341     16.741 1073.000 -14.058  &lt; 2e-16 ***
-## vUW         -216.232     36.066 1073.000  -5.995 2.77e-09 ***
-## vUX         -291.066     18.109 1073.000 -16.073  &lt; 2e-16 ***
+## (Intercept)  591.567     13.968 1069.867  42.353  &lt; 2e-16 ***
+## t1y.z        -52.995      4.137    8.600 -12.811 6.74e-07 ***
+## vAE          -61.248     17.502 1071.977  -3.500 0.000485 ***
+## vAH         -146.926     17.202 1071.616  -8.541  &lt; 2e-16 ***
+## vAO          -70.432     17.940 1072.977  -3.926 9.19e-05 ***
+## vEH         -113.263     18.282 1071.966  -6.195 8.28e-10 ***
+## vIH         -181.092     16.644 1071.943 -10.880  &lt; 2e-16 ***
+## vIY         -235.301     16.741 1072.954 -14.056  &lt; 2e-16 ***
+## vUW         -216.227     36.065 1071.030  -5.996 2.77e-09 ***
+## vUX         -291.033     18.110 1072.832 -16.071  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Correlation of Fixed Effects:
 ##       (Intr) t1y.z  vAE    vAH    vAO    vEH    vIH    vIY    vUW   
-## t1y.z  0.150                                                        
+## t1y.z  0.148                                                        
 ## vAE   -0.785 -0.031                                                 
 ## vAH   -0.791  0.017  0.633                                          
 ## vAO   -0.761 -0.001  0.607  0.618                                   
-## vEH   -0.765 -0.119  0.600  0.604  0.581                            
-## vIH   -0.857 -0.247  0.662  0.662  0.639  0.656                     
-## vIY   -0.852 -0.246  0.658  0.658  0.635  0.652  0.745              
-## vUW   -0.392 -0.088  0.305  0.306  0.295  0.300  0.339  0.338       
-## vUX   -0.776 -0.149  0.606  0.610  0.587  0.594  0.669  0.666  0.305</code></pre>
+## vEH   -0.765 -0.117  0.600  0.604  0.581                            
+## vIH   -0.857 -0.244  0.662  0.662  0.639  0.656                     
+## vIY   -0.852 -0.243  0.658  0.658  0.635  0.652  0.745              
+## vUW   -0.392 -0.087  0.305  0.306  0.295  0.300  0.339  0.338       
+## vUX   -0.776 -0.147  0.606  0.610  0.587  0.594  0.669  0.666  0.305
+## convergence code: 0
+## boundary (singular) fit: see ?isSingular</code></pre>
 </div>
 
          

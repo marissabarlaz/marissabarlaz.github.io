@@ -242,7 +242,7 @@ The output for get_acoustic_data is a dataframe which will have the following in
 * If Formant = TRUE, the values of F1-F5 and their bandwidths at that particular time (with any "--undefined--" replaced with NA)
 
 ```{r}
-absdir = "/Users/goldrch2/Desktop/Research/FemaleBP/"
+absdir = "/Users/marissabarlaz/Desktop/FemaleBP/"
 
 #create_praat_files(absdir, pitch = TRUE, formant = FALSE, intensity = FALSE)
 create_praat_files(absdir, pitch = TRUE, formant = TRUE, intensity = TRUE)

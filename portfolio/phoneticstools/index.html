@@ -124,17 +124,43 @@
 </ul>
 </div>
 
-<pre class="r"><code>library(tidyverse)
-library(PraatR)
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
+## ✓ tibble  3.0.3     ✓ dplyr   1.0.2
+## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
+## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
+<pre><code>## ── Conflicts ───────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(PraatR)
 library(rPraat)
 library(phonR)
 library(dygraphs)
-library(phonTools)
-library(audio)
-library(tuneR)
-library(gss)</code></pre>
+library(phonTools)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;phonTools&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     slice</code></pre>
+<pre class="r"><code>library(audio)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;audio&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:phonTools&#39;:
+## 
+##     play</code></pre>
+<pre class="r"><code>library(tuneR)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;tuneR&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:audio&#39;:
+## 
+##     play</code></pre>
+<pre><code>## The following objects are masked from &#39;package:phonTools&#39;:
+## 
+##     normalize, play</code></pre>
+<pre class="r"><code>library(gss)</code></pre>
 <p>For this workshop, I will be using a subset of my dissertation data. I will be using words with oral vowels in Brazilian Portuguese (/a/ from the word <em>babado</em>, /i/ from the word <em>cabido</em>, and /u/ from the word <em>tributo</em>), repeated by five female speakers in a carrier phrase. The audio files and accompanying textgrids I use are named as follows:</p>
-<pre class="r"><code>absdir = &quot;/Users/goldrch2/Desktop/Research/FemaleBP/&quot;
+<pre class="r"><code>absdir = &quot;/Users/marissabarlaz/Desktop/FemaleBP/&quot;
 mydir = list.files(absdir, &quot;*.WAV&quot;)
 mydir</code></pre>
 <pre><code>##  [1] &quot;BP17-L-babado.WAV&quot;  &quot;BP17-L-cabido.WAV&quot;  &quot;BP17-L-tributo.WAV&quot;
@@ -144,7 +170,7 @@ mydir</code></pre>
 ## [13] &quot;BP21-L-babado.WAV&quot;  &quot;BP21-L-cabido.WAV&quot;  &quot;BP21-L-tributo.WAV&quot;</code></pre>
 <pre class="r"><code>testwav = paste0(absdir, mydir[1])
 testwav</code></pre>
-<pre><code>## [1] &quot;/Users/goldrch2/Desktop/Research/FemaleBP/BP17-L-babado.WAV&quot;</code></pre>
+<pre><code>## [1] &quot;/Users/marissabarlaz/Desktop/FemaleBP/BP17-L-babado.WAV&quot;</code></pre>
 <pre class="r"><code>testtext = str_replace(testwav, &quot;.WAV&quot;, &quot;.TextGrid&quot;)
 testformant = str_replace(testwav, &quot;.WAV&quot;, &quot;.Formant&quot;)
 testpitch = str_replace(testwav, &quot;.WAV&quot;, &quot;.Pitch&quot;)
@@ -284,7 +310,7 @@ all_f0_data_PraatR &lt;- do.call(&quot;rbind&quot;, alltextgrids) %&gt;% select(
 rm(alltextgrids, i, j)
 endtime = Sys.time()
 endtime - starttime</code></pre>
-<pre><code>## Time difference of 2.540845 hours</code></pre>
+<pre><code>## Time difference of 1.40635 hours</code></pre>
 <p>You can also do things like formant analysis the same way. I will not go through the entirety of a for loop, but just will show you an example on the testwav file I used before.</p>
 <pre class="r"><code>FormantTable = read.delim(testtable)
 praat( &quot;To Formant (burg)...&quot;,arguments = FormantArguments,input = testwav, output = testformant, overwrite = TRUE) # End praat()
@@ -299,19 +325,19 @@ for (i in 1:length(FormantTable$midpoint)){
 
 head(FormantTable)</code></pre>
 <pre><code>##         tmin    tier text       tmax   midpoint                 F1_mdpt
-## 1  0.3685511 segment   ao  0.5662138  0.4673824  883.280761950642 hertz
+## 1  0.3685511 segment   ao  0.5662138  0.4673824 883.2807619506391 hertz
 ## 2  3.5062709 segment   ao  3.6929523  3.5996116   921.21054130018 hertz
-## 3  6.0017163 segment   ao  6.1883977  6.0950570  891.476628700664 hertz
-## 4  8.5326568 segment   ao  8.7229987  8.6278278 894.5945631724647 hertz
-## 5 11.0302097 segment   ao 11.2315328 11.1308712 951.6006078560185 hertz
-## 6 13.5066505 segment   ao 13.6915017 13.5990761 922.6018852827735 hertz
+## 3  6.0017163 segment   ao  6.1883977  6.0950570  891.476628700663 hertz
+## 4  8.5326568 segment   ao  8.7229987  8.6278278 894.5945631724654 hertz
+## 5 11.0302097 segment   ao 11.2315328 11.1308712 951.6006078560181 hertz
+## 6 13.5066505 segment   ao 13.6915017 13.5990761 922.6018852827742 hertz
 ##                    F2_mdpt                  F3_mdpt
-## 1  1541.214574184007 hertz  3076.798429305465 hertz
-## 2 1570.7125874327342 hertz  3048.635343846055 hertz
-## 3 1601.2010933754973 hertz  3002.861650341057 hertz
+## 1 1541.2145741840059 hertz  3076.798429305465 hertz
+## 2 1570.7125874327346 hertz 3048.6353438460546 hertz
+## 3  1601.201093375497 hertz 3002.8616503410567 hertz
 ## 4 1572.5047603271003 hertz 2994.0426186571212 hertz
-## 5 1585.5962991072745 hertz 3057.4259220868607 hertz
-## 6  1401.975155076795 hertz  3050.813680335225 hertz</code></pre>
+## 5 1585.5962991072736 hertz 3057.4259220868607 hertz
+## 6 1401.9751550767953 hertz  3050.813680335225 hertz</code></pre>
 <pre class="r"><code>FormantTable = FormantTable %&gt;% mutate_at(.vars = c(&quot;F1_mdpt&quot;, &quot;F2_mdpt&quot;, &quot;F3_mdpt&quot;), .funs = str_replace_all, pattern = &quot;hertz&quot;, replacement = &quot;&quot;) %&gt;% mutate_at(.vars = c(&quot;F1_mdpt&quot;, &quot;F2_mdpt&quot;, &quot;F3_mdpt&quot;), .funs = str_replace_all, pattern = &quot;--undefined--&quot;, replacement = &quot;NA&quot;) %&gt;% mutate_at(.vars = c(&quot;F1_mdpt&quot;, &quot;F2_mdpt&quot;, &quot;F3_mdpt&quot;), .funs = as.numeric)</code></pre>
 <p>All commands supported in the PraatR package are listed <a href="http://www2.kobe-u.ac.jp/~albin/praatr/commands.html">here</a>.</p>
 </div>
@@ -344,7 +370,7 @@ rm(sndWav, t)</code></pre>
 <div id="using-apply-to-create-.pitch-files" class="section level2">
 <h2>Using apply to create .Pitch files</h2>
 <p>Things I didn’t know when I started writing this workshop - you CAN use apply functions to create all .Pitch and .PitchTier, etc. files on your computer. Once again, use absolute paths without spaces in them! This will make your life a lot easier, though sadly it does NOT make things shorter in terms of time.</p>
-<pre class="r"><code>mydirlong = &quot;/Users/goldrch2/Desktop/Research/FemaleBP/&quot;
+<pre class="r"><code>mydirlong = &quot;/Users/marissabarlaz/Desktop/FemaleBP/&quot;
 mydirwav = paste0(mydirlong, mydir)
 mydirpitch = str_replace_all(mydirwav, &quot;.WAV&quot;, &quot;.Pitch&quot;)
 mydirpitchtier = str_replace_all(mydirwav, &quot;.WAV&quot;, &quot;.PitchTier&quot;)
@@ -424,7 +450,7 @@ head(all_f0_data_rPraat)</code></pre>
 <pre class="r"><code>rm(alltextgrids, i, j)
 endtime2 = Sys.time()
 endtime2 - starttime2</code></pre>
-<pre><code>## Time difference of 1.392794 mins</code></pre>
+<pre><code>## Time difference of 43.96095 secs</code></pre>
 <p>Unfortunately, as of now, we cannot do formant analysis with rPraat. You can do intensity analysis, if you would like.</p>
 </div>
 </div>
@@ -478,7 +504,7 @@ all_f0_data_PhonTools &lt;- do.call(&quot;rbind&quot;, alltextgrids2)
 rm(alltextgrids3, j)
 endtime3 = Sys.time()
 endtime3 - starttime3</code></pre>
-<pre><code>## Time difference of 25.28929 mins</code></pre>
+<pre><code>## Time difference of 14.7412 mins</code></pre>
 </div>
 <div id="formant-tracking" class="section level2">
 <h2>Formant Tracking</h2>
@@ -607,9 +633,9 @@ with(all_formant_data_PhonTools, plotVowels(f1_mdpt, f2_mdpt, label, plot.tokens
 <p><img src="/portfolio/PhoneticsTools_files/figure-html/unnamed-chunk-8-1.png" width="576" /></p>
 <pre class="r"><code>ggplot(all_formant_data_PhonTools, aes(x = f2_mdpt, y = f1_mdpt, color = label)) + geom_point(alpha = 0.4) + scale_x_reverse() + scale_y_reverse() + stat_ellipse(aes(group = label)) + scale_color_manual(values = cbPalette[2:4]) + theme_minimal()</code></pre>
 <p><img src="/portfolio/PhoneticsTools_files/figure-html/unnamed-chunk-8-2.png" width="576" /></p>
-<pre class="r"><code>formant_means = all_formant_data_PhonTools %&gt;% group_by(unicodevowel) %&gt;% summarise(meanF1 = mean(f1_mdpt), meanF2 = mean(f2_mdpt))
-
-ggplot(all_formant_data_PhonTools, aes(x = f2_mdpt, y = f1_mdpt, color = unicodevowel)) + geom_point(alpha = 0.4) + scale_x_reverse() + scale_y_reverse() + stat_ellipse(aes(group = label)) +geom_text(data = formant_means, aes(x = meanF2, y = meanF1, color = unicodevowel, label = unicodevowel), size = 10) +scale_color_manual(values = cbPalette[2:4]) + theme_minimal() +
+<pre class="r"><code>formant_means = all_formant_data_PhonTools %&gt;% group_by(unicodevowel) %&gt;% summarise(meanF1 = mean(f1_mdpt), meanF2 = mean(f2_mdpt))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>ggplot(all_formant_data_PhonTools, aes(x = f2_mdpt, y = f1_mdpt, color = unicodevowel)) + geom_point(alpha = 0.4) + scale_x_reverse() + scale_y_reverse() + stat_ellipse(aes(group = label)) +geom_text(data = formant_means, aes(x = meanF2, y = meanF1, color = unicodevowel, label = unicodevowel), size = 10) +scale_color_manual(values = cbPalette[2:4]) + theme_minimal() +
 theme(legend.position=&#39;none&#39;)</code></pre>
 <p><img src="/portfolio/PhoneticsTools_files/figure-html/unnamed-chunk-8-3.png" width="576" /></p>
 <pre class="r"><code>ggplot(all_formant_data_PhonTools, aes(x = f2_mdpt, y = f1_mdpt, color = unicodevowel)) + geom_point(alpha = 0.2) + scale_x_reverse() + scale_y_reverse() + stat_ellipse(aes(group = label)) +geom_text(data = formant_means, aes(x = meanF2, y = meanF1, color = unicodevowel, label = unicodevowel), size = 10) +scale_color_manual(values = cbPalette[2:4]) + theme_minimal() </code></pre>

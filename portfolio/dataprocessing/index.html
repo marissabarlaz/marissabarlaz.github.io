@@ -105,12 +105,6 @@
 
 <div id="TOC">
 <ul>
-<li><a href="#why-the-tidyverse">Why the tidyverse?</a><ul>
-<li><a href="#tidy-data">Tidy data</a></li>
-<li><a href="#components-of-the-tidyverse">Components of the tidyverse</a></li>
-<li><a href="#importing-data">Importing data</a></li>
-<li><a href="#the-pipe-operator">The pipe operator</a></li>
-</ul></li>
 <li><a href="#data-manipulation-with-dplyr">Data Manipulation with dplyr</a><ul>
 <li><a href="#filter">Filter</a></li>
 <li><a href="#arrange">Arrange</a></li>
@@ -118,43 +112,27 @@
 <li><a href="#mutate">Mutate</a></li>
 <li><a href="#group_by">group_by</a></li>
 <li><a href="#summarise">Summarise</a></li>
-</ul></li>
-<li><a href="#tidying-data-with-tidyr">Tidying data with tidyr</a><ul>
-<li><a href="#shapes-of-data">Shapes of data</a></li>
-<li><a href="#gather">Gather</a></li>
-<li><a href="#spread">Spread</a></li>
 <li><a href="#separate">Separate</a></li>
 <li><a href="#unite">Unite</a></li>
 </ul></li>
-<li><a href="#relating-different-data-sets-with-dplyr">Relating different data sets with dplyr</a><ul>
-<li><a href="#mutating-joins">Mutating Joins</a></li>
-<li><a href="#filtering-joins">Filtering joins</a></li>
-</ul></li>
-<li><a href="#my-data-processing-code">My data processing code</a></li>
 </ul>
 </div>
 
-<div id="why-the-tidyverse" class="section level1">
-<h1>Why the tidyverse?</h1>
+<p>#Why the tidyverse?</p>
 <p>There are a few reasons to use R and the Tidyverse for data processing. Excel is opaque – if you make a change to a cell/row/column, unless you write down exactly what you did, you have no way of knowing how you processed your data. Using R and documenting your work in Rmarkdown will allow you to understand exactly what you are doing, which is helpful in future iterations of using the data.</p>
 <p>Chances are, you are not going to get data from an experiment in a form that is ready to go for an analysis.Therefore, it is important to first figure out what shape you want your data to be in before you start processing. That way, you have a clear way forward towards tidy data. Tidying and transforming are called ‘wrangling’, a term you will see often in the field of data science.</p>
-<div class="figure">
-<img src="/img/lifecycle.png" />
-
-</div>
-<div id="tidy-data" class="section level2">
-<h2>Tidy data</h2>
-<p>There are three interrelated rules which make a dataset tidy:</p>
+<p><img src="/img/lifecycle.png" /></p>
+<p>##Tidy data
+There are three interrelated rules which make a dataset tidy:</p>
 <ul>
 <li>Each variable must have its own column.</li>
 <li>Each observation must have its own row.</li>
 <li>Each value must have its own cell.</li>
 </ul>
-<p>Data doesn’t often come in this form. For example, sometimes we have data spread over various files (e.g., a file for each speaker/participant). Other untidy datasets have multiple variables over multiple columns. For example, variable name is in one column, and then the value is in a second column. Using the tidyverse, we can take this untidy data and make it tidy!</p>
-</div>
-<div id="components-of-the-tidyverse" class="section level2">
-<h2>Components of the tidyverse</h2>
-<p>require(tidyverse) installs the following packages (and some others):</p>
+<p>Data doesn’t often come in this form. For example, sometimes we have data spread over various files (e.g., a file for each speaker/participant).
+Other untidy datasets have multiple variables over multiple columns. For example, variable name is in one column, and then the value is in a second column. Using the tidyverse, we can take this untidy data and make it tidy!</p>
+<p>##Components of the tidyverse
+require(tidyverse) installs the following packages (and some others):</p>
 <ul>
 <li>ggplot2: creates graphics</li>
 <li>dplyr: data manipulation</li>
@@ -163,16 +141,16 @@
 <li>tibble: allows you to make tibbles and convert to and from data frames</li>
 <li>stringr: works with character strings</li>
 </ul>
-<p>Other packages that are part of the tidyverse that you have to require individually: * readxl: imports excel files * magrittr: helps with programming, including different pipes * broom: formats models into tidy data * modelr: Helper functions for modeling data</p>
-</div>
-<div id="importing-data" class="section level2">
-<h2>Importing data</h2>
+<p>Other packages that are part of the tidyverse that you have to require individually:
+* readxl: imports excel files
+* magrittr: helps with programming, including different pipes
+* broom: formats models into tidy data
+* modelr: Helper functions for modeling data</p>
+<p>##Importing data</p>
 <p>Importing data is essential – if you can’t import your data, you can’t analyze it! Make sure to include any code relating to importing in your Rmarkdown document, so if you make a mistake you don’t have to go back to square one.</p>
 <p>Use the read.table(), read.csv(), or read_excel() functions to import your data. Remember to name your data something descriptive, and not too long. If you want to totally emerse yourself in the tidyverse, you can use readr::read_csv() or readr::read_table(), which will import your data as a tibble.</p>
-</div>
-<div id="the-pipe-operator" class="section level2">
-<h2>The pipe operator</h2>
-<p>With base R, we run various data wrangling techniques on the dataset one at a time. In each of these cases, we would either overwrite the original dataset, or save the intermediate steps as new variables. This makes your workspace messy very quickly. The pipe operator (based in tidyverse package magrittr) allows multiple steps of data wrangling or analysis to occur in succession, without creating multiple intermediate dataframes. This works by dropping the input into the first argument space.</p>
+<p>##The pipe operator
+With base R, we run various data wrangling techniques on the dataset one at a time. In each of these cases, we would either overwrite the original dataset, or save the intermediate steps as new variables. This makes your workspace messy very quickly. The pipe operator (based in tidyverse package magrittr) allows multiple steps of data wrangling or analysis to occur in succession, without creating multiple intermediate dataframes. This works by dropping the input into the first argument space.</p>
 <pre><code>x %&gt;% f is equivalent to f(x)
 x %&gt;% f(y) is equivalent to f(x, y)
 x %&gt;% f %&gt;% g %&gt;% h is equivalent to h(g(f(x)))</code></pre>
@@ -185,8 +163,6 @@ However, this doesn’t work: nasality %&gt;% sd(freq_f1)
 <p>If you wanted to put the left-hand-side object into a subsequent argument slot using the pipe, use the placeholder . to denote the location where you want the left-hand-side argument to go:</p>
 <pre><code>2 %&gt;% round(nasality$F1, digits = .)</code></pre>
 <p>This translates to round(nasality$F1, digits = 2)</p>
-</div>
-</div>
 <div id="data-manipulation-with-dplyr" class="section level1">
 <h1>Data Manipulation with dplyr</h1>
 <p>What dataset are we using? This is my dissertation data. I have processed this a bit, without showing you the code. I will show you the code I used to process it at the end.</p>
@@ -202,22 +178,22 @@ However, this doesn’t work: nasality %&gt;% sd(freq_f1)
 ## 4 BP02    abun… u     nasal        1      0.4 clean un     3.46  303. 2165.
 ## 5 BP02    abun… u     nasal        1      0.5 clean un     3.48  415. 2247.
 ## 6 BP02    abun… u     nasal        1      0.6 clean un     3.51  336. 2098.
-## # ... with 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
+## # … with 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>str(normtimedata)</code></pre>
-<pre><code>## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    64280 obs. of  13 variables:
-##  $ Speaker : chr  &quot;BP02&quot; &quot;BP02&quot; &quot;BP02&quot; &quot;BP02&quot; ...
-##  $ Word    : chr  &quot;abunda&quot; &quot;abunda&quot; &quot;abunda&quot; &quot;abunda&quot; ...
-##  $ Vowel   : chr  &quot;u&quot; &quot;u&quot; &quot;u&quot; &quot;u&quot; ...
-##  $ Nasality: chr  &quot;nasal&quot; &quot;nasal&quot; &quot;nasal&quot; &quot;nasal&quot; ...
-##  $ RepNo   : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ NormTime: num  0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 ...
-##  $ Type    : chr  &quot;clean&quot; &quot;clean&quot; &quot;clean&quot; &quot;clean&quot; ...
-##  $ label   : chr  &quot;un&quot; &quot;un&quot; &quot;un&quot; &quot;un&quot; ...
-##  $ Time    : num  3.39 3.41 3.43 3.46 3.48 ...
-##  $ F1      : num  569 364 373 303 415 ...
-##  $ F2      : num  2372 2297 2258 2165 2247 ...
-##  $ F3      : num  3130 2692 2882 2918 2893 ...
-##  $ F2_3    : num  379 197 312 376 323 ...</code></pre>
+<pre><code>## tibble [182,150 × 13] (S3: tbl_df/tbl/data.frame)
+##  $ Speaker : chr [1:182150] &quot;BP02&quot; &quot;BP02&quot; &quot;BP02&quot; &quot;BP02&quot; ...
+##  $ Word    : chr [1:182150] &quot;abunda&quot; &quot;abunda&quot; &quot;abunda&quot; &quot;abunda&quot; ...
+##  $ Vowel   : chr [1:182150] &quot;u&quot; &quot;u&quot; &quot;u&quot; &quot;u&quot; ...
+##  $ Nasality: chr [1:182150] &quot;nasal&quot; &quot;nasal&quot; &quot;nasal&quot; &quot;nasal&quot; ...
+##  $ RepNo   : int [1:182150] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ NormTime: num [1:182150] 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 ...
+##  $ Type    : chr [1:182150] &quot;clean&quot; &quot;clean&quot; &quot;clean&quot; &quot;clean&quot; ...
+##  $ label   : chr [1:182150] &quot;un&quot; &quot;un&quot; &quot;un&quot; &quot;un&quot; ...
+##  $ Time    : num [1:182150] 3.39 3.41 3.43 3.46 3.48 ...
+##  $ F1      : num [1:182150] 569 364 373 303 415 ...
+##  $ F2      : num [1:182150] 2372 2297 2258 2165 2247 ...
+##  $ F3      : num [1:182150] 3130 2692 2882 2918 2893 ...
+##  $ F2_3    : num [1:182150] 379 197 312 376 323 ...</code></pre>
 <p>There are five basic functions that come with dplyr for data manipulation:</p>
 <ul>
 <li>Pick observations by their values (filter())</li>
@@ -230,37 +206,35 @@ However, this doesn’t work: nasality %&gt;% sd(freq_f1)
 <h2>Filter</h2>
 <p>Here, you can filter data based on a specific criteria. For example, if I wanted to look only at the midpoint of the vowel, or at specific vowel subsets.</p>
 <pre class="r"><code>normtimedata %&gt;% filter(F1&lt;800)</code></pre>
-<pre><code>## # A tibble: 63,537 x 13
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    abun… u     nasal        1      0.1 clean un     3.39  569.
-##  2 BP02    abun… u     nasal        1      0.2 clean un     3.41  364.
-##  3 BP02    abun… u     nasal        1      0.3 clean un     3.43  373.
-##  4 BP02    abun… u     nasal        1      0.4 clean un     3.46  303.
-##  5 BP02    abun… u     nasal        1      0.5 clean un     3.48  415.
-##  6 BP02    abun… u     nasal        1      0.6 clean un     3.51  336.
-##  7 BP02    abun… u     nasal        1      0.7 clean un     3.53  336.
-##  8 BP02    abun… u     nasal        1      0.8 clean un     3.56  330.
-##  9 BP02    abun… u     nasal        1      0.9 clean un     3.58  302.
-## 10 BP02    abun… u     nasal        1      1   clean un     3.60  280.
-## # ... with 63,527 more rows, and 3 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 175,011 x 13
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.1 clean un     3.39  569. 2372.
+##  2 BP02    abun… u     nasal        1      0.2 clean un     3.41  364. 2297.
+##  3 BP02    abun… u     nasal        1      0.3 clean un     3.43  373. 2258.
+##  4 BP02    abun… u     nasal        1      0.4 clean un     3.46  303. 2165.
+##  5 BP02    abun… u     nasal        1      0.5 clean un     3.48  415. 2247.
+##  6 BP02    abun… u     nasal        1      0.6 clean un     3.51  336. 2098.
+##  7 BP02    abun… u     nasal        1      0.7 clean un     3.53  336. 2272.
+##  8 BP02    abun… u     nasal        1      0.8 clean un     3.56  330. 1719.
+##  9 BP02    abun… u     nasal        1      0.9 clean un     3.58  302. 2337.
+## 10 BP02    abun… u     nasal        1      1   clean un     3.60  280.  966.
+## # … with 175,001 more rows, and 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>normtimedata %&gt;% filter(NormTime == 0.5)</code></pre>
-<pre><code>## # A tibble: 6,428 x 13
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    abun… u     nasal        1      0.5 clean un     3.48  415.
-##  2 BP02    abun… u     nasal        2      0.5 clean un     5.90  367.
-##  3 BP02    abun… u     nasal        3      0.5 clean un     8.51  315.
-##  4 BP02    abun… u     nasal        4      0.5 clean un    11.2   301.
-##  5 BP02    abun… u     nasal        5      0.5 clean un    14.0   336.
-##  6 BP02    abun… u     nasal        6      0.5 clean un    16.4   310.
-##  7 BP02    abun… u     nasal        7      0.5 clean un    19.0   323.
-##  8 BP02    abun… u     nasal        8      0.5 clean un    21.8   321.
-##  9 BP02    abun… u     nasal        9      0.5 clean un    24.5   285.
-## 10 BP02    abun… u     nasal       10      0.5 clean un    27.3   357.
-## # ... with 6,418 more rows, and 3 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 18,215 x 13
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.5 clean un     3.48  415. 2247.
+##  2 BP02    abun… u     nasal        2      0.5 clean un     5.90  367. 2301.
+##  3 BP02    abun… u     nasal        3      0.5 clean un     8.51  315. 1508.
+##  4 BP02    abun… u     nasal        4      0.5 clean un    11.2   301. 1369.
+##  5 BP02    abun… u     nasal        5      0.5 clean un    14.0   336. 1252.
+##  6 BP02    abun… u     nasal        6      0.5 clean un    16.4   310. 2077.
+##  7 BP02    abun… u     nasal        7      0.5 clean un    19.0   323.  806.
+##  8 BP02    abun… u     nasal        8      0.5 clean un    21.8   321. 1374.
+##  9 BP02    abun… u     nasal        9      0.5 clean un    24.5   285. 2208.
+## 10 BP02    abun… u     nasal       10      0.5 clean un    27.3   357. 1703.
+## # … with 18,205 more rows, and 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>normtimedata %&gt;% filter(Vowel == &quot;a&quot;, Nasality ==&quot;nasal&quot;)%&gt;% head()</code></pre>
 <pre><code>## # A tibble: 6 x 13
 ##   Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
@@ -271,24 +245,23 @@ However, this doesn’t work: nasality %&gt;% sd(freq_f1)
 ## 4 BP02    tapa… a     nasal        1      0.4 clean an     3.67  337. 1734.
 ## 5 BP02    tapa… a     nasal        1      0.5 clean an     3.69  335. 2246.
 ## 6 BP02    tapa… a     nasal        1      0.6 clean an     3.71  326. 2231.
-## # ... with 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
+## # … with 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>meanF1 = mean(normtimedata$F1, na.rm = TRUE)
 normtimedata%&gt;% filter(F1&lt; meanF1)</code></pre>
-<pre><code>## # A tibble: 39,508 x 13
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    abun… u     nasal        1      0.2 clean un     3.41  364.
-##  2 BP02    abun… u     nasal        1      0.3 clean un     3.43  373.
-##  3 BP02    abun… u     nasal        1      0.4 clean un     3.46  303.
-##  4 BP02    abun… u     nasal        1      0.6 clean un     3.51  336.
-##  5 BP02    abun… u     nasal        1      0.7 clean un     3.53  336.
-##  6 BP02    abun… u     nasal        1      0.8 clean un     3.56  330.
-##  7 BP02    abun… u     nasal        1      0.9 clean un     3.58  302.
-##  8 BP02    abun… u     nasal        1      1   clean un     3.60  280.
-##  9 BP02    abun… u     nasal        2      0.2 clean un     5.83  326.
-## 10 BP02    abun… u     nasal        2      0.3 clean un     5.86  287.
-## # ... with 39,498 more rows, and 3 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 111,772 x 13
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.2 clean un     3.41  364. 2297.
+##  2 BP02    abun… u     nasal        1      0.3 clean un     3.43  373. 2258.
+##  3 BP02    abun… u     nasal        1      0.4 clean un     3.46  303. 2165.
+##  4 BP02    abun… u     nasal        1      0.5 clean un     3.48  415. 2247.
+##  5 BP02    abun… u     nasal        1      0.6 clean un     3.51  336. 2098.
+##  6 BP02    abun… u     nasal        1      0.7 clean un     3.53  336. 2272.
+##  7 BP02    abun… u     nasal        1      0.8 clean un     3.56  330. 1719.
+##  8 BP02    abun… u     nasal        1      0.9 clean un     3.58  302. 2337.
+##  9 BP02    abun… u     nasal        1      1   clean un     3.60  280.  966.
+## 10 BP02    abun… u     nasal        2      0.2 clean un     5.83  326. 2185.
+## # … with 111,762 more rows, and 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>normtimedata_filtered = normtimedata %&gt;% filter(
   (F1-mean(F1, na.rm = TRUE)) &lt; sd(F1, na.rm = TRUE),
   (F2-mean(F2, na.rm = TRUE)) &lt; sd(F2, na.rm = TRUE),
@@ -306,65 +279,62 @@ head(normtimedata_filtered)</code></pre>
 ## 4 BP02    abun… u     nasal        2      0.4 clean un     5.88  334. 1471.
 ## 5 BP02    abun… u     nasal        2      0.6 clean un     5.93  310. 1371.
 ## 6 BP02    abun… u     nasal        2      0.8 clean un     5.97  306. 1308.
-## # ... with 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
+## # … with 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 </div>
 <div id="arrange" class="section level2">
 <h2>Arrange</h2>
 <p>Arrange changes the order of rows based on a column or a set of columns. The default is ascending order. To use descending order, use desc().</p>
 <pre class="r"><code>normtimedata %&gt;% arrange(F1) </code></pre>
-<pre><code>## # A tibble: 64,280 x 13
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP10    bebum u     nasal_f…    38      1   clean um     84.3  57.0
-##  2 BP21    cabi… i     oral        40      0.3 clean io     81.3  60.5
-##  3 BP10    tapa… a     nasal       19      0.5 clean an     42.0  66.0
-##  4 BP10    tupa  a     nasal_f…    14      1   clean am     31.3  72.1
-##  5 BP14    bebum u     nasal_f…    47      0.9 clean um     95.4  75.0
-##  6 BP21    cabi… i     nasaliz…    14      0.5 clean is     28.4  75.3
-##  7 BP05    trib… u     nasaliz…    39      0.3 clean u~     87.8  77.4
-##  8 BP04    abun… u     nasal       43      0.3 clean un     75.6  81.5
-##  9 BP14    abun… u     nasal       49      0.2 clean un     87.0  83.2
-## 10 BP21    cabi… i     oral         7      1   clean io     14.7  85.2
-## # ... with 64,270 more rows, and 3 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 182,150 x 13
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    baba… a     oral        65      0.4 inou… ao     89.2     0     0
+##  2 BP02    baba… a     oral        65      0.5 inou… ao     89.2     0     0
+##  3 BP02    baba… a     oral        65      0.6 inou… ao     89.2     0     0
+##  4 BP02    baba… a     oral        65      0.7 inou… ao     89.3     0     0
+##  5 BP02    baba… a     oral        65      0.8 inou… ao     89.3     0     0
+##  6 BP02    baba… a     oral        65      0.9 inou… ao     89.3     0     0
+##  7 BP02    baba… a     oral        65      1   inou… ao     89.3     0     0
+##  8 BP05    prop… a     nasaliz…    81      1   inou… a~     89.3     0     0
+##  9 BP07    prop… a     nasaliz…    81      0.9 inou… a~     89.3     0     0
+## 10 BP07    prop… a     nasaliz…    81      1   inou… a~     89.3     0     0
+## # … with 182,140 more rows, and 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>normtimedata %&gt;% arrange(F1, desc(F2)) </code></pre>
-<pre><code>## # A tibble: 64,280 x 13
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP10    bebum u     nasal_f…    38      1   clean um     84.3  57.0
-##  2 BP21    cabi… i     oral        40      0.3 clean io     81.3  60.5
-##  3 BP10    tapa… a     nasal       19      0.5 clean an     42.0  66.0
-##  4 BP10    tupa  a     nasal_f…    14      1   clean am     31.3  72.1
-##  5 BP14    bebum u     nasal_f…    47      0.9 clean um     95.4  75.0
-##  6 BP21    cabi… i     nasaliz…    14      0.5 clean is     28.4  75.3
-##  7 BP05    trib… u     nasaliz…    39      0.3 clean u~     87.8  77.4
-##  8 BP04    abun… u     nasal       43      0.3 clean un     75.6  81.5
-##  9 BP14    abun… u     nasal       49      0.2 clean un     87.0  83.2
-## 10 BP21    cabi… i     oral         7      1   clean io     14.7  85.2
-## # ... with 64,270 more rows, and 3 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 182,150 x 13
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    baba… a     oral        65      0.4 inou… ao     89.2     0     0
+##  2 BP02    baba… a     oral        65      0.5 inou… ao     89.2     0     0
+##  3 BP02    baba… a     oral        65      0.6 inou… ao     89.2     0     0
+##  4 BP02    baba… a     oral        65      0.7 inou… ao     89.3     0     0
+##  5 BP02    baba… a     oral        65      0.8 inou… ao     89.3     0     0
+##  6 BP02    baba… a     oral        65      0.9 inou… ao     89.3     0     0
+##  7 BP02    baba… a     oral        65      1   inou… ao     89.3     0     0
+##  8 BP05    prop… a     nasaliz…    81      1   inou… a~     89.3     0     0
+##  9 BP07    prop… a     nasaliz…    81      0.9 inou… a~     89.3     0     0
+## 10 BP07    prop… a     nasaliz…    81      1   inou… a~     89.3     0     0
+## # … with 182,140 more rows, and 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>normtimedata %&gt;% arrange(Speaker, Vowel, desc(Nasality)) </code></pre>
-<pre><code>## # A tibble: 64,280 x 13
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    baba… a     oral         1      0.1 clean ao     5.67  602.
-##  2 BP02    baba… a     oral         1      0.2 clean ao     5.69  709.
-##  3 BP02    baba… a     oral         1      0.3 clean ao     5.71  744.
-##  4 BP02    baba… a     oral         1      0.4 clean ao     5.73  724.
-##  5 BP02    baba… a     oral         1      0.5 clean ao     5.75  673.
-##  6 BP02    baba… a     oral         1      0.6 clean ao     5.77  691.
-##  7 BP02    baba… a     oral         1      0.7 clean ao     5.78  685.
-##  8 BP02    baba… a     oral         1      0.8 clean ao     5.80  673.
-##  9 BP02    baba… a     oral         1      0.9 clean ao     5.82  616.
-## 10 BP02    baba… a     oral         1      1   clean ao     5.84  414.
-## # ... with 64,270 more rows, and 3 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 182,150 x 13
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    baba… a     oral         1      0.1 clean ao     5.67  602. 1157.
+##  2 BP02    baba… a     oral         1      0.2 clean ao     5.69  709. 1181.
+##  3 BP02    baba… a     oral         1      0.3 clean ao     5.71  744. 1195.
+##  4 BP02    baba… a     oral         1      0.4 clean ao     5.73  724. 1194.
+##  5 BP02    baba… a     oral         1      0.5 clean ao     5.75  673. 1228.
+##  6 BP02    baba… a     oral         1      0.6 clean ao     5.77  691. 1238.
+##  7 BP02    baba… a     oral         1      0.7 clean ao     5.78  685. 1270.
+##  8 BP02    baba… a     oral         1      0.8 clean ao     5.80  673. 1311.
+##  9 BP02    baba… a     oral         1      0.9 clean ao     5.82  616. 1304.
+## 10 BP02    baba… a     oral         1      1   clean ao     5.84  414. 1358.
+## # … with 182,140 more rows, and 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 </div>
 <div id="select" class="section level2">
 <h2>Select</h2>
 <p>Select allows you to choose one or more variable from your dataset. This is important because you may have columns that you simply don’t care about, and you don’t want to accidentially use them in your analysis.</p>
 <pre class="r"><code>normtimedata %&gt;% select(Nasality, Vowel, Speaker)</code></pre>
-<pre><code>## # A tibble: 64,280 x 3
+<pre><code>## # A tibble: 182,150 x 3
 ##    Nasality Vowel Speaker
 ##    &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;  
 ##  1 nasal    u     BP02   
@@ -377,9 +347,9 @@ head(normtimedata_filtered)</code></pre>
 ##  8 nasal    u     BP02   
 ##  9 nasal    u     BP02   
 ## 10 nasal    u     BP02   
-## # ... with 64,270 more rows</code></pre>
+## # … with 182,140 more rows</code></pre>
 <pre class="r"><code>normtimedata %&gt;% select(Time:Speaker)</code></pre>
-<pre><code>## # A tibble: 64,280 x 9
+<pre><code>## # A tibble: 182,150 x 9
 ##     Time label Type  NormTime RepNo Nasality Vowel Word   Speaker
 ##    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;int&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
 ##  1  3.39 un    clean      0.1     1 nasal    u     abunda BP02   
@@ -392,112 +362,110 @@ head(normtimedata_filtered)</code></pre>
 ##  8  3.56 un    clean      0.8     1 nasal    u     abunda BP02   
 ##  9  3.58 un    clean      0.9     1 nasal    u     abunda BP02   
 ## 10  3.60 un    clean      1       1 nasal    u     abunda BP02   
-## # ... with 64,270 more rows</code></pre>
+## # … with 182,140 more rows</code></pre>
 <pre class="r"><code>normtimedata %&gt;% select(-Type)</code></pre>
-<pre><code>## # A tibble: 64,280 x 12
-##    Speaker Word  Vowel Nasality RepNo NormTime label  Time    F1    F2
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    abun… u     nasal        1      0.1 un     3.39  569. 2372.
-##  2 BP02    abun… u     nasal        1      0.2 un     3.41  364. 2297.
-##  3 BP02    abun… u     nasal        1      0.3 un     3.43  373. 2258.
-##  4 BP02    abun… u     nasal        1      0.4 un     3.46  303. 2165.
-##  5 BP02    abun… u     nasal        1      0.5 un     3.48  415. 2247.
-##  6 BP02    abun… u     nasal        1      0.6 un     3.51  336. 2098.
-##  7 BP02    abun… u     nasal        1      0.7 un     3.53  336. 2272.
-##  8 BP02    abun… u     nasal        1      0.8 un     3.56  330. 1719.
-##  9 BP02    abun… u     nasal        1      0.9 un     3.58  302. 2337.
-## 10 BP02    abun… u     nasal        1      1   un     3.60  280.  966.
-## # ... with 64,270 more rows, and 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 182,150 x 12
+##    Speaker Word  Vowel Nasality RepNo NormTime label  Time    F1    F2    F3
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.1 un     3.39  569. 2372. 3130.
+##  2 BP02    abun… u     nasal        1      0.2 un     3.41  364. 2297. 2692.
+##  3 BP02    abun… u     nasal        1      0.3 un     3.43  373. 2258. 2882.
+##  4 BP02    abun… u     nasal        1      0.4 un     3.46  303. 2165. 2918.
+##  5 BP02    abun… u     nasal        1      0.5 un     3.48  415. 2247. 2893.
+##  6 BP02    abun… u     nasal        1      0.6 un     3.51  336. 2098. 2623.
+##  7 BP02    abun… u     nasal        1      0.7 un     3.53  336. 2272. 2869.
+##  8 BP02    abun… u     nasal        1      0.8 un     3.56  330. 1719. 2435.
+##  9 BP02    abun… u     nasal        1      0.9 un     3.58  302. 2337. 2391.
+## 10 BP02    abun… u     nasal        1      1   un     3.60  280.  966. 2435.
+## # … with 182,140 more rows, and 1 more variable: F2_3 &lt;dbl&gt;</code></pre>
 <p>What happens if you want to rename a particular variable while doing this? There are many tedious ways to do this, such as creating an identical variable with the different name, or using the colnames() function in base R. The easiest way to do it is to use the rename function, which is a different version of select. It keeps anything not specifically mentioned.</p>
 <pre class="r"><code>normtimedata %&gt;% rename(Normalized_Time = NormTime)</code></pre>
-<pre><code>## # A tibble: 64,280 x 13
-##    Speaker Word  Vowel Nasality RepNo Normalized_Time Type  label  Time
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;           &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
-##  1 BP02    abun… u     nasal        1             0.1 clean un     3.39
-##  2 BP02    abun… u     nasal        1             0.2 clean un     3.41
-##  3 BP02    abun… u     nasal        1             0.3 clean un     3.43
-##  4 BP02    abun… u     nasal        1             0.4 clean un     3.46
-##  5 BP02    abun… u     nasal        1             0.5 clean un     3.48
-##  6 BP02    abun… u     nasal        1             0.6 clean un     3.51
-##  7 BP02    abun… u     nasal        1             0.7 clean un     3.53
-##  8 BP02    abun… u     nasal        1             0.8 clean un     3.56
-##  9 BP02    abun… u     nasal        1             0.9 clean un     3.58
-## 10 BP02    abun… u     nasal        1             1   clean un     3.60
-## # ... with 64,270 more rows, and 4 more variables: F1 &lt;dbl&gt;, F2 &lt;dbl&gt;,
-## #   F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 182,150 x 13
+##    Speaker Word  Vowel Nasality RepNo Normalized_Time Type  label  Time    F1
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;           &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1             0.1 clean un     3.39  569.
+##  2 BP02    abun… u     nasal        1             0.2 clean un     3.41  364.
+##  3 BP02    abun… u     nasal        1             0.3 clean un     3.43  373.
+##  4 BP02    abun… u     nasal        1             0.4 clean un     3.46  303.
+##  5 BP02    abun… u     nasal        1             0.5 clean un     3.48  415.
+##  6 BP02    abun… u     nasal        1             0.6 clean un     3.51  336.
+##  7 BP02    abun… u     nasal        1             0.7 clean un     3.53  336.
+##  8 BP02    abun… u     nasal        1             0.8 clean un     3.56  330.
+##  9 BP02    abun… u     nasal        1             0.9 clean un     3.58  302.
+## 10 BP02    abun… u     nasal        1             1   clean un     3.60  280.
+## # … with 182,140 more rows, and 3 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
+## #   F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>normtimedata %&gt;% rename(Normalized_Time = NormTime) %&gt;%
   select(-Type)</code></pre>
-<pre><code>## # A tibble: 64,280 x 12
-##    Speaker Word  Vowel Nasality RepNo Normalized_Time label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;           &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    abun… u     nasal        1             0.1 un     3.39  569.
-##  2 BP02    abun… u     nasal        1             0.2 un     3.41  364.
-##  3 BP02    abun… u     nasal        1             0.3 un     3.43  373.
-##  4 BP02    abun… u     nasal        1             0.4 un     3.46  303.
-##  5 BP02    abun… u     nasal        1             0.5 un     3.48  415.
-##  6 BP02    abun… u     nasal        1             0.6 un     3.51  336.
-##  7 BP02    abun… u     nasal        1             0.7 un     3.53  336.
-##  8 BP02    abun… u     nasal        1             0.8 un     3.56  330.
-##  9 BP02    abun… u     nasal        1             0.9 un     3.58  302.
-## 10 BP02    abun… u     nasal        1             1   un     3.60  280.
-## # ... with 64,270 more rows, and 3 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 182,150 x 12
+##    Speaker Word  Vowel Nasality RepNo Normalized_Time label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;           &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1             0.1 un     3.39  569. 2372.
+##  2 BP02    abun… u     nasal        1             0.2 un     3.41  364. 2297.
+##  3 BP02    abun… u     nasal        1             0.3 un     3.43  373. 2258.
+##  4 BP02    abun… u     nasal        1             0.4 un     3.46  303. 2165.
+##  5 BP02    abun… u     nasal        1             0.5 un     3.48  415. 2247.
+##  6 BP02    abun… u     nasal        1             0.6 un     3.51  336. 2098.
+##  7 BP02    abun… u     nasal        1             0.7 un     3.53  336. 2272.
+##  8 BP02    abun… u     nasal        1             0.8 un     3.56  330. 1719.
+##  9 BP02    abun… u     nasal        1             0.9 un     3.58  302. 2337.
+## 10 BP02    abun… u     nasal        1             1   un     3.60  280.  966.
+## # … with 182,140 more rows, and 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <p>Finally, you can use the everything() function to move something to the beginning of the data frame:</p>
 <pre class="r"><code>normtimedata %&gt;% rename(Normalized_Time = NormTime) %&gt;%
   select(Speaker, Nasality, everything()) %&gt;%
   select(-Type)</code></pre>
-<pre><code>## # A tibble: 64,280 x 12
-##    Speaker Nasality Word  Vowel RepNo Normalized_Time label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; &lt;int&gt;           &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    nasal    abun… u         1             0.1 un     3.39  569.
-##  2 BP02    nasal    abun… u         1             0.2 un     3.41  364.
-##  3 BP02    nasal    abun… u         1             0.3 un     3.43  373.
-##  4 BP02    nasal    abun… u         1             0.4 un     3.46  303.
-##  5 BP02    nasal    abun… u         1             0.5 un     3.48  415.
-##  6 BP02    nasal    abun… u         1             0.6 un     3.51  336.
-##  7 BP02    nasal    abun… u         1             0.7 un     3.53  336.
-##  8 BP02    nasal    abun… u         1             0.8 un     3.56  330.
-##  9 BP02    nasal    abun… u         1             0.9 un     3.58  302.
-## 10 BP02    nasal    abun… u         1             1   un     3.60  280.
-## # ... with 64,270 more rows, and 3 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 182,150 x 12
+##    Speaker Nasality Word  Vowel RepNo Normalized_Time label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; &lt;int&gt;           &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    nasal    abun… u         1             0.1 un     3.39  569. 2372.
+##  2 BP02    nasal    abun… u         1             0.2 un     3.41  364. 2297.
+##  3 BP02    nasal    abun… u         1             0.3 un     3.43  373. 2258.
+##  4 BP02    nasal    abun… u         1             0.4 un     3.46  303. 2165.
+##  5 BP02    nasal    abun… u         1             0.5 un     3.48  415. 2247.
+##  6 BP02    nasal    abun… u         1             0.6 un     3.51  336. 2098.
+##  7 BP02    nasal    abun… u         1             0.7 un     3.53  336. 2272.
+##  8 BP02    nasal    abun… u         1             0.8 un     3.56  330. 1719.
+##  9 BP02    nasal    abun… u         1             0.9 un     3.58  302. 2337.
+## 10 BP02    nasal    abun… u         1             1   un     3.60  280.  966.
+## # … with 182,140 more rows, and 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <p>Other things that might help when selecting a variable can be found in the select help page.</p>
 </div>
 <div id="mutate" class="section level2">
 <h2>Mutate</h2>
 <p>Sometimes, you want to create a new variable, that is a function of an old variable. This function will add a new variable to the end of your dataset.</p>
 <pre class="r"><code>normtimedata %&gt;% mutate(F1_2= F2-F1)</code></pre>
-<pre><code>## # A tibble: 64,280 x 14
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    abun… u     nasal        1      0.1 clean un     3.39  569.
-##  2 BP02    abun… u     nasal        1      0.2 clean un     3.41  364.
-##  3 BP02    abun… u     nasal        1      0.3 clean un     3.43  373.
-##  4 BP02    abun… u     nasal        1      0.4 clean un     3.46  303.
-##  5 BP02    abun… u     nasal        1      0.5 clean un     3.48  415.
-##  6 BP02    abun… u     nasal        1      0.6 clean un     3.51  336.
-##  7 BP02    abun… u     nasal        1      0.7 clean un     3.53  336.
-##  8 BP02    abun… u     nasal        1      0.8 clean un     3.56  330.
-##  9 BP02    abun… u     nasal        1      0.9 clean un     3.58  302.
-## 10 BP02    abun… u     nasal        1      1   clean un     3.60  280.
-## # ... with 64,270 more rows, and 4 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;, F1_2 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 182,150 x 14
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.1 clean un     3.39  569. 2372.
+##  2 BP02    abun… u     nasal        1      0.2 clean un     3.41  364. 2297.
+##  3 BP02    abun… u     nasal        1      0.3 clean un     3.43  373. 2258.
+##  4 BP02    abun… u     nasal        1      0.4 clean un     3.46  303. 2165.
+##  5 BP02    abun… u     nasal        1      0.5 clean un     3.48  415. 2247.
+##  6 BP02    abun… u     nasal        1      0.6 clean un     3.51  336. 2098.
+##  7 BP02    abun… u     nasal        1      0.7 clean un     3.53  336. 2272.
+##  8 BP02    abun… u     nasal        1      0.8 clean un     3.56  330. 1719.
+##  9 BP02    abun… u     nasal        1      0.9 clean un     3.58  302. 2337.
+## 10 BP02    abun… u     nasal        1      1   clean un     3.60  280.  966.
+## # … with 182,140 more rows, and 3 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;,
+## #   F1_2 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>normtimedata %&gt;% mutate(SpeakerNo = substr(Speaker, 3,4))</code></pre>
-<pre><code>## # A tibble: 64,280 x 14
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    abun… u     nasal        1      0.1 clean un     3.39  569.
-##  2 BP02    abun… u     nasal        1      0.2 clean un     3.41  364.
-##  3 BP02    abun… u     nasal        1      0.3 clean un     3.43  373.
-##  4 BP02    abun… u     nasal        1      0.4 clean un     3.46  303.
-##  5 BP02    abun… u     nasal        1      0.5 clean un     3.48  415.
-##  6 BP02    abun… u     nasal        1      0.6 clean un     3.51  336.
-##  7 BP02    abun… u     nasal        1      0.7 clean un     3.53  336.
-##  8 BP02    abun… u     nasal        1      0.8 clean un     3.56  330.
-##  9 BP02    abun… u     nasal        1      0.9 clean un     3.58  302.
-## 10 BP02    abun… u     nasal        1      1   clean un     3.60  280.
-## # ... with 64,270 more rows, and 4 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;, SpeakerNo &lt;chr&gt;</code></pre>
+<pre><code>## # A tibble: 182,150 x 14
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.1 clean un     3.39  569. 2372.
+##  2 BP02    abun… u     nasal        1      0.2 clean un     3.41  364. 2297.
+##  3 BP02    abun… u     nasal        1      0.3 clean un     3.43  373. 2258.
+##  4 BP02    abun… u     nasal        1      0.4 clean un     3.46  303. 2165.
+##  5 BP02    abun… u     nasal        1      0.5 clean un     3.48  415. 2247.
+##  6 BP02    abun… u     nasal        1      0.6 clean un     3.51  336. 2098.
+##  7 BP02    abun… u     nasal        1      0.7 clean un     3.53  336. 2272.
+##  8 BP02    abun… u     nasal        1      0.8 clean un     3.56  330. 1719.
+##  9 BP02    abun… u     nasal        1      0.9 clean un     3.58  302. 2337.
+## 10 BP02    abun… u     nasal        1      1   clean un     3.60  280.  966.
+## # … with 182,140 more rows, and 3 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;,
+## #   SpeakerNo &lt;chr&gt;</code></pre>
 <pre class="r"><code>#substr is a base R function. What does it do? 
 #?substr</code></pre>
 </div>
@@ -505,22 +473,21 @@ head(normtimedata_filtered)</code></pre>
 <h2>group_by</h2>
 <p>I know I said there were five main functions. I kind of lied. Summarise (the next function) is not very useful unless we use it in conjunction with group_by. This is because we want to see summaries within different groups, not just across the whole dataset.</p>
 <pre class="r"><code>normtimedata %&gt;% group_by(Speaker, Vowel, Nasality)</code></pre>
-<pre><code>## # A tibble: 64,280 x 13
-## # Groups:   Speaker, Vowel, Nasality [144]
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    abun… u     nasal        1      0.1 clean un     3.39  569.
-##  2 BP02    abun… u     nasal        1      0.2 clean un     3.41  364.
-##  3 BP02    abun… u     nasal        1      0.3 clean un     3.43  373.
-##  4 BP02    abun… u     nasal        1      0.4 clean un     3.46  303.
-##  5 BP02    abun… u     nasal        1      0.5 clean un     3.48  415.
-##  6 BP02    abun… u     nasal        1      0.6 clean un     3.51  336.
-##  7 BP02    abun… u     nasal        1      0.7 clean un     3.53  336.
-##  8 BP02    abun… u     nasal        1      0.8 clean un     3.56  330.
-##  9 BP02    abun… u     nasal        1      0.9 clean un     3.58  302.
-## 10 BP02    abun… u     nasal        1      1   clean un     3.60  280.
-## # ... with 64,270 more rows, and 3 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 182,150 x 13
+## # Groups:   Speaker, Vowel, Nasality [156]
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.1 clean un     3.39  569. 2372.
+##  2 BP02    abun… u     nasal        1      0.2 clean un     3.41  364. 2297.
+##  3 BP02    abun… u     nasal        1      0.3 clean un     3.43  373. 2258.
+##  4 BP02    abun… u     nasal        1      0.4 clean un     3.46  303. 2165.
+##  5 BP02    abun… u     nasal        1      0.5 clean un     3.48  415. 2247.
+##  6 BP02    abun… u     nasal        1      0.6 clean un     3.51  336. 2098.
+##  7 BP02    abun… u     nasal        1      0.7 clean un     3.53  336. 2272.
+##  8 BP02    abun… u     nasal        1      0.8 clean un     3.56  330. 1719.
+##  9 BP02    abun… u     nasal        1      0.9 clean un     3.58  302. 2337.
+## 10 BP02    abun… u     nasal        1      1   clean un     3.60  280.  966.
+## # … with 182,140 more rows, and 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>#this only looks a little different than the average tibble - it has groups listed on the top! Now what happens when we use summarise:</code></pre>
 </div>
 <div id="summarise" class="section level2">
@@ -530,82 +497,84 @@ head(normtimedata_filtered)</code></pre>
 <pre><code>## # A tibble: 1 x 1
 ##   F1mean
 ##    &lt;dbl&gt;
-## 1   384.</code></pre>
+## 1   460.</code></pre>
 <pre class="r"><code>normtimedata %&gt;% group_by(Speaker, Vowel, Nasality) %&gt;% summarise(F1mean = mean(F1))</code></pre>
-<pre><code>## # A tibble: 144 x 4
-## # Groups:   Speaker, Vowel [?]
+<pre><code>## `summarise()` regrouping output by &#39;Speaker&#39;, &#39;Vowel&#39; (override with `.groups` argument)</code></pre>
+<pre><code>## # A tibble: 156 x 4
+## # Groups:   Speaker, Vowel [39]
 ##    Speaker Vowel Nasality    F1mean
 ##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;        &lt;dbl&gt;
-##  1 BP02    a     nasal         360.
-##  2 BP02    a     nasal_final   493.
-##  3 BP02    a     nasalized     490.
-##  4 BP02    a     oral          689.
-##  5 BP02    i     nasal         282.
-##  6 BP02    i     nasal_final   324.
-##  7 BP02    i     nasalized     308.
-##  8 BP02    i     oral          272.
-##  9 BP02    u     nasal         331.
-## 10 BP02    u     nasal_final   369.
-## # ... with 134 more rows</code></pre>
+##  1 BP02    a     nasal         560.
+##  2 BP02    a     nasal_final   600.
+##  3 BP02    a     nasalized     592.
+##  4 BP02    a     oral          700.
+##  5 BP02    i     nasal         544.
+##  6 BP02    i     nasal_final   892.
+##  7 BP02    i     nasalized     675.
+##  8 BP02    i     oral          527.
+##  9 BP02    u     nasal         442.
+## 10 BP02    u     nasal_final   440.
+## # … with 146 more rows</code></pre>
 <pre class="r"><code>normtimedata %&gt;% group_by(Speaker, Vowel, Nasality) %&gt;% summarise(F1mean = mean(F1), F1sd = sd(F1), F2mean = mean(F2),F2sd = sd(F2), F3mean = mean(F3),F3sd = sd(F3))</code></pre>
-<pre><code>## # A tibble: 144 x 9
-## # Groups:   Speaker, Vowel [?]
+<pre><code>## `summarise()` regrouping output by &#39;Speaker&#39;, &#39;Vowel&#39; (override with `.groups` argument)</code></pre>
+<pre><code>## # A tibble: 156 x 9
+## # Groups:   Speaker, Vowel [39]
 ##    Speaker Vowel Nasality    F1mean  F1sd F2mean  F2sd F3mean  F3sd
 ##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    a     nasal         360.  94.9  1605. 355.   2476. 221. 
-##  2 BP02    a     nasal_final   493.  92.6  1297. 177.   2501. 277. 
-##  3 BP02    a     nasalized     490.  51.7  1332. 115.   2511. 135. 
-##  4 BP02    a     oral          689. 115.   1268.  59.2  2323.  95.1
-##  5 BP02    i     nasal         282.  27.1  2076. 335.   2728. 304. 
-##  6 BP02    i     nasal_final   324.  53.8  2046. 369.   2744. 274. 
-##  7 BP02    i     nasalized     308.  36.9  2306. 162.   2913. 169. 
-##  8 BP02    i     oral          272.  24.0  2191. 125.   2966. 173. 
-##  9 BP02    u     nasal         331.  66.9  1708. 482.   2584. 289. 
-## 10 BP02    u     nasal_final   369.  62.6  2194. 242.   2870. 210. 
-## # ... with 134 more rows</code></pre>
+##  1 BP02    a     nasal         560.  316.  1643.  408.  2665.  271.
+##  2 BP02    a     nasal_final   600.  132.  1293.  222.  2682.  251.
+##  3 BP02    a     nasalized     592.  115.  1383.  196.  2642.  165.
+##  4 BP02    a     oral          700.  113.  1244.  158.  2366.  246.
+##  5 BP02    i     nasal         544.  570.  2300.  345.  2887.  263.
+##  6 BP02    i     nasal_final   892.  827.  2391.  385.  2921.  276.
+##  7 BP02    i     nasalized     675.  707.  2452.  231.  2955.  182.
+##  8 BP02    i     oral          527.  591.  2424.  264.  3003.  153.
+##  9 BP02    u     nasal         442.  251.  1746.  481.  2744.  259.
+## 10 BP02    u     nasal_final   440.  116.  1842.  516.  2789.  244.
+## # … with 146 more rows</code></pre>
 <p>There is one more thing to think about: what if we need to know the sample size in each of our groups? We can do this using n() and n_distinct(). The first gives the number of times in each group, and the second gives the number of distinct items in each group.</p>
 <pre class="r"><code>normtimedata %&gt;% group_by(Speaker, Vowel, Nasality) %&gt;% summarise(F1mean = mean(F1), number = n())</code></pre>
-<pre><code>## # A tibble: 144 x 5
-## # Groups:   Speaker, Vowel [?]
+<pre><code>## `summarise()` regrouping output by &#39;Speaker&#39;, &#39;Vowel&#39; (override with `.groups` argument)</code></pre>
+<pre><code>## # A tibble: 156 x 5
+## # Groups:   Speaker, Vowel [39]
 ##    Speaker Vowel Nasality    F1mean number
 ##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;        &lt;dbl&gt;  &lt;int&gt;
-##  1 BP02    a     nasal         360.    340
-##  2 BP02    a     nasal_final   493.    350
-##  3 BP02    a     nasalized     490.    330
-##  4 BP02    a     oral          689.    310
-##  5 BP02    i     nasal         282.    330
-##  6 BP02    i     nasal_final   324.    340
-##  7 BP02    i     nasalized     308.    330
-##  8 BP02    i     oral          272.    340
-##  9 BP02    u     nasal         331.    340
-## 10 BP02    u     nasal_final   369.    350
-## # ... with 134 more rows</code></pre>
+##  1 BP02    a     nasal         560.    980
+##  2 BP02    a     nasal_final   600.   1010
+##  3 BP02    a     nasalized     592.    950
+##  4 BP02    a     oral          700.    990
+##  5 BP02    i     nasal         544.    950
+##  6 BP02    i     nasal_final   892.   1000
+##  7 BP02    i     nasalized     675.   1030
+##  8 BP02    i     oral          527.    980
+##  9 BP02    u     nasal         442.   1040
+## 10 BP02    u     nasal_final   440.    970
+## # … with 146 more rows</code></pre>
 <pre class="r"><code>normtimedata %&gt;% group_by(Vowel, Nasality) %&gt;% summarise(F1mean = mean(F1), number = n_distinct(Speaker))</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;Vowel&#39; (override with `.groups` argument)</code></pre>
 <pre><code>## # A tibble: 12 x 4
-## # Groups:   Vowel [?]
+## # Groups:   Vowel [3]
 ##    Vowel Nasality    F1mean number
 ##    &lt;chr&gt; &lt;chr&gt;        &lt;dbl&gt;  &lt;int&gt;
-##  1 a     nasal         419.     12
-##  2 a     nasal_final   453.     12
-##  3 a     nasalized     476.     12
-##  4 a     oral          621.     12
-##  5 i     nasal         336.     12
-##  6 i     nasal_final   309.     12
-##  7 i     nasalized     329.     12
-##  8 i     oral          326.     12
-##  9 u     nasal         332.     12
-## 10 u     nasal_final   323.     12
-## 11 u     nasalized     344.     12
-## 12 u     oral          332.     12</code></pre>
-</div>
-</div>
-<div id="tidying-data-with-tidyr" class="section level1">
-<h1>Tidying data with tidyr</h1>
-<p>We will continue to use my dissertation data for this section. I have reformatted the data for some sections, in order to show you these functions.</p>
-<p>Recall that tidy data is based on the principles that every variable is saved in a column, and each observation is saved in a row. Sometimes you have to change your data to different format to achieve the tidy data shape. Keep in mind that there are times when you might want to violate these principles. If those come up, you need to know how to reshape your data.</p>
-<div id="shapes-of-data" class="section level2">
-<h2>Shapes of data</h2>
-<p>Data comes into one of two shapes: wide and long. The easiest way to demonstrate the difference between the two is with a picture. <img src="/img/widelong.png" /></p>
+##  1 a     nasal         490.     13
+##  2 a     nasal_final   521.     13
+##  3 a     nasalized     536.     13
+##  4 a     oral          655.     13
+##  5 i     nasal         422.     13
+##  6 i     nasal_final   434.     13
+##  7 i     nasalized     395.     13
+##  8 i     oral          364.     13
+##  9 u     nasal         435.     13
+## 10 u     nasal_final   433.     13
+## 11 u     nasalized     430.     13
+## 12 u     oral          403.     13</code></pre>
+<p>#Tidying data with tidyr
+We will continue to use my dissertation data for this section. I have reformatted the data for some sections, in order to show you these functions.</p>
+<p>Recall that tidy data is based on the principles that every variable is saved in a column, and each observation is saved in a row. Sometimes you have to change your data to different format to achieve the tidy data shape.
+Keep in mind that there are times when you might want to violate these principles. If those come up, you need to know how to reshape your data.</p>
+<p>##Shapes of data
+Data comes into one of two shapes: wide and long. The easiest way to demonstrate the difference between the two is with a picture.
+<img src="/img/widelong.png" /></p>
 <p>Wide data is presented with each different data variable in a separate column, whereas long data is presented with one column containing all the values and another column listing the context of the value. There are intermediate values between the extremites of long and short. Most modeling and visualization packages prefer long data to wide data.</p>
 <p>There are four basic functions to reshape data in tidyr:</p>
 <ul>
@@ -614,14 +583,12 @@ head(normtimedata_filtered)</code></pre>
 <li>separate(): turn a character column into multiple columns</li>
 <li>unite(): turn multiple character columns into a single column</li>
 </ul>
-</div>
-<div id="gather" class="section level2">
-<h2>Gather</h2>
-<p>Gather takes wide data and makes it long. It does this by taking a column name and making that into a variable (called a key), with the value being the cell contents.</p>
+<p>##Gather
+Gather takes wide data and makes it long. It does this by taking a column name and making that into a variable (called a key), with the value being the cell contents.</p>
 <pre class="r"><code>normtimedata %&gt;% 
   select(Speaker, Vowel, Nasality, NormTime, RepNo, F1, F2, F3) %&gt;%
   gather(variable, value, c(F1:F3))</code></pre>
-<pre><code>## # A tibble: 192,840 x 7
+<pre><code>## # A tibble: 546,450 x 7
 ##    Speaker Vowel Nasality NormTime RepNo variable value
 ##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt; &lt;chr&gt;    &lt;dbl&gt;
 ##  1 BP02    u     nasal         0.1     1 F1        569.
@@ -634,448 +601,423 @@ head(normtimedata_filtered)</code></pre>
 ##  8 BP02    u     nasal         0.8     1 F1        330.
 ##  9 BP02    u     nasal         0.9     1 F1        302.
 ## 10 BP02    u     nasal         1       1 F1        280.
-## # ... with 192,830 more rows</code></pre>
-</div>
-<div id="spread" class="section level2">
-<h2>Spread</h2>
-<p>Spread is going to take long data and make it wide. Be careful using this! Spread is going to take each value of its second argument (the first argument being the dataset, which if you are using the pipe is implicitly included) and make that into a column, with the value in that column being the value specified in the third arugment.</p>
+## # … with 546,440 more rows</code></pre>
+<p>##Spread
+Spread is going to take long data and make it wide. Be careful using this!
+Spread is going to take each value of its second argument (the first argument being the dataset, which if you are using the pipe is implicitly included) and make that into a column, with the value in that column being the value specified in the third arugment.</p>
 <p>To use spread, if you have a lot of dependent variables you will end up with a bunch of NAs and your data will look awful. In these cases it’s better to maintain a long format. Another way of dealing with this is to create a new variable that includes the information for both variables.</p>
 <pre class="r"><code>normtimedata %&gt;% select(c(Speaker, Word:NormTime, F1)) %&gt;% spread(Speaker, F1) %&gt;% arrange(RepNo)</code></pre>
-<pre><code>## # A tibble: 8,040 x 17
-##    Word  Vowel Nasality RepNo NormTime  BP02  BP04  BP05  BP06  BP07  BP10
-##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 abun… u     nasal        1      0.1  569.  335.  206.  354.  459.  361.
-##  2 abun… u     nasal        1      0.2  364.  345.  395.  311.  461.  308.
-##  3 abun… u     nasal        1      0.3  373.  302.  249.  336.  468.  368.
-##  4 abun… u     nasal        1      0.4  303.  291.  409.  297.  457.  382.
-##  5 abun… u     nasal        1      0.5  415.  289.  304.  304.  441.  312.
-##  6 abun… u     nasal        1      0.6  336.  341.  334.  275.  454.  315.
-##  7 abun… u     nasal        1      0.7  336.  372.  302.  285.  491.  303.
-##  8 abun… u     nasal        1      0.8  330.  338.  307.  288.  359.  291.
-##  9 abun… u     nasal        1      0.9  302.  304.  263.  270.  365.  288.
-## 10 abun… u     nasal        1      1    280.  285.  287.  269.  291.  276.
-## # ... with 8,030 more rows, and 6 more variables: BP14 &lt;dbl&gt;, BP17 &lt;dbl&gt;,
+<pre><code>## # A tibble: 18,660 x 18
+##    Word  Vowel Nasality RepNo NormTime  BP02  BP04  BP05  BP06  BP07  BP09  BP10
+##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 abun… u     nasal        1      0.1  569.  335.  206.  354.  459.  670.  361.
+##  2 abun… u     nasal        1      0.2  364.  345.  395.  311.  461.  682.  308.
+##  3 abun… u     nasal        1      0.3  373.  302.  249.  336.  468.  753.  368.
+##  4 abun… u     nasal        1      0.4  303.  291.  409.  297.  457.  773.  382.
+##  5 abun… u     nasal        1      0.5  415.  289.  304.  304.  441.  765.  312.
+##  6 abun… u     nasal        1      0.6  336.  341.  334.  275.  454.  758.  315.
+##  7 abun… u     nasal        1      0.7  336.  372.  302.  285.  491.  762.  303.
+##  8 abun… u     nasal        1      0.8  330.  338.  307.  288.  359.  781.  291.
+##  9 abun… u     nasal        1      0.9  302.  304.  263.  270.  365.  775.  288.
+## 10 abun… u     nasal        1      1    280.  285.  287.  269.  291.  756.  276.
+## # … with 18,650 more rows, and 6 more variables: BP14 &lt;dbl&gt;, BP17 &lt;dbl&gt;,
 ## #   BP18 &lt;dbl&gt;, BP19 &lt;dbl&gt;, BP20 &lt;dbl&gt;, BP21 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>normtimedata %&gt;% filter(NormTime==0.5) %&gt;% select(c(Speaker, Word:NormTime, F1)) %&gt;% spread(Speaker, F1) %&gt;% arrange(RepNo)</code></pre>
-<pre><code>## # A tibble: 804 x 17
-##    Word  Vowel Nasality RepNo NormTime  BP02  BP04  BP05  BP06  BP07  BP10
-##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 abun… u     nasal        1      0.5  415.  289.  304.  304.  441.  312.
-##  2 baba… a     oral         1      0.5  673.  735.  535.  560.  676.  682.
-##  3 bebum u     nasal_f…     1      0.5  368.  334.  273.  254.  349.  370.
-##  4 cabi… i     oral         1      0.5  248.  299.  276.  311.  414.  278.
-##  5 cabi… i     nasaliz…     1      0.5  312.  326.  279.  261.  327.  277.
-##  6 cupim i     nasal_f…     1      0.5  311.  361.  280.  275.  391.  313.
-##  7 prop… a     nasaliz…     1      0.5  534.  489.  522.  458.  537.  457.
-##  8 subi… i     nasal        1      0.5  289.  349.  268.  278.  400.  381.
-##  9 tapa… a     nasal        1      0.5  335.  462.  389.  395.  487.  345.
-## 10 trib… u     nasaliz…     1      0.5  573.  339.  298.  298.  376.  353.
-## # ... with 794 more rows, and 6 more variables: BP14 &lt;dbl&gt;, BP17 &lt;dbl&gt;,
+<pre><code>## # A tibble: 1,866 x 18
+##    Word  Vowel Nasality RepNo NormTime  BP02  BP04  BP05  BP06  BP07  BP09  BP10
+##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 abun… u     nasal        1      0.5  415.  289.  304.  304.  441.  765.  312.
+##  2 baba… a     oral         1      0.5  673.  735.  535.  560.  676.  699.  682.
+##  3 bebum u     nasal_f…     1      0.5  368.  334.  273.  254.  349.  309.  370.
+##  4 cabi… i     oral         1      0.5  248.  299.  276.  311.  414.  367.  278.
+##  5 cabi… i     nasaliz…     1      0.5  312.  326.  279.  261.  327.  371.  277.
+##  6 cupim i     nasal_f…     1      0.5  311.  361.  280.  275.  391. 1847.  313.
+##  7 prop… a     nasaliz…     1      0.5  534.  489.  522.  458.  537.  605.  457.
+##  8 subi… i     nasal        1      0.5  289.  349.  268.  278.  400.  292.  381.
+##  9 tapa… a     nasal        1      0.5  335.  462.  389.  395.  487.  577.  345.
+## 10 trib… u     nasaliz…     1      0.5  573.  339.  298.  298.  376.  652.  353.
+## # … with 1,856 more rows, and 6 more variables: BP14 &lt;dbl&gt;, BP17 &lt;dbl&gt;,
 ## #   BP18 &lt;dbl&gt;, BP19 &lt;dbl&gt;, BP20 &lt;dbl&gt;, BP21 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>normtimedata %&gt;% 
   select(Speaker, Vowel, Nasality, NormTime, RepNo, F1, F2, F3) %&gt;%
   gather(variable, value, c(F1:F3)) %&gt;%
   unite(temp, Speaker, variable) %&gt;%
   spread(NormTime, value)</code></pre>
-<pre><code>## # A tibble: 19,284 x 14
-##    temp  Vowel Nasality RepNo `0.1` `0.2` `0.3` `0.4` `0.5` `0.6` `0.7`
-##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02… a     nasal        1  460.  464.  433.  337.  335.  326.  331.
-##  2 BP02… a     nasal        2  471.  473.  433.  443.  363.  345.  341.
-##  3 BP02… a     nasal        3  496.  491.  466.  357.  209.  273.  253.
-##  4 BP02… a     nasal        4  521.  480.  483.  374. 1182.  245.  274.
-##  5 BP02… a     nasal        5  490.  483.  470.  400.  283.  243.  282.
-##  6 BP02… a     nasal        6  443.  455.  456.  409.  374.  303.  327.
-##  7 BP02… a     nasal        7  446.  460.  426.  432.  346.  273.  285.
-##  8 BP02… a     nasal        8  491.  487.  477.  427.  398.  280.  283.
-##  9 BP02… a     nasal        9  470.  481.  418.  328.  319.  289.  288.
-## 10 BP02… a     nasal       10  425.  439.  445.  420.  192.  225.  241.
-## # ... with 19,274 more rows, and 3 more variables: `0.8` &lt;dbl&gt;,
-## #   `0.9` &lt;dbl&gt;, `1` &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 54,645 x 14
+##    temp  Vowel Nasality RepNo `0.1` `0.2` `0.3` `0.4` `0.5` `0.6` `0.7` `0.8`
+##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02… a     nasal        1  460.  464.  433.  337.  335.  326.  331.  345.
+##  2 BP02… a     nasal        2  471.  473.  433.  443.  363.  345.  341.  332.
+##  3 BP02… a     nasal        3  496.  491.  466.  357.  209.  273.  253.  306.
+##  4 BP02… a     nasal        4  521.  480.  483.  374. 1182.  245.  274.  252.
+##  5 BP02… a     nasal        5  490.  483.  470.  400.  283.  243.  282.  269.
+##  6 BP02… a     nasal        6  443.  455.  456.  409.  374.  303.  327.  343.
+##  7 BP02… a     nasal        7  446.  460.  426.  432.  346.  273.  285.  302.
+##  8 BP02… a     nasal        8  491.  487.  477.  427.  398.  280.  283.  287.
+##  9 BP02… a     nasal        9  470.  481.  418.  328.  319.  289.  288.  308.
+## 10 BP02… a     nasal       10  425.  439.  445.  420.  192.  225.  241.  297.
+## # … with 54,635 more rows, and 2 more variables: `0.9` &lt;dbl&gt;, `1` &lt;dbl&gt;</code></pre>
 </div>
 <div id="separate" class="section level2">
 <h2>Separate</h2>
 <p>Let’s say you want to take information out of a column and make it into multiple columns (similar to the ‘text to columns’ command in Excel). You can use the separate() function to do this.</p>
 <p>By default, separate will separate based on any non-alphanumeric character. You can also specify the separater with sep = “____”. You can also specify the number of characters to separate by.</p>
 <pre class="r"><code>normtimedata %&gt;% separate(Speaker, into = c(&quot;Language&quot;, &quot;ID&quot;), 2)</code></pre>
-<pre><code>## # A tibble: 64,280 x 14
-##    Language ID    Word  Vowel Nasality RepNo NormTime Type  label  Time
-##    &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
-##  1 BP       02    abun… u     nasal        1      0.1 clean un     3.39
-##  2 BP       02    abun… u     nasal        1      0.2 clean un     3.41
-##  3 BP       02    abun… u     nasal        1      0.3 clean un     3.43
-##  4 BP       02    abun… u     nasal        1      0.4 clean un     3.46
-##  5 BP       02    abun… u     nasal        1      0.5 clean un     3.48
-##  6 BP       02    abun… u     nasal        1      0.6 clean un     3.51
-##  7 BP       02    abun… u     nasal        1      0.7 clean un     3.53
-##  8 BP       02    abun… u     nasal        1      0.8 clean un     3.56
-##  9 BP       02    abun… u     nasal        1      0.9 clean un     3.58
-## 10 BP       02    abun… u     nasal        1      1   clean un     3.60
-## # ... with 64,270 more rows, and 4 more variables: F1 &lt;dbl&gt;, F2 &lt;dbl&gt;,
-## #   F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 182,150 x 14
+##    Language ID    Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
+##    &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP       02    abun… u     nasal        1      0.1 clean un     3.39  569.
+##  2 BP       02    abun… u     nasal        1      0.2 clean un     3.41  364.
+##  3 BP       02    abun… u     nasal        1      0.3 clean un     3.43  373.
+##  4 BP       02    abun… u     nasal        1      0.4 clean un     3.46  303.
+##  5 BP       02    abun… u     nasal        1      0.5 clean un     3.48  415.
+##  6 BP       02    abun… u     nasal        1      0.6 clean un     3.51  336.
+##  7 BP       02    abun… u     nasal        1      0.7 clean un     3.53  336.
+##  8 BP       02    abun… u     nasal        1      0.8 clean un     3.56  330.
+##  9 BP       02    abun… u     nasal        1      0.9 clean un     3.58  302.
+## 10 BP       02    abun… u     nasal        1      1   clean un     3.60  280.
+## # … with 182,140 more rows, and 3 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
+## #   F2_3 &lt;dbl&gt;</code></pre>
 </div>
 <div id="unite" class="section level2">
 <h2>Unite</h2>
 <p>The opposite of separate is ‘unite’, which will make a new variable out of two variables. Note that for separate and unite, you end getting rid of the old variables.</p>
 <pre class="r"><code>normtimedata %&gt;% unite(VowNas, Vowel, Nasality, sep = &quot;_&quot;)</code></pre>
-<pre><code>## # A tibble: 64,280 x 12
-##    Speaker Word  VowNas RepNo NormTime Type  label  Time    F1    F2    F3
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    abun… u_nas…     1      0.1 clean un     3.39  569. 2372. 3130.
-##  2 BP02    abun… u_nas…     1      0.2 clean un     3.41  364. 2297. 2692.
-##  3 BP02    abun… u_nas…     1      0.3 clean un     3.43  373. 2258. 2882.
-##  4 BP02    abun… u_nas…     1      0.4 clean un     3.46  303. 2165. 2918.
-##  5 BP02    abun… u_nas…     1      0.5 clean un     3.48  415. 2247. 2893.
-##  6 BP02    abun… u_nas…     1      0.6 clean un     3.51  336. 2098. 2623.
-##  7 BP02    abun… u_nas…     1      0.7 clean un     3.53  336. 2272. 2869.
-##  8 BP02    abun… u_nas…     1      0.8 clean un     3.56  330. 1719. 2435.
-##  9 BP02    abun… u_nas…     1      0.9 clean un     3.58  302. 2337. 2391.
-## 10 BP02    abun… u_nas…     1      1   clean un     3.60  280.  966. 2435.
-## # ... with 64,270 more rows, and 1 more variable: F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 182,150 x 12
+##    Speaker Word  VowNas RepNo NormTime Type  label  Time    F1    F2    F3  F2_3
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u_nas…     1      0.1 clean un     3.39  569. 2372. 3130. 379. 
+##  2 BP02    abun… u_nas…     1      0.2 clean un     3.41  364. 2297. 2692. 197. 
+##  3 BP02    abun… u_nas…     1      0.3 clean un     3.43  373. 2258. 2882. 312. 
+##  4 BP02    abun… u_nas…     1      0.4 clean un     3.46  303. 2165. 2918. 376. 
+##  5 BP02    abun… u_nas…     1      0.5 clean un     3.48  415. 2247. 2893. 323. 
+##  6 BP02    abun… u_nas…     1      0.6 clean un     3.51  336. 2098. 2623. 263. 
+##  7 BP02    abun… u_nas…     1      0.7 clean un     3.53  336. 2272. 2869. 299. 
+##  8 BP02    abun… u_nas…     1      0.8 clean un     3.56  330. 1719. 2435. 358. 
+##  9 BP02    abun… u_nas…     1      0.9 clean un     3.58  302. 2337. 2391.  26.7
+## 10 BP02    abun… u_nas…     1      1   clean un     3.60  280.  966. 2435. 734. 
+## # … with 182,140 more rows</code></pre>
 <pre class="r"><code>normtimedata %&gt;% unite(MERP, Speaker, Vowel, Nasality, sep = &quot;!&quot;)</code></pre>
-<pre><code>## # A tibble: 64,280 x 11
-##    MERP     Word  RepNo NormTime Type  label  Time    F1    F2    F3  F2_3
-##    &lt;chr&gt;    &lt;chr&gt; &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02!u!… abun…     1      0.1 clean un     3.39  569. 2372. 3130. 379. 
-##  2 BP02!u!… abun…     1      0.2 clean un     3.41  364. 2297. 2692. 197. 
-##  3 BP02!u!… abun…     1      0.3 clean un     3.43  373. 2258. 2882. 312. 
-##  4 BP02!u!… abun…     1      0.4 clean un     3.46  303. 2165. 2918. 376. 
-##  5 BP02!u!… abun…     1      0.5 clean un     3.48  415. 2247. 2893. 323. 
-##  6 BP02!u!… abun…     1      0.6 clean un     3.51  336. 2098. 2623. 263. 
-##  7 BP02!u!… abun…     1      0.7 clean un     3.53  336. 2272. 2869. 299. 
-##  8 BP02!u!… abun…     1      0.8 clean un     3.56  330. 1719. 2435. 358. 
-##  9 BP02!u!… abun…     1      0.9 clean un     3.58  302. 2337. 2391.  26.7
-## 10 BP02!u!… abun…     1      1   clean un     3.60  280.  966. 2435. 734. 
-## # ... with 64,270 more rows</code></pre>
-</div>
-</div>
-<div id="relating-different-data-sets-with-dplyr" class="section level1">
-<h1>Relating different data sets with dplyr</h1>
-<p>There are many datasets, especially once you get into larger experiments, that involve the use of multiple tables at once. For these datasets, we need to use a set of tools that relates these tables to one another. There is a great cheat sheet found <a href="http://stat545.com/bit001_dplyr-cheatsheet.html#why-the-cheatsheet">here</a> to further explain these joins. You can also find more information in <a href="http://r4ds.had.co.nz/">R4DS</a>.</p>
+<pre><code>## # A tibble: 182,150 x 11
+##    MERP         Word   RepNo NormTime Type  label  Time    F1    F2    F3  F2_3
+##    &lt;chr&gt;        &lt;chr&gt;  &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02!u!nasal abunda     1      0.1 clean un     3.39  569. 2372. 3130. 379. 
+##  2 BP02!u!nasal abunda     1      0.2 clean un     3.41  364. 2297. 2692. 197. 
+##  3 BP02!u!nasal abunda     1      0.3 clean un     3.43  373. 2258. 2882. 312. 
+##  4 BP02!u!nasal abunda     1      0.4 clean un     3.46  303. 2165. 2918. 376. 
+##  5 BP02!u!nasal abunda     1      0.5 clean un     3.48  415. 2247. 2893. 323. 
+##  6 BP02!u!nasal abunda     1      0.6 clean un     3.51  336. 2098. 2623. 263. 
+##  7 BP02!u!nasal abunda     1      0.7 clean un     3.53  336. 2272. 2869. 299. 
+##  8 BP02!u!nasal abunda     1      0.8 clean un     3.56  330. 1719. 2435. 358. 
+##  9 BP02!u!nasal abunda     1      0.9 clean un     3.58  302. 2337. 2391.  26.7
+## 10 BP02!u!nasal abunda     1      1   clean un     3.60  280.  966. 2435. 734. 
+## # … with 182,140 more rows</code></pre>
+<p>#Relating different data sets with dplyr
+There are many datasets, especially once you get into larger experiments, that involve the use of multiple tables at once. For these datasets, we need to use a set of tools that relates these tables to one another. There is a great cheat sheet found <a href="http://stat545.com/bit001_dplyr-cheatsheet.html#why-the-cheatsheet">here</a> to further explain these joins. You can also find more information in <a href="http://r4ds.had.co.nz/">R4DS</a>.</p>
 <p>In order to show you how different types of joins work, I have included another set of data. It is output from a second set of Praat scripts, which were run to gather further acoustic measures related to nasality (see Styler 2017 for more information). This set of scripts was run at 5 normalized time points, rather than 10, throughout the vowels’ durations.</p>
 <pre class="r"><code>nasalitydata</code></pre>
 <pre><code>## # A tibble: 32,145 x 34
-##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;int&gt;  &lt;dbl&gt;    &lt;int&gt;
-##  1 BP02    abun… u     nasal        1      0.2     352   13.9      680
-##  2 BP02    abun… u     nasal        1      0.4     469   13.1      133
-##  3 BP02    abun… u     nasal        1      0.6     258   17.6      222
-##  4 BP02    abun… u     nasal        1      0.8     281   15.7      103
-##  5 BP02    abun… u     nasal        1      1       141   16.7       53
-##  6 BP02    abun… u     nasal        2      0.2     422   13.1      120
-##  7 BP02    abun… u     nasal        2      0.4     211   18.0      139
-##  8 BP02    abun… u     nasal        2      0.6     234   18.2      140
-##  9 BP02    abun… u     nasal        2      0.8     258   17.0      143
-## 10 BP02    abun… u     nasal        2      1       258   17.0       57
-## # ... with 32,135 more rows, and 25 more variables: freq_f2 &lt;int&gt;,
-## #   amp_f2 &lt;dbl&gt;, width_f2 &lt;int&gt;, freq_f3 &lt;int&gt;, amp_f3 &lt;dbl&gt;,
-## #   width_f3 &lt;int&gt;, freq_h1 &lt;int&gt;, amp_h1 &lt;dbl&gt;, freq_h2 &lt;int&gt;,
-## #   amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;int&gt;, p0_id &lt;chr&gt;,
-## #   p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;, a1p0_h3 &lt;dbl&gt;,
-## #   a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;int&gt;, amp_p1 &lt;dbl&gt;,
-## #   a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;</code></pre>
+##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1 freq_f2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.2     352   13.9      680     557
+##  2 BP02    abun… u     nasal        1      0.4     469   13.1      133    2232
+##  3 BP02    abun… u     nasal        1      0.6     258   17.6      222    1253
+##  4 BP02    abun… u     nasal        1      0.8     281   15.7      103    1395
+##  5 BP02    abun… u     nasal        1      1       141   16.7       53    1220
+##  6 BP02    abun… u     nasal        2      0.2     422   13.1      120    2196
+##  7 BP02    abun… u     nasal        2      0.4     211   18.0      139    1324
+##  8 BP02    abun… u     nasal        2      0.6     234   18.2      140    1156
+##  9 BP02    abun… u     nasal        2      0.8     258   17.0      143    1609
+## 10 BP02    abun… u     nasal        2      1       258   17.0       57     860
+## # … with 32,135 more rows, and 24 more variables: amp_f2 &lt;dbl&gt;, width_f2 &lt;dbl&gt;,
+## #   freq_f3 &lt;dbl&gt;, amp_f3 &lt;dbl&gt;, width_f3 &lt;dbl&gt;, freq_h1 &lt;dbl&gt;, amp_h1 &lt;dbl&gt;,
+## #   freq_h2 &lt;dbl&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;dbl&gt;,
+## #   p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;,
+## #   a1p0_h3 &lt;dbl&gt;, a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;dbl&gt;,
+## #   amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;</code></pre>
 <p>I will be making subsets of the datasets, which I will show you, in order to demonstrate these joins.</p>
 <p>There are two types of joins, and a few differeny options for these types of join:</p>
-<p><img src="/img/joins.png" alt="Mutating joins" /> <img src="/img/semijoin.png" alt="Semi join" /> <img src="/img/antijoin.png" alt="Anti joins" /></p>
+<p><img src="/img/joins.png" alt="Mutating joins" />
+<img src="/img/semijoin.png" alt="Semi join" />
+<img src="/img/antijoin.png" alt="Anti joins" /></p>
 <ul>
-<li>Mutating joins combine variables from two data frames in a variety of ways.</li>
+<li>Mutating joins combine variables from two data frames in a variety of ways.
+<ul>
 <li>left_join(a, b, by = c(‘…’)) - join matching rows from b to a by matching variables in vector</li>
 <li>right_join(a, b, by = c(‘…’)) - join matching rows from a to b by matching variables in vector</li>
 <li>inner_join(a, b, by = c(‘…’)) - join data, retaining only rows in both a and b</li>
-<li><p>full_join(a, b, by = c(‘…’)) - join data, retaining all values, all rows</p></li>
-<li>Filtering joins match observations in two data frames, but only affect the observations, rather than the variables.</li>
+<li>full_join(a, b, by = c(‘…’)) - join data, retaining all values, all rows</li>
+</ul></li>
+<li>Filtering joins match observations in two data frames, but only affect the observations, rather than the variables.
+<ul>
 <li>semi_join(a, b) keeps all observations in a that have a match in b.</li>
-<li><p>anti_join(a b) drops all observations in a that have a match in b.</p></li>
+<li>anti_join(a b) drops all observations in a that have a match in b.</li>
+</ul></li>
 </ul>
-<div id="mutating-joins" class="section level2">
-<h2>Mutating Joins</h2>
+<p>##Mutating Joins</p>
 <p>First, we have an inner join. An inner join will only retain rows in both datasets.</p>
 <pre class="r"><code>nasalitydata %&gt;% filter(Speaker ==&quot;BP02&quot;) %&gt;% inner_join(normtimedata)</code></pre>
 <pre><code>## Joining, by = c(&quot;Speaker&quot;, &quot;Word&quot;, &quot;Vowel&quot;, &quot;Nasality&quot;, &quot;RepNo&quot;, &quot;NormTime&quot;)</code></pre>
 <pre><code>## # A tibble: 2,025 x 41
-##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;int&gt;  &lt;dbl&gt;    &lt;int&gt;
-##  1 BP02    abun… u     nasal        1      0.2     352   13.9      680
-##  2 BP02    abun… u     nasal        1      0.4     469   13.1      133
-##  3 BP02    abun… u     nasal        1      0.6     258   17.6      222
-##  4 BP02    abun… u     nasal        1      0.8     281   15.7      103
-##  5 BP02    abun… u     nasal        1      1       141   16.7       53
-##  6 BP02    abun… u     nasal        2      0.2     422   13.1      120
-##  7 BP02    abun… u     nasal        2      0.4     211   18.0      139
-##  8 BP02    abun… u     nasal        2      0.6     234   18.2      140
-##  9 BP02    abun… u     nasal        2      0.8     258   17.0      143
-## 10 BP02    abun… u     nasal        2      1       258   17.0       57
-## # ... with 2,015 more rows, and 32 more variables: freq_f2 &lt;int&gt;,
-## #   amp_f2 &lt;dbl&gt;, width_f2 &lt;int&gt;, freq_f3 &lt;int&gt;, amp_f3 &lt;dbl&gt;,
-## #   width_f3 &lt;int&gt;, freq_h1 &lt;int&gt;, amp_h1 &lt;dbl&gt;, freq_h2 &lt;int&gt;,
-## #   amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;int&gt;, p0_id &lt;chr&gt;,
-## #   p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;, a1p0_h3 &lt;dbl&gt;,
-## #   a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;int&gt;, amp_p1 &lt;dbl&gt;,
-## #   a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;, Type &lt;chr&gt;,
+##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1 freq_f2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.2     352   13.9      680     557
+##  2 BP02    abun… u     nasal        1      0.4     469   13.1      133    2232
+##  3 BP02    abun… u     nasal        1      0.6     258   17.6      222    1253
+##  4 BP02    abun… u     nasal        1      0.8     281   15.7      103    1395
+##  5 BP02    abun… u     nasal        1      1       141   16.7       53    1220
+##  6 BP02    abun… u     nasal        2      0.2     422   13.1      120    2196
+##  7 BP02    abun… u     nasal        2      0.4     211   18.0      139    1324
+##  8 BP02    abun… u     nasal        2      0.6     234   18.2      140    1156
+##  9 BP02    abun… u     nasal        2      0.8     258   17.0      143    1609
+## 10 BP02    abun… u     nasal        2      1       258   17.0       57     860
+## # … with 2,015 more rows, and 31 more variables: amp_f2 &lt;dbl&gt;, width_f2 &lt;dbl&gt;,
+## #   freq_f3 &lt;dbl&gt;, amp_f3 &lt;dbl&gt;, width_f3 &lt;dbl&gt;, freq_h1 &lt;dbl&gt;, amp_h1 &lt;dbl&gt;,
+## #   freq_h2 &lt;dbl&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;dbl&gt;,
+## #   p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;,
+## #   a1p0_h3 &lt;dbl&gt;, a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;dbl&gt;,
+## #   amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;, Type &lt;chr&gt;,
 ## #   label &lt;chr&gt;, Time &lt;dbl&gt;, F1 &lt;dbl&gt;, F2 &lt;dbl&gt;, F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>nasalitydata %&gt;% filter(Speaker ==&quot;BP21&quot;, RepNo &lt; 20) %&gt;% inner_join(filter(normtimedata, RepNo &gt; 10))</code></pre>
 <pre><code>## Joining, by = c(&quot;Speaker&quot;, &quot;Word&quot;, &quot;Vowel&quot;, &quot;Nasality&quot;, &quot;RepNo&quot;, &quot;NormTime&quot;)</code></pre>
 <pre><code>## # A tibble: 540 x 41
-##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;int&gt;  &lt;dbl&gt;    &lt;int&gt;
-##  1 BP21    abun… u     nasal       11      0.2     211   25.2      142
-##  2 BP21    abun… u     nasal       11      0.4     422   24.0       79
-##  3 BP21    abun… u     nasal       11      0.6     234   24.7      129
-##  4 BP21    abun… u     nasal       11      0.8     234   25.6      158
-##  5 BP21    abun… u     nasal       11      1       211   26.1      398
-##  6 BP21    abun… u     nasal       12      0.2     211   22.0      120
-##  7 BP21    abun… u     nasal       12      0.4     211   22.4      103
-##  8 BP21    abun… u     nasal       12      0.6     211   24.3      125
-##  9 BP21    abun… u     nasal       12      0.8     211   24.2      131
-## 10 BP21    abun… u     nasal       12      1       211   24.3      242
-## # ... with 530 more rows, and 32 more variables: freq_f2 &lt;int&gt;,
-## #   amp_f2 &lt;dbl&gt;, width_f2 &lt;int&gt;, freq_f3 &lt;int&gt;, amp_f3 &lt;dbl&gt;,
-## #   width_f3 &lt;int&gt;, freq_h1 &lt;int&gt;, amp_h1 &lt;dbl&gt;, freq_h2 &lt;int&gt;,
-## #   amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;int&gt;, p0_id &lt;chr&gt;,
-## #   p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;, a1p0_h3 &lt;dbl&gt;,
-## #   a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;int&gt;, amp_p1 &lt;dbl&gt;,
-## #   a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;, Type &lt;chr&gt;,
+##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1 freq_f2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+##  1 BP21    abun… u     nasal       11      0.2     211   25.2      142     906
+##  2 BP21    abun… u     nasal       11      0.4     422   24.0       79     846
+##  3 BP21    abun… u     nasal       11      0.6     234   24.7      129     833
+##  4 BP21    abun… u     nasal       11      0.8     234   25.6      158     897
+##  5 BP21    abun… u     nasal       11      1       211   26.1      398     530
+##  6 BP21    abun… u     nasal       12      0.2     211   22.0      120     850
+##  7 BP21    abun… u     nasal       12      0.4     211   22.4      103     829
+##  8 BP21    abun… u     nasal       12      0.6     211   24.3      125     752
+##  9 BP21    abun… u     nasal       12      0.8     211   24.2      131     872
+## 10 BP21    abun… u     nasal       12      1       211   24.3      242     427
+## # … with 530 more rows, and 31 more variables: amp_f2 &lt;dbl&gt;, width_f2 &lt;dbl&gt;,
+## #   freq_f3 &lt;dbl&gt;, amp_f3 &lt;dbl&gt;, width_f3 &lt;dbl&gt;, freq_h1 &lt;dbl&gt;, amp_h1 &lt;dbl&gt;,
+## #   freq_h2 &lt;dbl&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;dbl&gt;,
+## #   p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;,
+## #   a1p0_h3 &lt;dbl&gt;, a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;dbl&gt;,
+## #   amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;, Type &lt;chr&gt;,
 ## #   label &lt;chr&gt;, Time &lt;dbl&gt;, F1 &lt;dbl&gt;, F2 &lt;dbl&gt;, F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <p>Whereas an inner join keeps observations in both datasets, outer joins keeps observations that exist in at least one dataset. There are three types of outer joins: left joins, right joins, and full joins.</p>
 <p>A left join will retain all observations that are in the first dataset. Conversely, a right join will retain all observations that are in the second dataset. These joins work by adding an additional “virtual” observation to each table. This observation has a key that always matches (if no other key matches), and a value filled with NA. A left join will be more common to use in the “wild.”</p>
 <pre class="r"><code>dim(nasalitydata)</code></pre>
 <pre><code>## [1] 32145    34</code></pre>
 <pre class="r"><code>dim(normtimedata)</code></pre>
-<pre><code>## [1] 64280    13</code></pre>
+<pre><code>## [1] 182150     13</code></pre>
 <pre class="r"><code>nasalitydata %&gt;% left_join(normtimedata)</code></pre>
 <pre><code>## Joining, by = c(&quot;Speaker&quot;, &quot;Word&quot;, &quot;Vowel&quot;, &quot;Nasality&quot;, &quot;RepNo&quot;, &quot;NormTime&quot;)</code></pre>
 <pre><code>## # A tibble: 32,145 x 41
-##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;int&gt;  &lt;dbl&gt;    &lt;int&gt;
-##  1 BP02    abun… u     nasal        1      0.2     352   13.9      680
-##  2 BP02    abun… u     nasal        1      0.4     469   13.1      133
-##  3 BP02    abun… u     nasal        1      0.6     258   17.6      222
-##  4 BP02    abun… u     nasal        1      0.8     281   15.7      103
-##  5 BP02    abun… u     nasal        1      1       141   16.7       53
-##  6 BP02    abun… u     nasal        2      0.2     422   13.1      120
-##  7 BP02    abun… u     nasal        2      0.4     211   18.0      139
-##  8 BP02    abun… u     nasal        2      0.6     234   18.2      140
-##  9 BP02    abun… u     nasal        2      0.8     258   17.0      143
-## 10 BP02    abun… u     nasal        2      1       258   17.0       57
-## # ... with 32,135 more rows, and 32 more variables: freq_f2 &lt;int&gt;,
-## #   amp_f2 &lt;dbl&gt;, width_f2 &lt;int&gt;, freq_f3 &lt;int&gt;, amp_f3 &lt;dbl&gt;,
-## #   width_f3 &lt;int&gt;, freq_h1 &lt;int&gt;, amp_h1 &lt;dbl&gt;, freq_h2 &lt;int&gt;,
-## #   amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;int&gt;, p0_id &lt;chr&gt;,
-## #   p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;, a1p0_h3 &lt;dbl&gt;,
-## #   a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;int&gt;, amp_p1 &lt;dbl&gt;,
-## #   a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;, Type &lt;chr&gt;,
+##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1 freq_f2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.2     352   13.9      680     557
+##  2 BP02    abun… u     nasal        1      0.4     469   13.1      133    2232
+##  3 BP02    abun… u     nasal        1      0.6     258   17.6      222    1253
+##  4 BP02    abun… u     nasal        1      0.8     281   15.7      103    1395
+##  5 BP02    abun… u     nasal        1      1       141   16.7       53    1220
+##  6 BP02    abun… u     nasal        2      0.2     422   13.1      120    2196
+##  7 BP02    abun… u     nasal        2      0.4     211   18.0      139    1324
+##  8 BP02    abun… u     nasal        2      0.6     234   18.2      140    1156
+##  9 BP02    abun… u     nasal        2      0.8     258   17.0      143    1609
+## 10 BP02    abun… u     nasal        2      1       258   17.0       57     860
+## # … with 32,135 more rows, and 31 more variables: amp_f2 &lt;dbl&gt;, width_f2 &lt;dbl&gt;,
+## #   freq_f3 &lt;dbl&gt;, amp_f3 &lt;dbl&gt;, width_f3 &lt;dbl&gt;, freq_h1 &lt;dbl&gt;, amp_h1 &lt;dbl&gt;,
+## #   freq_h2 &lt;dbl&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;dbl&gt;,
+## #   p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;,
+## #   a1p0_h3 &lt;dbl&gt;, a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;dbl&gt;,
+## #   amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;, Type &lt;chr&gt;,
 ## #   label &lt;chr&gt;, Time &lt;dbl&gt;, F1 &lt;dbl&gt;, F2 &lt;dbl&gt;, F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>normtimedata %&gt;% filter(NormTime ==0.3) %&gt;% left_join(nasalitydata)</code></pre>
 <pre><code>## Joining, by = c(&quot;Speaker&quot;, &quot;Word&quot;, &quot;Vowel&quot;, &quot;Nasality&quot;, &quot;RepNo&quot;, &quot;NormTime&quot;)</code></pre>
-<pre><code>## # A tibble: 6,428 x 41
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    abun… u     nasal        1      0.3 clean un     3.43  373.
-##  2 BP02    abun… u     nasal        2      0.3 clean un     5.86  287.
-##  3 BP02    abun… u     nasal        3      0.3 clean un     8.46  321.
-##  4 BP02    abun… u     nasal        4      0.3 clean un    11.2   347.
-##  5 BP02    abun… u     nasal        5      0.3 clean un    14.0   369.
-##  6 BP02    abun… u     nasal        6      0.3 clean un    16.3   352.
-##  7 BP02    abun… u     nasal        7      0.3 clean un    18.9   278.
-##  8 BP02    abun… u     nasal        8      0.3 clean un    21.7   272.
-##  9 BP02    abun… u     nasal        9      0.3 clean un    24.5   399.
-## 10 BP02    abun… u     nasal       10      0.3 clean un    27.2   343.
-## # ... with 6,418 more rows, and 31 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;, freq_f1 &lt;int&gt;, amp_f1 &lt;dbl&gt;, width_f1 &lt;int&gt;,
-## #   freq_f2 &lt;int&gt;, amp_f2 &lt;dbl&gt;, width_f2 &lt;int&gt;, freq_f3 &lt;int&gt;,
-## #   amp_f3 &lt;dbl&gt;, width_f3 &lt;int&gt;, freq_h1 &lt;int&gt;, amp_h1 &lt;dbl&gt;,
-## #   freq_h2 &lt;int&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;,
-## #   freq_p0 &lt;int&gt;, p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;,
+<pre><code>## # A tibble: 18,215 x 41
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.3 clean un     3.43  373. 2258.
+##  2 BP02    abun… u     nasal        2      0.3 clean un     5.86  287. 1767.
+##  3 BP02    abun… u     nasal        3      0.3 clean un     8.46  321. 2249.
+##  4 BP02    abun… u     nasal        4      0.3 clean un    11.2   347.  977.
+##  5 BP02    abun… u     nasal        5      0.3 clean un    14.0   369. 1342.
+##  6 BP02    abun… u     nasal        6      0.3 clean un    16.3   352. 2245.
+##  7 BP02    abun… u     nasal        7      0.3 clean un    18.9   278. 1958.
+##  8 BP02    abun… u     nasal        8      0.3 clean un    21.7   272. 1696.
+##  9 BP02    abun… u     nasal        9      0.3 clean un    24.5   399. 2166.
+## 10 BP02    abun… u     nasal       10      0.3 clean un    27.2   343. 1389.
+## # … with 18,205 more rows, and 30 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;,
+## #   freq_f1 &lt;dbl&gt;, amp_f1 &lt;dbl&gt;, width_f1 &lt;dbl&gt;, freq_f2 &lt;dbl&gt;, amp_f2 &lt;dbl&gt;,
+## #   width_f2 &lt;dbl&gt;, freq_f3 &lt;dbl&gt;, amp_f3 &lt;dbl&gt;, width_f3 &lt;dbl&gt;, freq_h1 &lt;dbl&gt;,
+## #   amp_h1 &lt;dbl&gt;, freq_h2 &lt;dbl&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;,
+## #   freq_p0 &lt;dbl&gt;, p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;,
 ## #   a1p0_h2 &lt;dbl&gt;, a1p0_h3 &lt;dbl&gt;, a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;,
-## #   freq_p1 &lt;int&gt;, amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;,
-## #   a3p0 &lt;dbl&gt;</code></pre>
+## #   freq_p1 &lt;dbl&gt;, amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>nasalitydata %&gt;% filter(NormTime ==0.2, Vowel ==&quot;a&quot;) %&gt;% left_join(normtimedata)</code></pre>
 <pre><code>## Joining, by = c(&quot;Speaker&quot;, &quot;Word&quot;, &quot;Vowel&quot;, &quot;Nasality&quot;, &quot;RepNo&quot;, &quot;NormTime&quot;)</code></pre>
 <pre><code>## # A tibble: 2,155 x 41
-##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;int&gt;  &lt;dbl&gt;    &lt;int&gt;
-##  1 BP02    baba… a     oral         1      0.2     539   16.2      100
-##  2 BP02    baba… a     oral         2      0.2     586   20.5       63
-##  3 BP02    baba… a     oral         3      0.2     633   18.0       64
-##  4 BP02    baba… a     oral         4      0.2     633   20.3       81
-##  5 BP02    baba… a     oral         5      0.2     633   19.9       45
-##  6 BP02    baba… a     oral         6      0.2     633   20.2       46
-##  7 BP02    baba… a     oral         7      0.2     633   19.9       53
-##  8 BP02    baba… a     oral         8      0.2     586   18.7       58
-##  9 BP02    baba… a     oral         9      0.2     609   15.7       63
-## 10 BP02    baba… a     oral        10      0.2     586   18.9       49
-## # ... with 2,145 more rows, and 32 more variables: freq_f2 &lt;int&gt;,
-## #   amp_f2 &lt;dbl&gt;, width_f2 &lt;int&gt;, freq_f3 &lt;int&gt;, amp_f3 &lt;dbl&gt;,
-## #   width_f3 &lt;int&gt;, freq_h1 &lt;int&gt;, amp_h1 &lt;dbl&gt;, freq_h2 &lt;int&gt;,
-## #   amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;int&gt;, p0_id &lt;chr&gt;,
-## #   p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;, a1p0_h3 &lt;dbl&gt;,
-## #   a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;int&gt;, amp_p1 &lt;dbl&gt;,
-## #   a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;, Type &lt;chr&gt;,
+##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1 freq_f2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+##  1 BP02    baba… a     oral         1      0.2     539   16.2      100    1078
+##  2 BP02    baba… a     oral         2      0.2     586   20.5       63    1148
+##  3 BP02    baba… a     oral         3      0.2     633   18.0       64    1128
+##  4 BP02    baba… a     oral         4      0.2     633   20.3       81    1154
+##  5 BP02    baba… a     oral         5      0.2     633   19.9       45    1101
+##  6 BP02    baba… a     oral         6      0.2     633   20.2       46    1107
+##  7 BP02    baba… a     oral         7      0.2     633   19.9       53    1133
+##  8 BP02    baba… a     oral         8      0.2     586   18.7       58    1089
+##  9 BP02    baba… a     oral         9      0.2     609   15.7       63    1055
+## 10 BP02    baba… a     oral        10      0.2     586   18.9       49    1117
+## # … with 2,145 more rows, and 31 more variables: amp_f2 &lt;dbl&gt;, width_f2 &lt;dbl&gt;,
+## #   freq_f3 &lt;dbl&gt;, amp_f3 &lt;dbl&gt;, width_f3 &lt;dbl&gt;, freq_h1 &lt;dbl&gt;, amp_h1 &lt;dbl&gt;,
+## #   freq_h2 &lt;dbl&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;dbl&gt;,
+## #   p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;,
+## #   a1p0_h3 &lt;dbl&gt;, a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;dbl&gt;,
+## #   amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;, Type &lt;chr&gt;,
 ## #   label &lt;chr&gt;, Time &lt;dbl&gt;, F1 &lt;dbl&gt;, F2 &lt;dbl&gt;, F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>nasalitydata %&gt;% filter(NormTime == 0.2, Vowel ==&quot;u&quot;) %&gt;% right_join(normtimedata)</code></pre>
 <pre><code>## Joining, by = c(&quot;Speaker&quot;, &quot;Word&quot;, &quot;Vowel&quot;, &quot;Nasality&quot;, &quot;RepNo&quot;, &quot;NormTime&quot;)</code></pre>
-<pre><code>## # A tibble: 64,280 x 41
-##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;int&gt;  &lt;dbl&gt;    &lt;int&gt;
-##  1 BP02    abun… u     nasal        1      0.1      NA   NA         NA
-##  2 BP02    abun… u     nasal        1      0.2     352   13.9      680
-##  3 BP02    abun… u     nasal        1      0.3      NA   NA         NA
-##  4 BP02    abun… u     nasal        1      0.4      NA   NA         NA
-##  5 BP02    abun… u     nasal        1      0.5      NA   NA         NA
-##  6 BP02    abun… u     nasal        1      0.6      NA   NA         NA
-##  7 BP02    abun… u     nasal        1      0.7      NA   NA         NA
-##  8 BP02    abun… u     nasal        1      0.8      NA   NA         NA
-##  9 BP02    abun… u     nasal        1      0.9      NA   NA         NA
-## 10 BP02    abun… u     nasal        1      1        NA   NA         NA
-## # ... with 64,270 more rows, and 32 more variables: freq_f2 &lt;int&gt;,
-## #   amp_f2 &lt;dbl&gt;, width_f2 &lt;int&gt;, freq_f3 &lt;int&gt;, amp_f3 &lt;dbl&gt;,
-## #   width_f3 &lt;int&gt;, freq_h1 &lt;int&gt;, amp_h1 &lt;dbl&gt;, freq_h2 &lt;int&gt;,
-## #   amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;int&gt;, p0_id &lt;chr&gt;,
-## #   p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;, a1p0_h3 &lt;dbl&gt;,
-## #   a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;int&gt;, amp_p1 &lt;dbl&gt;,
-## #   a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;, Type &lt;chr&gt;,
-## #   label &lt;chr&gt;, Time &lt;dbl&gt;, F1 &lt;dbl&gt;, F2 &lt;dbl&gt;, F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 182,150 x 41
+##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1 freq_f2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.2     352  13.9       680     557
+##  2 BP02    abun… u     nasal        2      0.2     422  13.1       120    2196
+##  3 BP02    abun… u     nasal        3      0.2     398  12.6       121    2268
+##  4 BP02    abun… u     nasal        4      0.2     422  13.9      1311     504
+##  5 BP02    abun… u     nasal        5      0.2     445  13.1       131    1754
+##  6 BP02    abun… u     nasal        6      0.2     398  14.9       186     551
+##  7 BP02    abun… u     nasal        7      0.2     305   9.55      303     618
+##  8 BP02    abun… u     nasal        8      0.2     422  10.7       656     530
+##  9 BP02    abun… u     nasal        9      0.2     211  16.1       212     674
+## 10 BP02    abun… u     nasal       10      0.2     398  14.0       166     679
+## # … with 182,140 more rows, and 31 more variables: amp_f2 &lt;dbl&gt;,
+## #   width_f2 &lt;dbl&gt;, freq_f3 &lt;dbl&gt;, amp_f3 &lt;dbl&gt;, width_f3 &lt;dbl&gt;, freq_h1 &lt;dbl&gt;,
+## #   amp_h1 &lt;dbl&gt;, freq_h2 &lt;dbl&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;,
+## #   freq_p0 &lt;dbl&gt;, p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;,
+## #   a1p0_h2 &lt;dbl&gt;, a1p0_h3 &lt;dbl&gt;, a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;,
+## #   freq_p1 &lt;dbl&gt;, amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;,
+## #   a3p0 &lt;dbl&gt;, Type &lt;chr&gt;, label &lt;chr&gt;, Time &lt;dbl&gt;, F1 &lt;dbl&gt;, F2 &lt;dbl&gt;,
+## #   F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <p>The last type of outer join is a full join. It keeps all observations from both datasets. Remember when using the pipe that the argument that goes into full join is on the left hand side of the full_join() function, so if you do any filtering, keep that in mind!</p>
 <pre class="r"><code>normtimedata %&gt;% full_join(nasalitydata)</code></pre>
 <pre><code>## Joining, by = c(&quot;Speaker&quot;, &quot;Word&quot;, &quot;Vowel&quot;, &quot;Nasality&quot;, &quot;RepNo&quot;, &quot;NormTime&quot;)</code></pre>
-<pre><code>## # A tibble: 64,290 x 41
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    abun… u     nasal        1      0.1 clean un     3.39  569.
-##  2 BP02    abun… u     nasal        1      0.2 clean un     3.41  364.
-##  3 BP02    abun… u     nasal        1      0.3 clean un     3.43  373.
-##  4 BP02    abun… u     nasal        1      0.4 clean un     3.46  303.
-##  5 BP02    abun… u     nasal        1      0.5 clean un     3.48  415.
-##  6 BP02    abun… u     nasal        1      0.6 clean un     3.51  336.
-##  7 BP02    abun… u     nasal        1      0.7 clean un     3.53  336.
-##  8 BP02    abun… u     nasal        1      0.8 clean un     3.56  330.
-##  9 BP02    abun… u     nasal        1      0.9 clean un     3.58  302.
-## 10 BP02    abun… u     nasal        1      1   clean un     3.60  280.
-## # ... with 64,280 more rows, and 31 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;, freq_f1 &lt;int&gt;, amp_f1 &lt;dbl&gt;, width_f1 &lt;int&gt;,
-## #   freq_f2 &lt;int&gt;, amp_f2 &lt;dbl&gt;, width_f2 &lt;int&gt;, freq_f3 &lt;int&gt;,
-## #   amp_f3 &lt;dbl&gt;, width_f3 &lt;int&gt;, freq_h1 &lt;int&gt;, amp_h1 &lt;dbl&gt;,
-## #   freq_h2 &lt;int&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;,
-## #   freq_p0 &lt;int&gt;, p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;,
+<pre><code>## # A tibble: 182,155 x 41
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.1 clean un     3.39  569. 2372.
+##  2 BP02    abun… u     nasal        1      0.2 clean un     3.41  364. 2297.
+##  3 BP02    abun… u     nasal        1      0.3 clean un     3.43  373. 2258.
+##  4 BP02    abun… u     nasal        1      0.4 clean un     3.46  303. 2165.
+##  5 BP02    abun… u     nasal        1      0.5 clean un     3.48  415. 2247.
+##  6 BP02    abun… u     nasal        1      0.6 clean un     3.51  336. 2098.
+##  7 BP02    abun… u     nasal        1      0.7 clean un     3.53  336. 2272.
+##  8 BP02    abun… u     nasal        1      0.8 clean un     3.56  330. 1719.
+##  9 BP02    abun… u     nasal        1      0.9 clean un     3.58  302. 2337.
+## 10 BP02    abun… u     nasal        1      1   clean un     3.60  280.  966.
+## # … with 182,145 more rows, and 30 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;,
+## #   freq_f1 &lt;dbl&gt;, amp_f1 &lt;dbl&gt;, width_f1 &lt;dbl&gt;, freq_f2 &lt;dbl&gt;, amp_f2 &lt;dbl&gt;,
+## #   width_f2 &lt;dbl&gt;, freq_f3 &lt;dbl&gt;, amp_f3 &lt;dbl&gt;, width_f3 &lt;dbl&gt;, freq_h1 &lt;dbl&gt;,
+## #   amp_h1 &lt;dbl&gt;, freq_h2 &lt;dbl&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;,
+## #   freq_p0 &lt;dbl&gt;, p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;,
 ## #   a1p0_h2 &lt;dbl&gt;, a1p0_h3 &lt;dbl&gt;, a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;,
-## #   freq_p1 &lt;int&gt;, amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;,
-## #   a3p0 &lt;dbl&gt;</code></pre>
+## #   freq_p1 &lt;dbl&gt;, amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>normtimedata %&gt;% filter(NormTime == 0.4) %&gt;% full_join(nasalitydata) %&gt;% arrange(Speaker, Vowel, Nasality, RepNo, NormTime) </code></pre>
 <pre><code>## Joining, by = c(&quot;Speaker&quot;, &quot;Word&quot;, &quot;Vowel&quot;, &quot;Nasality&quot;, &quot;RepNo&quot;, &quot;NormTime&quot;)</code></pre>
-<pre><code>## # A tibble: 32,146 x 41
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    tapa… a     nasal        1      0.2 &lt;NA&gt;  &lt;NA&gt;  NA      NA 
-##  2 BP02    tapa… a     nasal        1      0.4 clean an     3.67  337.
-##  3 BP02    tapa… a     nasal        1      0.6 &lt;NA&gt;  &lt;NA&gt;  NA      NA 
-##  4 BP02    tapa… a     nasal        1      0.8 &lt;NA&gt;  &lt;NA&gt;  NA      NA 
-##  5 BP02    tapa… a     nasal        1      1   &lt;NA&gt;  &lt;NA&gt;  NA      NA 
-##  6 BP02    tapa… a     nasal        2      0.2 &lt;NA&gt;  &lt;NA&gt;  NA      NA 
-##  7 BP02    tapa… a     nasal        2      0.4 clean an     6.22  443.
-##  8 BP02    tapa… a     nasal        2      0.6 &lt;NA&gt;  &lt;NA&gt;  NA      NA 
-##  9 BP02    tapa… a     nasal        2      0.8 &lt;NA&gt;  &lt;NA&gt;  NA      NA 
-## 10 BP02    tapa… a     nasal        2      1   &lt;NA&gt;  &lt;NA&gt;  NA      NA 
-## # ... with 32,136 more rows, and 31 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;, freq_f1 &lt;int&gt;, amp_f1 &lt;dbl&gt;, width_f1 &lt;int&gt;,
-## #   freq_f2 &lt;int&gt;, amp_f2 &lt;dbl&gt;, width_f2 &lt;int&gt;, freq_f3 &lt;int&gt;,
-## #   amp_f3 &lt;dbl&gt;, width_f3 &lt;int&gt;, freq_h1 &lt;int&gt;, amp_h1 &lt;dbl&gt;,
-## #   freq_h2 &lt;int&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;,
-## #   freq_p0 &lt;int&gt;, p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;,
+<pre><code>## # A tibble: 43,932 x 41
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    tapa… a     nasal        1      0.2 &lt;NA&gt;  &lt;NA&gt;  NA      NA    NA 
+##  2 BP02    tapa… a     nasal        1      0.4 clean an     3.67  337. 1734.
+##  3 BP02    tapa… a     nasal        1      0.6 &lt;NA&gt;  &lt;NA&gt;  NA      NA    NA 
+##  4 BP02    tapa… a     nasal        1      0.8 &lt;NA&gt;  &lt;NA&gt;  NA      NA    NA 
+##  5 BP02    tapa… a     nasal        1      1   &lt;NA&gt;  &lt;NA&gt;  NA      NA    NA 
+##  6 BP02    tapa… a     nasal        2      0.2 &lt;NA&gt;  &lt;NA&gt;  NA      NA    NA 
+##  7 BP02    tapa… a     nasal        2      0.4 clean an     6.22  443. 1966.
+##  8 BP02    tapa… a     nasal        2      0.6 &lt;NA&gt;  &lt;NA&gt;  NA      NA    NA 
+##  9 BP02    tapa… a     nasal        2      0.8 &lt;NA&gt;  &lt;NA&gt;  NA      NA    NA 
+## 10 BP02    tapa… a     nasal        2      1   &lt;NA&gt;  &lt;NA&gt;  NA      NA    NA 
+## # … with 43,922 more rows, and 30 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;,
+## #   freq_f1 &lt;dbl&gt;, amp_f1 &lt;dbl&gt;, width_f1 &lt;dbl&gt;, freq_f2 &lt;dbl&gt;, amp_f2 &lt;dbl&gt;,
+## #   width_f2 &lt;dbl&gt;, freq_f3 &lt;dbl&gt;, amp_f3 &lt;dbl&gt;, width_f3 &lt;dbl&gt;, freq_h1 &lt;dbl&gt;,
+## #   amp_h1 &lt;dbl&gt;, freq_h2 &lt;dbl&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;,
+## #   freq_p0 &lt;dbl&gt;, p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;,
 ## #   a1p0_h2 &lt;dbl&gt;, a1p0_h3 &lt;dbl&gt;, a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;,
-## #   freq_p1 &lt;int&gt;, amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;,
-## #   a3p0 &lt;dbl&gt;</code></pre>
+## #   freq_p1 &lt;dbl&gt;, amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;</code></pre>
 <p>Why does the second example here only have NormTime values of 0.2, 0.4, 0.6, 0.8, and 1?</p>
-</div>
-<div id="filtering-joins" class="section level2">
-<h2>Filtering joins</h2>
-<p>Unlike mutating joins, filtering joins do not combine multiple datasets. They only affect the observations from the first dataset. (You can think of it as using data that is or isn’t in the second set to filter the first set, based ona particular key.)</p>
+<p>##Filtering joins
+Unlike mutating joins, filtering joins do not combine multiple datasets. They only affect the observations from the first dataset. (You can think of it as using data that is or isn’t in the second set to filter the first set, based ona particular key.)</p>
 <p>A semi join will keep all observations in the first dataset which have a match in the second dataset. An anti join will discard these observations, and will only keep the observations in the first dataset that <em>don’t</em> have a match in the second set.</p>
 <pre class="r"><code>normtimedata %&gt;% semi_join(nasalitydata)</code></pre>
 <pre><code>## Joining, by = c(&quot;Speaker&quot;, &quot;Word&quot;, &quot;Vowel&quot;, &quot;Nasality&quot;, &quot;RepNo&quot;, &quot;NormTime&quot;)</code></pre>
-<pre><code>## # A tibble: 32,135 x 13
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    abun… u     nasal        1      0.2 clean un     3.41  364.
-##  2 BP02    abun… u     nasal        1      0.4 clean un     3.46  303.
-##  3 BP02    abun… u     nasal        1      0.6 clean un     3.51  336.
-##  4 BP02    abun… u     nasal        1      0.8 clean un     3.56  330.
-##  5 BP02    abun… u     nasal        1      1   clean un     3.60  280.
-##  6 BP02    abun… u     nasal        2      0.2 clean un     5.83  326.
-##  7 BP02    abun… u     nasal        2      0.4 clean un     5.88  334.
-##  8 BP02    abun… u     nasal        2      0.6 clean un     5.93  310.
-##  9 BP02    abun… u     nasal        2      0.8 clean un     5.97  306.
-## 10 BP02    abun… u     nasal        2      1   clean un     6.02  305.
-## # ... with 32,125 more rows, and 3 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 32,140 x 13
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.2 clean un     3.41  364. 2297.
+##  2 BP02    abun… u     nasal        1      0.4 clean un     3.46  303. 2165.
+##  3 BP02    abun… u     nasal        1      0.6 clean un     3.51  336. 2098.
+##  4 BP02    abun… u     nasal        1      0.8 clean un     3.56  330. 1719.
+##  5 BP02    abun… u     nasal        1      1   clean un     3.60  280.  966.
+##  6 BP02    abun… u     nasal        2      0.2 clean un     5.83  326. 2185.
+##  7 BP02    abun… u     nasal        2      0.4 clean un     5.88  334. 1471.
+##  8 BP02    abun… u     nasal        2      0.6 clean un     5.93  310. 1371.
+##  9 BP02    abun… u     nasal        2      0.8 clean un     5.97  306. 1308.
+## 10 BP02    abun… u     nasal        2      1   clean un     6.02  305. 2169.
+## # … with 32,130 more rows, and 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>nasalitydata %&gt;% semi_join(normtimedata)</code></pre>
 <pre><code>## Joining, by = c(&quot;Speaker&quot;, &quot;Word&quot;, &quot;Vowel&quot;, &quot;Nasality&quot;, &quot;RepNo&quot;, &quot;NormTime&quot;)</code></pre>
-<pre><code>## # A tibble: 32,135 x 34
-##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;int&gt;  &lt;dbl&gt;    &lt;int&gt;
-##  1 BP02    abun… u     nasal        1      0.2     352   13.9      680
-##  2 BP02    abun… u     nasal        1      0.4     469   13.1      133
-##  3 BP02    abun… u     nasal        1      0.6     258   17.6      222
-##  4 BP02    abun… u     nasal        1      0.8     281   15.7      103
-##  5 BP02    abun… u     nasal        1      1       141   16.7       53
-##  6 BP02    abun… u     nasal        2      0.2     422   13.1      120
-##  7 BP02    abun… u     nasal        2      0.4     211   18.0      139
-##  8 BP02    abun… u     nasal        2      0.6     234   18.2      140
-##  9 BP02    abun… u     nasal        2      0.8     258   17.0      143
-## 10 BP02    abun… u     nasal        2      1       258   17.0       57
-## # ... with 32,125 more rows, and 25 more variables: freq_f2 &lt;int&gt;,
-## #   amp_f2 &lt;dbl&gt;, width_f2 &lt;int&gt;, freq_f3 &lt;int&gt;, amp_f3 &lt;dbl&gt;,
-## #   width_f3 &lt;int&gt;, freq_h1 &lt;int&gt;, amp_h1 &lt;dbl&gt;, freq_h2 &lt;int&gt;,
-## #   amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;int&gt;, p0_id &lt;chr&gt;,
-## #   p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;, a1p0_h3 &lt;dbl&gt;,
-## #   a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;int&gt;, amp_p1 &lt;dbl&gt;,
-## #   a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 32,140 x 34
+##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1 freq_f2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.2     352   13.9      680     557
+##  2 BP02    abun… u     nasal        1      0.4     469   13.1      133    2232
+##  3 BP02    abun… u     nasal        1      0.6     258   17.6      222    1253
+##  4 BP02    abun… u     nasal        1      0.8     281   15.7      103    1395
+##  5 BP02    abun… u     nasal        1      1       141   16.7       53    1220
+##  6 BP02    abun… u     nasal        2      0.2     422   13.1      120    2196
+##  7 BP02    abun… u     nasal        2      0.4     211   18.0      139    1324
+##  8 BP02    abun… u     nasal        2      0.6     234   18.2      140    1156
+##  9 BP02    abun… u     nasal        2      0.8     258   17.0      143    1609
+## 10 BP02    abun… u     nasal        2      1       258   17.0       57     860
+## # … with 32,130 more rows, and 24 more variables: amp_f2 &lt;dbl&gt;, width_f2 &lt;dbl&gt;,
+## #   freq_f3 &lt;dbl&gt;, amp_f3 &lt;dbl&gt;, width_f3 &lt;dbl&gt;, freq_h1 &lt;dbl&gt;, amp_h1 &lt;dbl&gt;,
+## #   freq_h2 &lt;dbl&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;dbl&gt;,
+## #   p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;,
+## #   a1p0_h3 &lt;dbl&gt;, a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;dbl&gt;,
+## #   amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>normtimedata %&gt;% anti_join(nasalitydata)</code></pre>
 <pre><code>## Joining, by = c(&quot;Speaker&quot;, &quot;Word&quot;, &quot;Vowel&quot;, &quot;Nasality&quot;, &quot;RepNo&quot;, &quot;NormTime&quot;)</code></pre>
-<pre><code>## # A tibble: 32,145 x 13
-##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 BP02    abun… u     nasal        1      0.1 clean un     3.39  569.
-##  2 BP02    abun… u     nasal        1      0.3 clean un     3.43  373.
-##  3 BP02    abun… u     nasal        1      0.5 clean un     3.48  415.
-##  4 BP02    abun… u     nasal        1      0.7 clean un     3.53  336.
-##  5 BP02    abun… u     nasal        1      0.9 clean un     3.58  302.
-##  6 BP02    abun… u     nasal        2      0.1 clean un     5.81  492.
-##  7 BP02    abun… u     nasal        2      0.3 clean un     5.86  287.
-##  8 BP02    abun… u     nasal        2      0.5 clean un     5.90  367.
-##  9 BP02    abun… u     nasal        2      0.7 clean un     5.95  385.
-## 10 BP02    abun… u     nasal        2      0.9 clean un     6.00  285.
-## # ... with 32,135 more rows, and 3 more variables: F2 &lt;dbl&gt;, F3 &lt;dbl&gt;,
-## #   F2_3 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 150,010 x 13
+##    Speaker Word  Vowel Nasality RepNo NormTime Type  label  Time    F1    F2
+##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 BP02    abun… u     nasal        1      0.1 clean un     3.39  569. 2372.
+##  2 BP02    abun… u     nasal        1      0.3 clean un     3.43  373. 2258.
+##  3 BP02    abun… u     nasal        1      0.5 clean un     3.48  415. 2247.
+##  4 BP02    abun… u     nasal        1      0.7 clean un     3.53  336. 2272.
+##  5 BP02    abun… u     nasal        1      0.9 clean un     3.58  302. 2337.
+##  6 BP02    abun… u     nasal        2      0.1 clean un     5.81  492. 2277.
+##  7 BP02    abun… u     nasal        2      0.3 clean un     5.86  287. 1767.
+##  8 BP02    abun… u     nasal        2      0.5 clean un     5.90  367. 2301.
+##  9 BP02    abun… u     nasal        2      0.7 clean un     5.95  385. 2114.
+## 10 BP02    abun… u     nasal        2      0.9 clean un     6.00  285. 1020.
+## # … with 150,000 more rows, and 2 more variables: F3 &lt;dbl&gt;, F2_3 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>nasalitydata %&gt;% anti_join(normtimedata)</code></pre>
 <pre><code>## Joining, by = c(&quot;Speaker&quot;, &quot;Word&quot;, &quot;Vowel&quot;, &quot;Nasality&quot;, &quot;RepNo&quot;, &quot;NormTime&quot;)</code></pre>
-<pre><code>## # A tibble: 10 x 34
-##    Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;int&gt;  &lt;dbl&gt;    &lt;int&gt;
-##  1 BP04    trib… &lt;NA&gt;  &lt;NA&gt;        44      0.2     164  23.9        77
-##  2 BP04    trib… &lt;NA&gt;  &lt;NA&gt;        44      0.4     188  18.9        33
-##  3 BP04    trib… &lt;NA&gt;  &lt;NA&gt;        44      0.6     117   2.71      461
-##  4 BP04    trib… &lt;NA&gt;  &lt;NA&gt;        44      0.8     234  24.0        36
-##  5 BP04    trib… &lt;NA&gt;  &lt;NA&gt;        44      1       164  23.2       137
-##  6 BP04    trib… u     oral        67      0.2     141  21.7       122
-##  7 BP04    trib… u     oral        67      0.4     328  27.7        27
-##  8 BP04    trib… u     oral        67      0.6     328  31.6        15
-##  9 BP04    trib… u     oral        67      0.8     328  30.6        16
-## 10 BP04    trib… u     oral        67      1       164  23.8        87
-## # ... with 25 more variables: freq_f2 &lt;int&gt;, amp_f2 &lt;dbl&gt;, width_f2 &lt;int&gt;,
-## #   freq_f3 &lt;int&gt;, amp_f3 &lt;dbl&gt;, width_f3 &lt;int&gt;, freq_h1 &lt;int&gt;,
-## #   amp_h1 &lt;dbl&gt;, freq_h2 &lt;int&gt;, amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;,
-## #   freq_p0 &lt;int&gt;, p0_id &lt;chr&gt;, p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;,
-## #   a1p0_h2 &lt;dbl&gt;, a1p0_h3 &lt;dbl&gt;, a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;,
-## #   freq_p1 &lt;int&gt;, amp_p1 &lt;dbl&gt;, a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;,
-## #   a3p0 &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 5 x 34
+##   Speaker Word  Vowel Nasality RepNo NormTime freq_f1 amp_f1 width_f1 freq_f2
+##   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;    &lt;int&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+## 1 BP04    trib… &lt;NA&gt;  &lt;NA&gt;        44      0.2     164  23.9        77    1110
+## 2 BP04    trib… &lt;NA&gt;  &lt;NA&gt;        44      0.4     188  18.9        33    1319
+## 3 BP04    trib… &lt;NA&gt;  &lt;NA&gt;        44      0.6     117   2.71      461    1660
+## 4 BP04    trib… &lt;NA&gt;  &lt;NA&gt;        44      0.8     234  24.0        36    1210
+## 5 BP04    trib… &lt;NA&gt;  &lt;NA&gt;        44      1       164  23.2       137     828
+## # … with 24 more variables: amp_f2 &lt;dbl&gt;, width_f2 &lt;dbl&gt;, freq_f3 &lt;dbl&gt;,
+## #   amp_f3 &lt;dbl&gt;, width_f3 &lt;dbl&gt;, freq_h1 &lt;dbl&gt;, amp_h1 &lt;dbl&gt;, freq_h2 &lt;dbl&gt;,
+## #   amp_h2 &lt;dbl&gt;, amp_h3 &lt;dbl&gt;, amp_p0 &lt;dbl&gt;, freq_p0 &lt;dbl&gt;, p0_id &lt;chr&gt;,
+## #   p0prominence &lt;dbl&gt;, a1p0_h1 &lt;dbl&gt;, a1p0_h2 &lt;dbl&gt;, a1p0_h3 &lt;dbl&gt;,
+## #   a1p0 &lt;dbl&gt;, a1p0_compensated &lt;dbl&gt;, freq_p1 &lt;dbl&gt;, amp_p1 &lt;dbl&gt;,
+## #   a1p1 &lt;dbl&gt;, a1p1_compensated &lt;dbl&gt;, a3p0 &lt;dbl&gt;</code></pre>
 <pre class="r"><code>#As it turns out, there was one dataset in the nasality data that, for some reason, was not calculated in the normtime dataset.</code></pre>
-</div>
-</div>
-<div id="my-data-processing-code" class="section level1">
-<h1>My data processing code</h1>
-<p>This is the processing code I used to get the data from my dissertation out of .txt form and into R. Note that it is not the final version of the data. Rather, it is processed to the point where it can be worked with in this module. Further processing was done, specifically using the select() and filter() verbs, to create my final dataset, which is not shown here.</p>
+<p>#My data processing code
+This is the processing code I used to get the data from my dissertation out of .txt form and into R. Note that it is not the final version of the data. Rather, it is processed to the point where it can be worked with in this module. Further processing was done, specifically using the select() and filter() verbs, to create my final dataset, which is not shown here.</p>
 <p>Some of this is based on methods found on <a href="http://serialmentor.com/blog/2016/6/13/reading-and-combining-many-tidy-data-files-in-R">this website</a>.</p>
-<pre class="r"><code>normtimewd = &quot;/Users/goldrch2/Desktop/Teaching/LING 490/Data/Clean Normtime formant&quot;
+<pre class="r"><code>normtimewd = &quot;/Users/marissabarlaz/Desktop/Work/LING/LING 490/Data/All NormTime Formant&quot;
 allfiles = dir(normtimewd, &quot;*.normtime_formant&quot;)
 
 normtimedata &lt;- data_frame(filename = allfiles) %&gt;%
@@ -1108,7 +1050,7 @@ normtimedata  = normtimedata %&gt;%
 
 ### NASALITY DATA PROCESSING
 
-nasalitywd = &quot;/Users/goldrch2/Desktop/Teaching/LING 490/Data/Acoustic Nasality Data&quot;
+nasalitywd = &quot;/Users/marissabarlaz/Desktop/Work/LING/LING 490/Data/Acoustic Nasality Data&quot;
 allnasalfiles = dir(nasalitywd, &quot;*.txt&quot;)
 
 nasalitydata &lt;- data_frame(filename = allnasalfiles) %&gt;%
@@ -1135,6 +1077,7 @@ nasalitydata  = nasalitydata %&gt;%
   select(Speaker, Word, Vowel, Nasality, RepNo, NormTime, everything())
   
 #write_csv(nasalitydata, paste(normtimewd, &quot;nasalitydata_styler_all.csv&quot;, sep=&quot;&quot;))</code></pre>
+</div>
 </div>
 
          

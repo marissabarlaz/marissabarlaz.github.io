@@ -30,7 +30,7 @@ library(gss)
 For this workshop, I will be using a subset of my dissertation data. I will be using words with oral vowels in Brazilian Portuguese (/a/ from the word *babado*, /i/ from the word *cabido*, and /u/ from the word *tributo*), repeated by five female speakers in a carrier phrase. The audio files and accompanying textgrids I use are named as follows:
 
 ```{r test}
-absdir = "/Users/goldrch2/Desktop/Research/FemaleBP/"
+absdir = "/Users/marissabarlaz/Desktop/FemaleBP/"
 mydir = list.files(absdir, "*.WAV")
 mydir
 testwav = paste0(absdir, mydir[1])
@@ -253,7 +253,7 @@ rm(sndWav, t)
 Things I didn't know when I started writing this workshop - you CAN use apply functions to create all .Pitch and .PitchTier, etc. files on your computer. Once again, use absolute paths without spaces in them! This will make your life a lot easier, though sadly it does NOT make things shorter in terms of time.
 
 ```{r}
-mydirlong = "/Users/goldrch2/Desktop/Research/FemaleBP/"
+mydirlong = "/Users/marissabarlaz/Desktop/FemaleBP/"
 mydirwav = paste0(mydirlong, mydir)
 mydirpitch = str_replace_all(mydirwav, ".WAV", ".Pitch")
 mydirpitchtier = str_replace_all(mydirwav, ".WAV", ".PitchTier")

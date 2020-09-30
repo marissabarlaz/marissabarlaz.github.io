@@ -147,8 +147,8 @@
 <pre class="r"><code>plot(ubdb$t1y, ubdb$f1)</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/basegraph-2.png" width="576" /></p>
 <pre class="r"><code>boxplot(f1~v, notch = TRUE, data = ubdb)</code></pre>
-<pre><code>## Warning in bxp(list(stats = structure(c(419.198, 574.662, 611.469,
-## 698.7815, : some notches went outside hinges (&#39;box&#39;): maybe set notch=FALSE</code></pre>
+<pre><code>## Warning in bxp(list(stats = structure(c(419.198, 574.662, 611.469, 698.7815, :
+## some notches went outside hinges (&#39;box&#39;): maybe set notch=FALSE</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/basegraph-3.png" width="576" /></p>
 <p>However, each of these functions have slightly different syntactic forms, and the code is more complex to create plots. The <em>ggplot()</em> function, on the other hand, has a consistent coding structure, and creates much prettier plots. Once you understand the basic functions in ggplot, pretty and informative graphics are only a few steps away!</p>
 <p>The basic idea is similar to that of Photoshop. You independently specify building blocks of your plot, and combine them to create a graphical display. We add these building blocks (i.e., layers) to the graph using the “+” sign. Building blocks include:</p>
@@ -213,7 +213,7 @@ What’s the difference here? For the first plot, we are plotting basic geometri
 <pre><code>## Error in layer(data = data, mapping = mapping, stat = stat, geom = GeomLine, : object &#39;v&#39; not found</code></pre>
 <pre class="r"><code>#This is one way to get around the aes() issue, but is not the best! It means you have to call your data file again, and if you have some similarly-titled data frames, a simple typo can give you an inaccurate graph!
 ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(group = ubdb$v, color = ubdb$v)</code></pre>
-<pre><code>## Error in grDevices::col2rgb(colour, TRUE): invalid color name &#39;AA&#39;</code></pre>
+<pre><code>## Error: Unknown colour name: AA</code></pre>
 <pre class="r"><code>#This is the best method of doing it!
 ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(group = v, color = v))</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot3-1.png" width="576" /></p>
@@ -233,9 +233,11 @@ ggplot(ubdb, aes(x=v, y=f1)) + geom_boxplot(aes(group = v)) + geom_signif(compar
 <pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-2.png" width="576" /></p>
 <pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_smooth(aes(color = v), method = &quot;gam&quot;, size = 2)+geom_ribbon(aes(color = v, ymin = f1-sd(f1), ymax = f1+sd(f1)), alpha = .2)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-3.png" width="576" /></p>
 <pre class="r"><code>#this is better. There is not an overload of information in these plots!
 ggplot(ubdb, aes(x=t1y, y=f1)) + geom_smooth(aes(color = v), method = &quot;gam&quot;, size = 2)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-4.png" width="576" /></p>
 <pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_line(aes(color = v))</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot35-5.png" width="576" /></p>
@@ -254,9 +256,9 @@ ggplot(ubdb, aes(x=t1y, y=f1)) + geom_smooth(aes(color = v), method = &quot;gam&
 <pre class="r"><code>ggplot(ubdb, aes(x=v, y = f1))+geom_bar(aes(color = v, fill = v), stat = &quot;identity&quot;)</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/unnamed-chunk-1-1.png" width="576" />
 What we need to do is create a summary function and pass that into ggplot. This is a common thing to do for all sorts of data. In the summarise function, you can include standard error, SD, and many other summary statistics.</p>
-<pre class="r"><code>ubdbsummary = ubdb %&gt;% group_by(v) %&gt;% summarise(meanF1 = mean(f1), sdF1 = sd(f1))
-
-ggplot(ubdbsummary, aes(x=v, y = meanF1))+geom_bar(aes(color = v, fill = v), stat = &quot;identity&quot;)</code></pre>
+<pre class="r"><code>ubdbsummary = ubdb %&gt;% group_by(v) %&gt;% summarise(meanF1 = mean(f1), sdF1 = sd(f1))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+<pre class="r"><code>ggplot(ubdbsummary, aes(x=v, y = meanF1))+geom_bar(aes(color = v, fill = v), stat = &quot;identity&quot;)</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/unnamed-chunk-2-1.png" width="576" /></p>
 <pre class="r"><code>ggplot(ubdbsummary, aes(x=v, y = meanF1))+geom_bar(aes(color = v, fill = v), stat = &quot;identity&quot;) + geom_errorbar(aes(ymin = meanF1-sdF1,ymax = meanF1+sdF1, group = v), width= 0.5)</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/unnamed-chunk-2-2.png" width="576" /></p>
@@ -288,7 +290,7 @@ ggplot(ubdbsummary, aes(x=v, y = meanF1))+geom_bar(aes(color = v, fill = v), sta
 <pre class="r"><code>ggplot(ubdb, aes(x=t1y))+stat_bin(bins = 40)</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-4.png" width="576" /></p>
 <pre class="r"><code>ggplot(ubdb, aes(x=v, y=t1y))+stat_summary()</code></pre>
-<pre><code>## No summary function supplied, defaulting to `mean_se()</code></pre>
+<pre><code>## No summary function supplied, defaulting to `mean_se()`</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-5.png" width="576" /></p>
 <pre class="r"><code>ggplot(ubdb, aes(x=t1y, y=f1)) + geom_point(aes(color = v)) + stat_unique()</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-6.png" width="576" /></p>
@@ -309,8 +311,9 @@ ggplot(ubdb, aes(x=f2, y=f1))+geom_text(data = mymeans, aes(color = v, label = v
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-12.png" width="576" /></p>
 <pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_text(data = mymeans2, aes(color = v, label = v), size = 4,show.legend = FALSE)+stat_ellipse(aes(color = v, linetype = v))+facet_wrap(~speaker)</code></pre>
 <pre><code>## Too few points to calculate an ellipse</code></pre>
-<pre><code>## Too few points to calculate an ellipse</code></pre>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
+<pre><code>## Too few points to calculate an ellipse
+## Too few points to calculate an ellipse</code></pre>
+<pre><code>## Warning: Removed 1 row(s) containing missing values (geom_path).</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/ggplot5-13.png" width="576" /></p>
 </div>
 <div id="other-aspects-of-the-graph" class="section level2">
@@ -319,7 +322,7 @@ ggplot(ubdb, aes(x=f2, y=f1))+geom_text(data = mymeans, aes(color = v, label = v
 <h3>Colors</h3>
 <p>There’s a lot to be said about different color palettes in R. You can specify your color scheme based on personal taste, school colors, using a colorblind friendly palette, etc. Note that it’s generally in good taste to use a colorblind friendly palette, which the base colors in <em>ggplot</em> are not, as they have the same luminescence. Below, I am defining a colorblind friendly palette and using it in graphs using <em>scale_fill_manual()</em> and <em>scale_colour_manual()</em>. You can do use these two functions with a predefined palette, as I am, or by calling color codes (either HTML or basic color names) in the function.</p>
 <pre class="r"><code>cbPalette &lt;- c(&quot;#999999&quot;, &quot;#E69F00&quot;, &quot;#56B4E9&quot;, &quot;#009E73&quot;, &quot;#F0E442&quot;, &quot;#0072B2&quot;, &quot;#D55E00&quot;, &quot;#CC79A7&quot;, &quot;#000000&quot;)
-
+cbPalette10= c(&quot;#543005&quot;, &quot;#8c510a&quot;, &quot;#bf812d&quot;, &quot;#dfc27d&quot;, &quot;#f6e8c3&quot; ,&quot;#c7eae5&quot; ,&quot;#80cdc1&quot;, &quot;#35978f&quot; ,&quot;#01665e&quot; ,&quot;#003c30&quot;)
 #To use for fills, add  scale_fill_manual(values=cbPalette)
 
 # To use for line and point colors, add  scale_colour_manual(values=cbPalette)
@@ -337,14 +340,12 @@ If you want to relabel the axes, or give a title, you can use the <em>xlab()</em
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/labels-1.png" width="576" /></p>
 <pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(position = &quot;top&quot;)+scale_y_reverse(position = &quot;right&quot;)+ xlab(&quot;F2!!!!&quot;) + ylab(&quot;F1!!!!!&quot;) + ggtitle(&quot;My vowel plot&quot;)</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/labels-2.png" width="576" /></p>
-<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(position = &quot;top&quot;, limits = c(2500,1000))+scale_y_reverse(position = &quot;right&quot;, limits = c(2500,0))+ xlab(&quot;F2!!!!&quot;) + ylab(&quot;F1!!!!!&quot;) + ggtitle(&quot;My vowel plot&quot;)</code></pre>
-<pre><code>## Warning: Removed 107 rows containing non-finite values (stat_ellipse).</code></pre>
-<pre><code>## Warning: Removed 107 rows containing missing values (geom_point).</code></pre>
-<pre><code>## Warning: Removed 46 rows containing missing values (geom_path).</code></pre>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(position = &quot;top&quot;, limits = c(2000,1000))+scale_y_reverse(position = &quot;right&quot;, limits = c(2000,0))+ xlab(&quot;F2!!!!&quot;) + ylab(&quot;F1!!!!!&quot;) + ggtitle(&quot;My vowel plot&quot;)</code></pre>
+<pre><code>## Warning: Removed 236 rows containing non-finite values (stat_ellipse).</code></pre>
+<pre><code>## Warning: Removed 236 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 32 row(s) containing missing values (geom_path).</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/labels-3.png" width="576" /></p>
-<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette)+scale_x_reverse(sec.axis = dup_axis()) + scale_y_reverse(limits = (c(0,1500)),sec.axis = dup_axis())+ xlab(&quot;F2!!!!&quot;) + ylab(&quot;F1!!!!!&quot;) + ggtitle(&quot;My vowel plot&quot;)</code></pre>
-<pre><code>## Warning: Removed 1073 rows containing non-finite values (stat_ellipse).</code></pre>
-<pre><code>## Warning: Removed 1073 rows containing missing values (geom_point).</code></pre>
+<pre class="r"><code>ggplot(ubdb, aes(x=f2, y=f1))+geom_point(aes(color = v))+stat_ellipse(aes(color = v))+scale_color_manual(values = cbPalette10, )+scale_x_reverse(sec.axis = dup_axis()) + scale_y_reverse(limits = (c(NULL,1500)),sec.axis = dup_axis())+ xlab(&quot;F2!!!!&quot;) + ylab(&quot;F1!!!!!&quot;) + ggtitle(&quot;My vowel plot&quot;)</code></pre>
 <p><img src="/portfolio/RGraphingWorkshop_files/figure-html/labels-4.png" width="576" />
 <!-- ###Position --></p>
 <p>###Theme

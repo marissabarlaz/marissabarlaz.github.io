@@ -117,8 +117,8 @@
 
 <p>#Welcome to R!
 You might be asking, why should I use R instead of another type of software? In addition to being able to do statistics (like in Minitab, SPSS, Stata, etc.), you can do high-level scripting, statistical programming, and exploratory data analysis in R. It is free and open-source, meaning there is a large community of contributors and users. R and Rmarkdown allow reproducibility and transparency in analyses, which is becoming increasingly important in social sciences research.</p>
-<p>To install R, go to <a href="https://www.r-project.org" class="uri">https://www.r-project.org</a> and choose a mirror site near here. (There is one at WashU in St. Louis that works.)</p>
-<p>While R is great, it is not very user friendly. Luckily, RStudio exists to help with this problem. To download, go to <a href="https://www.rstudio.com" class="uri">https://www.rstudio.com</a>. This is what RStudio looks like. It has four subwindows: the console, the code/variable viewer, the environment and history viewer, and the “other” viewer.</p>
+<p>To install R, go to <a href="https://www.r-project.org">https://www.r-project.org</a> and choose a mirror site near here. (There is one at WashU in St. Louis that works.)</p>
+<p>While R is great, it is not very user friendly. Luckily, RStudio exists to help with this problem. To download, go to <a href="https://www.rstudio.com">https://www.rstudio.com</a>. This is what RStudio looks like. It has four subwindows: the console, the code/variable viewer, the environment and history viewer, and the “other” viewer.</p>
 <p><img src="/img/Rstudio.png" style="width:95.0%" /></p>
 <p>Rstudio allows you to split your work into various contexts. Each context has its own working directory, workspace, and history. Going forward, I recommend you create a project for each distinct task you plan to complete (e.g., different courses, qualifying exams, dissertation analyses). This way, if you accidentally call datasets for different courses by the same name, you won’t erase one because they are in different projects.</p>
 <p>To create a new project, go to the top right corner of RStudio, where it says ‘Project: (None)’, and click on New Project. Choose a folder that will remain static on your computer to put all of your data and code, and create the new project in a new directory.</p>
@@ -166,8 +166,8 @@ is.numeric(x)</code></pre>
 <pre><code>##  [1] 1  5  7  3  8  4  8  5  2  21 8  0  4  2  1  5 
 ## Levels: 0 1 2 3 4 5 7 8 21</code></pre>
 <pre class="r"><code>as.character(x)</code></pre>
-<pre><code>##  [1] &quot;1&quot;  &quot;5&quot;  &quot;7&quot;  &quot;3&quot;  &quot;8&quot;  &quot;4&quot;  &quot;8&quot;  &quot;5&quot;  &quot;2&quot;  &quot;21&quot; &quot;8&quot;  &quot;0&quot;  &quot;4&quot;  &quot;2&quot; 
-## [15] &quot;1&quot;  &quot;5&quot;</code></pre>
+<pre><code>##  [1] &quot;1&quot;  &quot;5&quot;  &quot;7&quot;  &quot;3&quot;  &quot;8&quot;  &quot;4&quot;  &quot;8&quot;  &quot;5&quot;  &quot;2&quot;  &quot;21&quot; &quot;8&quot;  &quot;0&quot;  &quot;4&quot;  &quot;2&quot;  &quot;1&quot; 
+## [16] &quot;5&quot;</code></pre>
 <pre class="r"><code>length(x)</code></pre>
 <pre><code>## [1] 16</code></pre>
 <pre class="r"><code>head(x)</code></pre>

@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 #Welcome to R!
-You might be asking, why should I use R instead of another type of software? In addition to being able to do statistics (like in Minitab, SPSS, Stata, etc.), you can do high-level scripting, statistical programming, and exploratory data analysis in R. It is free and open-source, meaning there is a large community of contributors and users. R and Rmarkdown allow reproducibility and transparency in analyses, which is becoming increasingly important in social sciences research.
+You might be asking, why should I use R instead of another type of software? In addition to being able to do statistics (like in Minitab, SPSS, Stata, etc.), you can do high-level scripting, statistical programming, and exploratory data analysis in R. It is free and open-source, meaning there is a large community of contributors and users. R and Rmarkdown allow reproducibility and transparency in analyses, which is becoming increasingly important in social sciences research. 
 
 To install R, go to [https://www.r-project.org](https://www.r-project.org) and choose a mirror site near here. (There is one at WashU in St. Louis that works.)
 

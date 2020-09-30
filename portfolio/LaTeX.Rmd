@@ -55,7 +55,7 @@ LaTeX documents are saved as .tex files, and are plain text. Luckily, there are 
 
 For each document, there are a few basic steps to be taken: first, open your editor. Then type, save your document, compile it, and view it. 
 
-There are two basic sections to a LaTeX document: the preamble, and the body. The preamble includes global commands, page layout and other information. The body includes everything else, including your content. In your editor, try typing this, saving it on your computer in a stable folder, and pressing 'Build and View' or 'Compile': 
+There are two basic sections to a LaTeX document: the preamble, and the body. The preamble includes global commands, page layout and other information. The body includes everything else, including your content. In your editor, try typing this, saving it on your computer in a stable folder, and pressing 'Build and View' or 'Compile':  
 
 ```
 \documentclass{article}

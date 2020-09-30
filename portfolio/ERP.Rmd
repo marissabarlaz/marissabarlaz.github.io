@@ -39,7 +39,7 @@ This data was kindly provided by Prof. Green.
 The easiest way to read in data is to add each participant file to a list and then bind it all together. Often you have to initialize the 'participant' column yourself, possibly by taking that information out of the file name. Here since the participant code is a number, I use a regex to extract it from the filenames.
 
 ```{r}
-datadir = "/Users/goldrch2/Desktop/twix_results/"
+datadir = "/Users/marissabarlaz/Desktop/twix_results/"
 mydata = list.files(path = datadir, pattern = "twix_.*")
 mydata
 alldata = list()
@@ -62,7 +62,7 @@ Here I am reading in two different datasets - hemisphereinfo has anteriority and
 
 ```{r}
 
-hemisphereinfo = read_csv("/Users/goldrch2/Desktop/twix_results/electrode_quadrants.csv")
+hemisphereinfo = read_csv("/Users/marissabarlaz/Desktop/twix_results/electrode_quadrants.csv")
 
 
 electrodes <- itsadug::eeg[,c('X','Y','Electrode')]

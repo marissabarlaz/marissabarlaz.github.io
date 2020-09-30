@@ -19,7 +19,7 @@ library(tidyverse)
 library(car)
 library(nparcomp)
 library(Rling)
-normtimedata <- read.csv("/Users/goldrch2/Desktop/Teaching/SPAN 588/Course Data/normtimedata.csv", header = TRUE)
+normtimedata <- read.csv("/Users/marissabarlaz/Desktop/Work/LING/LING 490/Course Data/normtimedata.csv", header = TRUE)
 ```
 
 
@@ -27,7 +27,7 @@ normtimedata <- read.csv("/Users/goldrch2/Desktop/Teaching/SPAN 588/Course Data/
 # Data processing
 For this tutorial, I am using my dissertation data. I am using one speaker's data so we don't have to account for individual differences, and I am only using the midpoint of the vowel.
 ```{r}
-normtimeBP02 = normtimedata %>% filter(Speaker =="BP02", NormTime==0.5)
+normtimeBP02 = normtimedata %>% filter(Speaker =="BP02", NormTime==0.5) %>% mutate(Vowel = as.factor(Vowel), Nasality = as.factor(Nasality))
 head(normtimeBP02)
 ```
 

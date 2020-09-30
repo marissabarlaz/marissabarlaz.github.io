@@ -31,7 +31,7 @@ data("time_training")
 data("time_exper")
 head(time_exper)
 time_all = rbind(time_training, time_exper)
-BP = read_csv("/Users/goldrch2/Desktop/Teaching/SPAN 588/Course Data/normtimedata.csv") 
+BP = read_csv("/Users/marissabarlaz/Desktop/Work/LING/LING 490/Course Data/normtimedata.csv") 
 
 normtimeBP = BP%>% filter(F1>=200 & F1 <=800, Nasality!="nasal_final", NormTime ==0.5)%>% mutate(label = str_replace_all(label, "~", "s")) %>% mutate_at(.vars = c(1:5, 7:8), .funs = as.factor) %>% group_by(Speaker)  %>% select(-Word, -Type, -label, -Time)
 ```

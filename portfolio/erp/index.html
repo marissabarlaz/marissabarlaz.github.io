@@ -132,12 +132,12 @@
 <div id="required-packages" class="section level2">
 <h2>Required packages</h2>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ──────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
-<pre><code>## ✓ ggplot2 3.2.1     ✓ purrr   0.3.3
-## ✓ tibble  2.1.3     ✓ dplyr   0.8.4
-## ✓ tidyr   1.0.2     ✓ stringr 1.4.0
-## ✓ readr   1.3.1     ✓ forcats 0.4.0</code></pre>
-<pre><code>## ── Conflicts ─────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.2     ✓ purrr   0.3.4
+## ✓ tibble  3.0.3     ✓ dplyr   1.0.2
+## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
+## ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
+<pre><code>## ── Conflicts ──────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(mgcv)</code></pre>
@@ -155,7 +155,7 @@
 <pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
 ## 
 ##     alpha</code></pre>
-<pre><code>## Loaded package itsadug 2.3 (see &#39;help(&quot;itsadug&quot;)&#39; ).</code></pre>
+<pre><code>## Loaded package itsadug 2.4 (see &#39;help(&quot;itsadug&quot;)&#39; ).</code></pre>
 <pre class="r"><code>library(eegUtils)</code></pre>
 <pre><code>## Make sure to check for the latest development version at https://github.com/craddm/eegUtils!</code></pre>
 <pre><code>## 
@@ -176,7 +176,7 @@ library(gridExtra)</code></pre>
 <h2>Read in data</h2>
 <p>This data was kindly provided by Prof. Green.</p>
 <p>The easiest way to read in data is to add each participant file to a list and then bind it all together. Often you have to initialize the ‘participant’ column yourself, possibly by taking that information out of the file name. Here since the participant code is a number, I use a regex to extract it from the filenames.</p>
-<pre class="r"><code>datadir = &quot;/Users/goldrch2/Desktop/twix_results/&quot;
+<pre class="r"><code>datadir = &quot;/Users/marissabarlaz/Desktop/twix_results/&quot;
 mydata = list.files(path = datadir, pattern = &quot;twix_.*&quot;)
 mydata</code></pre>
 <pre><code>## [1] &quot;twix_0101.csv&quot; &quot;twix_0102.csv&quot; &quot;twix_0103.csv&quot; &quot;twix_0104.csv&quot;
@@ -260,7 +260,7 @@ head(twix_data)</code></pre>
 <pre><code>## [1] S115 S125 S135
 ## Levels: S115 S125 S135</code></pre>
 <p>Here I am reading in two different datasets - hemisphereinfo has anteriority and hemisphere, and electrodes has X and Y coordinates of the electrodes.</p>
-<pre class="r"><code>hemisphereinfo = read_csv(&quot;/Users/goldrch2/Desktop/twix_results/electrode_quadrants.csv&quot;)</code></pre>
+<pre class="r"><code>hemisphereinfo = read_csv(&quot;/Users/marissabarlaz/Desktop/twix_results/electrode_quadrants.csv&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   Electrode = col_character(),
@@ -284,6 +284,7 @@ electrodes$Electrode = toupper( electrodes$Electrode)</code></pre>
 <pre class="r"><code>twix0101 = twix_data_long %&gt;% filter(Participant == &quot;0101&quot;)
 
 twix0101 %&gt;% filter(!is.na(Anteriority)) %&gt;% ggplot(aes(x = time, y = uV)) +  stat_summary(fun.y = mean,geom = &quot;line&quot;,aes(colour = condition)) + facet_grid(Hemisphere~Anteriority) + theme_minimal() + scale_color_manual(values = cbPalette)</code></pre>
+<pre><code>## Warning: `fun.y` is deprecated. Use `fun` instead.</code></pre>
 <p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-5-1.png" width="576" /></p>
 <pre class="r"><code>twix0101 %&gt;% rename(electrode = Electrode, amplitude = uV) %&gt;% plot_butterfly()</code></pre>
 <p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-5-2.png" width="576" /></p>
@@ -291,11 +292,11 @@ twix0101 %&gt;% filter(!is.na(Anteriority)) %&gt;% ggplot(aes(x = time, y = uV))
 <div id="p600-and-n400-calculations" class="section level1">
 <h1>P600 and N400 calculations</h1>
 <p>Here I am creating two dataframes - one for P600, one for N400, and combining them.</p>
-<pre class="r"><code>twix_data_N400 = twix_data_long %&gt;% filter(time &lt;=500 &amp; time &gt;=300) %&gt;% group_by(Participant, Hemisphere, Anteriority, condition) %&gt;% summarise(N400 = mean(uV, na.rm = TRUE))
-
-twix_data_P600 = twix_data_long %&gt;% filter(time &gt;=500 &amp; time &lt;=800) %&gt;% group_by(Participant, Hemisphere, Anteriority, condition) %&gt;% summarise(P600 = mean(uV, na.rm = TRUE))
-
-twix_effects = full_join(twix_data_N400, twix_data_P600)</code></pre>
+<pre class="r"><code>twix_data_N400 = twix_data_long %&gt;% filter(time &lt;=500 &amp; time &gt;=300) %&gt;% group_by(Participant, Hemisphere, Anteriority, condition) %&gt;% summarise(N400 = mean(uV, na.rm = TRUE))</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;Participant&#39;, &#39;Hemisphere&#39;, &#39;Anteriority&#39; (override with `.groups` argument)</code></pre>
+<pre class="r"><code>twix_data_P600 = twix_data_long %&gt;% filter(time &gt;=500 &amp; time &lt;=800) %&gt;% group_by(Participant, Hemisphere, Anteriority, condition) %&gt;% summarise(P600 = mean(uV, na.rm = TRUE))</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;Participant&#39;, &#39;Hemisphere&#39;, &#39;Anteriority&#39; (override with `.groups` argument)</code></pre>
+<pre class="r"><code>twix_effects = full_join(twix_data_N400, twix_data_P600)</code></pre>
 <pre><code>## Joining, by = c(&quot;Participant&quot;, &quot;Hemisphere&quot;, &quot;Anteriority&quot;, &quot;condition&quot;)</code></pre>
 </div>
 <div id="anova" class="section level1">
@@ -440,20 +441,20 @@ summary(gamtwix0101)</code></pre>
 ## 
 ## Parametric coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) -2.80304    0.01299  -215.7   &lt;2e-16 ***
+## (Intercept) -2.71382    0.01299    -209   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## Approximate significance of smooth terms:
 ##                              edf Ref.df     F p-value    
-## te(time,X,Y):conditionS115 84.54  94.37 140.6  &lt;2e-16 ***
-## te(time,X,Y):conditionS125 88.10  97.25 549.8  &lt;2e-16 ***
-## te(time,X,Y):conditionS135 88.38  97.47 279.5  &lt;2e-16 ***
+## te(time,X,Y):conditionS115 84.74  94.56 137.4  &lt;2e-16 ***
+## te(time,X,Y):conditionS125 88.42  97.51 554.5  &lt;2e-16 ***
+## te(time,X,Y):conditionS135 88.42  97.50 280.4  &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## R-sq.(adj) =  0.0373   Deviance explained = 3.74%
-## fREML = 1.0729e+07  Scale est. = 405.66    n = 2426424</code></pre>
+## R-sq.(adj) =  0.0374   Deviance explained = 3.75%
+## fREML = 1.0729e+07  Scale est. = 405.6     n = 2426424</code></pre>
 <pre class="r"><code>#not run:
 #gamtwixall = bam(uV~te(time, X,Y, by = condition) + s(time,X,Y, Participant, by = condition, bs = &quot;fs&quot;, m =1), data = twix_data_long)</code></pre>
 <div id="topo-plotting" class="section level2">
@@ -463,7 +464,9 @@ summary(gamtwix0101)</code></pre>
 ##  * time : numeric predictor; set to the value(s): 400. 
 ##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
 ##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
-##  * condition : factor; set to the value(s): S115.</code></pre>
+##  * condition : factor; set to the value(s): S115. 
+##  * NOTE : No random effects in the model to cancel.
+## </code></pre>
 <p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-13-1.png" width="576" /></p>
 <pre class="r"><code>#Add electrode sites
 plot_topo(gamtwix0101, view = c(&quot;X&quot;, &quot;Y&quot;), cond = list(time = 600, condition = &quot;S125&quot;), color = &quot;topo&quot;, el.pos = electrodes,  main = &quot;condition S125, time = 600 ms&quot;)</code></pre>
@@ -471,7 +474,9 @@ plot_topo(gamtwix0101, view = c(&quot;X&quot;, &quot;Y&quot;), cond = list(time 
 ##  * time : numeric predictor; set to the value(s): 600. 
 ##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
 ##  * Y : numeric predictor; with 100 values ranging from -47.700000 to 44.700000. 
-##  * condition : factor; set to the value(s): S125.</code></pre>
+##  * condition : factor; set to the value(s): S125. 
+##  * NOTE : No random effects in the model to cancel.
+## </code></pre>
 <p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-13-2.png" width="576" /></p>
 <pre class="r"><code># Add labels:
 plot_topo(gamtwix0101, view=c(&#39;X&#39;, &#39;Y&#39;), cond=list(time=200, condition = &quot;S135&quot;))</code></pre>
@@ -479,7 +484,9 @@ plot_topo(gamtwix0101, view=c(&#39;X&#39;, &#39;Y&#39;), cond=list(time=200, con
 ##  * time : numeric predictor; set to the value(s): 200. 
 ##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
 ##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
-##  * condition : factor; set to the value(s): S135.</code></pre>
+##  * condition : factor; set to the value(s): S135. 
+##  * NOTE : No random effects in the model to cancel.
+## </code></pre>
 <pre class="r"><code>text(electrodes[[&#39;X&#39;]], electrodes[[&#39;Y&#39;]], 
     labels=electrodes[[&#39;Electrode&#39;]], cex=.75, 
     xpd=TRUE)</code></pre>
@@ -494,7 +501,9 @@ plot_topo(gamtwix0101, view=c(&#39;X&#39;, &#39;Y&#39;), cond=list(time=200, con
 <pre><code>## Summary:
 ##  * time : numeric predictor; set to the value(s): 400. 
 ##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
-##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000.</code></pre>
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * NOTE : No random effects in the model to cancel.
+## </code></pre>
 <p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-14-1.png" width="576" /></p>
 <pre class="r"><code>plot_topo(gamtwix0101, view=c(&#39;X&#39;, &#39;Y&#39;), zlim = c(-1,8),
      cond = list(time = 400), comp=list(condition = c(&quot;S115&quot;, &quot;S125&quot;)),
@@ -502,7 +511,9 @@ plot_topo(gamtwix0101, view=c(&#39;X&#39;, &#39;Y&#39;), cond=list(time=200, con
 <pre><code>## Summary:
 ##  * time : numeric predictor; set to the value(s): 400. 
 ##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
-##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000.</code></pre>
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * NOTE : No random effects in the model to cancel.
+## </code></pre>
 <p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-14-2.png" width="576" /></p>
 <pre class="r"><code>par(mfrow = c(2,2))
 
@@ -519,19 +530,27 @@ for (k in c(200,400,600,800)){
 <pre><code>## Summary:
 ##  * time : numeric predictor; set to the value(s): 200. 
 ##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
-##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000.</code></pre>
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * NOTE : No random effects in the model to cancel.
+## </code></pre>
 <pre><code>## Summary:
 ##  * time : numeric predictor; set to the value(s): 400. 
 ##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
-##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000.</code></pre>
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * NOTE : No random effects in the model to cancel.
+## </code></pre>
 <pre><code>## Summary:
 ##  * time : numeric predictor; set to the value(s): 600. 
 ##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
-##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000.</code></pre>
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * NOTE : No random effects in the model to cancel.
+## </code></pre>
 <pre><code>## Summary:
 ##  * time : numeric predictor; set to the value(s): 800. 
 ##  * X : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
-##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000.</code></pre>
+##  * Y : numeric predictor; with 100 values ranging from -46.200000 to 46.200000. 
+##  * NOTE : No random effects in the model to cancel.
+## </code></pre>
 <p><img src="/portfolio/ERP_files/figure-html/unnamed-chunk-14-3.png" width="576" /></p>
 </div>
 <div id="making-a-movie" class="section level2">

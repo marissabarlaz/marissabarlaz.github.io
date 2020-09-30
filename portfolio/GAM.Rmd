@@ -51,7 +51,7 @@ The data I am using in this workshop is my dissertation acoustics data. A copy c
 - F3-F2 difference
 
 ```{r echo = FALSE}
-BP = read_csv("/Users/goldrch2/Desktop/Teaching/SPAN 588/Course Data/normtimedata.csv") 
+BP = read_csv("/Users/marissabarlaz/Desktop/Work/LING/LING 490/Course Data/normtimedata.csv") 
 
 normtimeBP = BP%>% mutate(label = str_replace_all(label, "~", "s")) %>% mutate_at(.vars = c(1:5, 7:8), .funs = as.factor) %>% group_by(Speaker) %>% filter(F1>=200 & F1 <=800, Nasality!="nasal_final") %>% select(-Word, -Type, -label, -Time)
 

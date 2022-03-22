@@ -164,15 +164,7 @@ cbPalette &lt;- c(&quot;#999999&quot;, &quot;#E69F00&quot;, &quot;#56B4E9&quot;,
 <p>To demonstrate these types of normalization, I will use two datasets: 1) the Peterson and Barney (1952) vowel dataset, available through the phonTools package (There are 76 speakers, each producing 2 repetitions of 10 vowels, for a total of 1520 observations), and 2) the Indonesian vowels dataset, available through the phonR package (There are 8 speakers, five vowels, an uneven number of repetitions, for a total of 1725 observations).</p>
 <pre class="r"><code>library(phonTools)
 data(pb52)
-head(pb52)</code></pre>
-<pre><code>##   type sex speaker vowel repetition  f0  f1   f2   f3
-## 1    m   m       1     i          1 160 240 2280 2850
-## 2    m   m       1     i          2 186 280 2400 2790
-## 3    m   m       1     I          1 203 390 2030 2640
-## 4    m   m       1     I          2 192 310 1980 2550
-## 5    m   m       1     E          1 161 490 1870 2420
-## 6    m   m       1     E          2 155 570 1700 2600</code></pre>
-<pre class="r"><code>str(pb52)</code></pre>
+str(pb52)</code></pre>
 <pre><code>## &#39;data.frame&#39;:    1520 obs. of  9 variables:
 ##  $ type      : Factor w/ 3 levels &quot;c&quot;,&quot;m&quot;,&quot;w&quot;: 2 2 2 2 2 2 2 2 2 2 ...
 ##  $ sex       : Factor w/ 2 levels &quot;f&quot;,&quot;m&quot;: 2 2 2 2 2 2 2 2 2 2 ...

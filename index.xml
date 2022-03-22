@@ -141,7 +141,7 @@ head(lesmis, 30) ## # A tibble: 30 x 7 ## track_title track_n line lyric element
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/portfolio/vowelnormalization/</guid>
-      <description>What is vowel normalization? Types of vowel normalization Speaker intrinsic/vowel intrinsic/formant intrinsic Log transformations ERB Bark Mel  Speaker intrinsic/vowel intrinsic/formant extrinsic Bark distance model  Speaker intrinsic/vowel extrinsic/formant intrinsic Z-score/Lobanov normalization Individual log means (Nearey1) Centroids (Watt-Fabricius)  Speaker intrinsic/vowel extrinsic/formant extrinsic Shared log-mean (Nearey2)  Speaker extrinsic/vowel extrinsic/formant extrinsic ANAE method   Which method is best?   I will be using the following packages in this workshop.</description>
+      <description>What is vowel normalization? Types of vowel normalization  Speaker intrinsic/vowel intrinsic/formant intrinsic  Log transformations ERB Bark Mel  Speaker intrinsic/vowel intrinsic/formant extrinsic  Bark distance model  Speaker intrinsic/vowel extrinsic/formant intrinsic  Z-score/Lobanov normalization Individual log means (Nearey1) Centroids (Watt-Fabricius)  Speaker intrinsic/vowel extrinsic/formant extrinsic  Shared log-mean (Nearey2)  Speaker extrinsic/vowel extrinsic/formant extrinsic  ANAE method   Which method is best?   I will be using the following packages in this workshop.</description>
     </item>
     
     <item>

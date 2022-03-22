@@ -60,7 +60,6 @@ To demonstrate these types of normalization, I will use two datasets: 1) the Pet
 ```{r}
 library(phonTools)
 data(pb52)
-head(pb52)
 str(pb52)
 summary(pb52)
 

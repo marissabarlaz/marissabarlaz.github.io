@@ -7,14 +7,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="all,follow">
 <meta name="googlebot" content="index,follow,snippet,archive">
-<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/bootstrap.min.css">
 <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:400,300,700,400italic">
-<link rel="stylesheet" href="/css/font-awesome.min.css">
-<link rel="stylesheet" href="/css/owl.carousel.css">
-<link rel="stylesheet" href="/css/owl.theme.css">
+<link rel="stylesheet" href="css/font-awesome.min.css">
+<link rel="stylesheet" href="css/owl.carousel.css">
+<link rel="stylesheet" href="css/owl.theme.css">
 
 
-  <link href="/css/style.default.css" rel="stylesheet" id="theme-stylesheet">
+  <link href="css/style.default.css" rel="stylesheet" id="theme-stylesheet">
 
  
 
@@ -26,8 +26,8 @@
   
 
 
-<link href="/css/custom.css" rel="stylesheet">
-<link rel="shortcut icon" href="/img/favicon.png">
+<link href="css/custom.css" rel="stylesheet">
+<link rel="shortcut icon" href="img/favicon.png">
 
 
 </head>
@@ -37,17 +37,17 @@
           <div class="row row-offcanvas row-offcanvas-left">
               <div id="sidebar" class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
   <div class="sidebar-content">
-    <h1 class="sidebar-heading"><a href="/">Marissa Barlaz, PhD</a></h1>
+    <h1 class="sidebar-heading"><a href="">Marissa Barlaz, PhD</a></h1>
     
       <p class="sidebar-p">Until May 2020, I was the Linguistic Data Analytics Manager in the School of Literatures, Cultures, and Linguistics at the University of Illinois at Urbana-Champaign.</p>
     
     <ul class="sidebar-menu">
       
-        <li><a href="/portfolio/">Home</a></li>
+        <li><a href="portfolio/">Home</a></li>
       
-        <li><a href="/about/">About</a></li>
+        <li><a href="about/">About</a></li>
       
-        <li><a href="/contact/">Get in touch</a></li>
+        <li><a href="contact/">Get in touch</a></li>
       
     </ul>
     <p class="social">
@@ -94,7 +94,7 @@
 <div class="col-xs-12 col-sm-8 col-md-9 content-column white-background">
   <div class="small-navbar visible-xs">
   <button type="button" data-toggle="offcanvas" class="btn btn-ghost pull-left"> <i class="fa fa-align-left"> </i>Menu</button>
-  <h1 class="small-navbar-heading"><a href="/">Marissa Barlaz, PhD</a></h1>
+  <h1 class="small-navbar-heading"><a href="">Marissa Barlaz, PhD</a></h1>
 </div>
 
   <div class="row">
@@ -102,29 +102,36 @@
       <div class="content-column-content">
          <h1>Vowel Normalization in R</h1>
          
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
 <li><a href="#what-is-vowel-normalization">What is vowel normalization?</a></li>
-<li><a href="#types-of-vowel-normalization">Types of vowel normalization</a><ul>
-<li><a href="#speaker-intrinsicvowel-intrinsicformant-intrinsic">Speaker intrinsic/vowel intrinsic/formant intrinsic</a><ul>
+<li><a href="#types-of-vowel-normalization">Types of vowel normalization</a>
+<ul>
+<li><a href="#speaker-intrinsicvowel-intrinsicformant-intrinsic">Speaker intrinsic/vowel intrinsic/formant intrinsic</a>
+<ul>
 <li><a href="#log-transformations">Log transformations</a></li>
 <li><a href="#erb">ERB</a></li>
 <li><a href="#bark">Bark</a></li>
 <li><a href="#mel">Mel</a></li>
 </ul></li>
-<li><a href="#speaker-intrinsicvowel-intrinsicformant-extrinsic">Speaker intrinsic/vowel intrinsic/formant extrinsic</a><ul>
+<li><a href="#speaker-intrinsicvowel-intrinsicformant-extrinsic">Speaker intrinsic/vowel intrinsic/formant extrinsic</a>
+<ul>
 <li><a href="#bark-distance-model">Bark distance model</a></li>
 </ul></li>
-<li><a href="#speaker-intrinsicvowel-extrinsicformant-intrinsic">Speaker intrinsic/vowel extrinsic/formant intrinsic</a><ul>
+<li><a href="#speaker-intrinsicvowel-extrinsicformant-intrinsic">Speaker intrinsic/vowel extrinsic/formant intrinsic</a>
+<ul>
 <li><a href="#z-scorelobanov-normalization">Z-score/Lobanov normalization</a></li>
 <li><a href="#individual-log-means-nearey1">Individual log means (Nearey1)</a></li>
 <li><a href="#centroids-watt-fabricius">Centroids (Watt-Fabricius)</a></li>
 </ul></li>
-<li><a href="#speaker-intrinsicvowel-extrinsicformant-extrinsic">Speaker intrinsic/vowel extrinsic/formant extrinsic</a><ul>
+<li><a href="#speaker-intrinsicvowel-extrinsicformant-extrinsic">Speaker intrinsic/vowel extrinsic/formant extrinsic</a>
+<ul>
 <li><a href="#shared-log-mean-nearey2">Shared log-mean (Nearey2)</a></li>
 </ul></li>
-<li><a href="#speaker-extrinsicvowel-extrinsicformant-extrinsic">Speaker extrinsic/vowel extrinsic/formant extrinsic</a><ul>
+<li><a href="#speaker-extrinsicvowel-extrinsicformant-extrinsic">Speaker extrinsic/vowel extrinsic/formant extrinsic</a>
+<ul>
 <li><a href="#anae-method">ANAE method</a></li>
 </ul></li>
 </ul></li>
@@ -157,15 +164,7 @@ cbPalette &lt;- c(&quot;#999999&quot;, &quot;#E69F00&quot;, &quot;#56B4E9&quot;,
 <p>To demonstrate these types of normalization, I will use two datasets: 1) the Peterson and Barney (1952) vowel dataset, available through the phonTools package (There are 76 speakers, each producing 2 repetitions of 10 vowels, for a total of 1520 observations), and 2) the Indonesian vowels dataset, available through the phonR package (There are 8 speakers, five vowels, an uneven number of repetitions, for a total of 1725 observations).</p>
 <pre class="r"><code>library(phonTools)
 data(pb52)
-head(pb52)</code></pre>
-<pre><code>##   type sex speaker vowel repetition  f0  f1   f2   f3
-## 1    m   m       1     i          1 160 240 2280 2850
-## 2    m   m       1     i          2 186 280 2400 2790
-## 3    m   m       1     I          1 203 390 2030 2640
-## 4    m   m       1     I          2 192 310 1980 2550
-## 5    m   m       1     E          1 161 490 1870 2420
-## 6    m   m       1     E          2 155 570 1700 2600</code></pre>
-<pre class="r"><code>str(pb52)</code></pre>
+str(pb52)</code></pre>
 <pre><code>## &#39;data.frame&#39;:    1520 obs. of  9 variables:
 ##  $ type      : Factor w/ 3 levels &quot;c&quot;,&quot;m&quot;,&quot;w&quot;: 2 2 2 2 2 2 2 2 2 2 ...
 ##  $ sex       : Factor w/ 2 levels &quot;f&quot;,&quot;m&quot;: 2 2 2 2 2 2 2 2 2 2 ...
@@ -177,21 +176,21 @@ head(pb52)</code></pre>
 ##  $ f2        : int  2280 2400 2030 1980 1870 1700 1820 1700 1250 1300 ...
 ##  $ f3        : int  2850 2790 2640 2550 2420 2600 2660 2550 2620 2530 ...</code></pre>
 <pre class="r"><code>summary(pb52)</code></pre>
-<pre><code>##  type    sex        speaker          vowel       repetition 
-##  c:300   f:720   Min.   : 1.00   {      :152   Min.   :1.0  
-##  m:660   m:800   1st Qu.:19.75   3&#39;     :152   1st Qu.:1.0  
-##  w:560           Median :38.50   A      :152   Median :1.5  
-##                  Mean   :38.50   E      :152   Mean   :1.5  
-##                  3rd Qu.:57.25   i      :152   3rd Qu.:2.0  
-##                  Max.   :76.00   I      :152   Max.   :2.0  
-##                                  (Other):608                
-##        f0              f1               f2             f3      
-##  Min.   : 91.0   Min.   : 190.0   Min.   : 560   Min.   :1400  
-##  1st Qu.:133.0   1st Qu.: 420.0   1st Qu.:1100   1st Qu.:2370  
-##  Median :200.0   Median : 540.0   Median :1470   Median :2680  
-##  Mean   :191.3   Mean   : 563.3   Mean   :1624   Mean   :2708  
-##  3rd Qu.:238.0   3rd Qu.: 681.0   3rd Qu.:2100   3rd Qu.:3030  
-##  Max.   :350.0   Max.   :1300.0   Max.   :3610   Max.   :4380  
+<pre><code>##  type    sex        speaker          vowel       repetition        f0       
+##  c:300   f:720   Min.   : 1.00   {      :152   Min.   :1.0   Min.   : 91.0  
+##  m:660   m:800   1st Qu.:19.75   3&#39;     :152   1st Qu.:1.0   1st Qu.:133.0  
+##  w:560           Median :38.50   A      :152   Median :1.5   Median :200.0  
+##                  Mean   :38.50   E      :152   Mean   :1.5   Mean   :191.3  
+##                  3rd Qu.:57.25   i      :152   3rd Qu.:2.0   3rd Qu.:238.0  
+##                  Max.   :76.00   I      :152   Max.   :2.0   Max.   :350.0  
+##                                  (Other):608                                
+##        f1               f2             f3      
+##  Min.   : 190.0   Min.   : 560   Min.   :1400  
+##  1st Qu.: 420.0   1st Qu.:1100   1st Qu.:2370  
+##  Median : 540.0   Median :1470   Median :2680  
+##  Mean   : 563.3   Mean   :1624   Mean   :2708  
+##  3rd Qu.: 681.0   3rd Qu.:2100   3rd Qu.:3030  
+##  Max.   :1300.0   Max.   :3610   Max.   :4380  
 ## </code></pre>
 <pre class="r"><code>pb52$speaker = as.factor(pb52$speaker)
 pb52$vowelxsampa = pb52$vowel
@@ -315,20 +314,20 @@ ggplot(indolog, aes(x = f2log, y = f1log, color = vowel)) + geom_point(aes(shape
 <p>The phonR function <em>normErb</em> converts a given formant into ERB scale.</p>
 <pre class="r"><code>pb52erb = pb52 %&gt;% mutate(f1erb = normErb(f1), f2erb = normErb(f2)) 
 head(pb52erb)</code></pre>
-<pre><code>##   type sex speaker vowel repetition  f0  f1   f2   f3 vowelxsampa
-## 1    m   m       1     i          1 160 240 2280 2850           i
-## 2    m   m       1     i          2 186 280 2400 2790           i
-## 3    m   m       1     ɪ          1 203 390 2030 2640           I
-## 4    m   m       1     ɪ          2 192 310 1980 2550           I
-## 5    m   m       1     ɛ          1 161 490 1870 2420           E
-## 6    m   m       1     ɛ          2 155 570 1700 2600           E
-##       f1erb    f2erb
-## 1  6.666091 22.25500
-## 2  7.427013 22.68923
-## 3  9.245974 21.27942
-## 4  7.959421 21.07139
-## 5 10.638141 20.59663
-## 6 11.618861 19.81161</code></pre>
+<pre><code>##   type sex speaker vowel repetition  f0  f1   f2   f3 vowelxsampa     f1erb
+## 1    m   m       1     i          1 160 240 2280 2850           i  6.666091
+## 2    m   m       1     i          2 186 280 2400 2790           i  7.427013
+## 3    m   m       1     ɪ          1 203 390 2030 2640           I  9.245974
+## 4    m   m       1     ɪ          2 192 310 1980 2550           I  7.959421
+## 5    m   m       1     ɛ          1 161 490 1870 2420           E 10.638141
+## 6    m   m       1     ɛ          2 155 570 1700 2600           E 11.618861
+##      f2erb
+## 1 22.25500
+## 2 22.68923
+## 3 21.27942
+## 4 21.07139
+## 5 20.59663
+## 6 19.81161</code></pre>
 <pre class="r"><code>ggplot(pb52erb, aes(x = f2erb, y = f1erb, color = vowel)) + geom_point(aes(shape = vowel),alpha = 0.3) + stat_ellipse()+ theme_minimal() +scale_color_manual(values = cbPalette[c(1:8, 1, 2)]) + scale_x_reverse() + scale_y_reverse() + scale_shape_manual(values = 1:10)+ ggtitle(&quot;ERB-transformed vowel plot (PB52 data)&quot;)</code></pre>
 <p><img src="/portfolio/VowelNormalization_files/figure-html/unnamed-chunk-6-1.png" width="576" /></p>
 <pre class="r"><code>ggplot(pb52erb, aes(x = f2erb, y = f1erb, color = vowel))  + stat_ellipse()+ theme_minimal() +scale_color_manual(values = c(cbPalette, cbPalette10)) + scale_x_reverse() + scale_y_reverse()  + geom_text(data=pb52erb%&gt;%group_by(vowel) %&gt;% 
@@ -489,7 +488,7 @@ ggplot(pb52nearey1sample, aes(x = f2nearey1, y = f1nearey1, color = vowel))  +th
 <h3>Centroids (Watt-Fabricius)</h3>
 <p>The Watt and Fabricius method is vowel extrinsic, but unlike other methods, the centroid used to calculate normalized values is based on points that represent the corners of the vowel space (/a/, /i/, and /u/).</p>
 <p><span class="math display">\[&lt;F1\prime, F2\prime&gt; = &lt;\frac{2\times F2}{min(\mu\times F2\_v) +max(\mu\times F2\_v)}, \frac{3\times F1}{2 \times min(\mu\times F1\_v) +max(\mu\times F1\_v)}&gt;\]</span></p>
-<p>Note that the implementation of this method used in phonR calculates “which vowel has the highest mean F2 value and uses that to calculate the upper left corner, rather than expressly looking for the mean of the”point vowel&quot; /i/. The upper right corner is, as in the original method, derived from the other two. If the vowels with the highest mean F1 and highest mean F2 are not the same pair of vowels for all members of group, normWattFabricius returns an error.&quot; (quote taken from the phonR help page)</p>
+<p>Note that the implementation of this method used in phonR calculates “which vowel has the highest mean F2 value and uses that to calculate the upper left corner, rather than expressly looking for the mean of the”point vowel” /i/. The upper right corner is, as in the original method, derived from the other two. If the vowels with the highest mean F1 and highest mean F2 are not the same pair of vowels for all members of group, normWattFabricius returns an error.” (quote taken from the phonR help page)</p>
 <pre class="r"><code>pb52WF = with(pb52, normWattFabricius(cbind(f1, f2), group = speaker, vowel = vowel))</code></pre>
 <pre><code>## [phonR]: The vowel with the lowest mean F1 value (usually /i/)does not match across all speakers/groups. You&#39;ll have to calculate s-centroid manually.</code></pre>
 <pre><code>## Warning in data.frame(minF1 = minima[&quot;f1&quot;, ], vowel = dimnames(means)[[1]]
@@ -666,7 +665,7 @@ ggplot(pb52ANAE_out, aes(x = F2, y = F1, color = Vowel)) + geom_point(alpha = 0.
 </div>
 <div id="which-method-is-best" class="section level1">
 <h1>Which method is best?</h1>
-<p>Of course, after being bombarded with this information, you are probably wondering which of these is the best method to use. Adank et al. (2004) ran a series of linear discriminant analyses using these methods in order to identify the “best” method of vowel normalization. The results showed that the Lobanov method is the best procedure, though the difference with the Nearey1 method is relatively small. It is of course important to note that these methods end up with non-Hz scales of the formants, so proceed with caution!</p>
+<p>Of course, after being bombarded with this information, you are probably wondering which of these is the best method to use. Adank et al. (2004) ran a series of linear discriminant analyses using these methods in order to identify the “best” method of vowel normalization. The results showed that the Lobanov method is the best procedure, though the difference with the Nearey1 method is relatively small. It is of course important to note that these methods end up with non-Hz scales of the formants, so proceed with caution!</p>
 <p>A summary of the methods discussed above can be found <a href="http://cw.routledge.com/textbooks/9780415498791/data/chapter9/Table9-1.pdf">here</a>.</p>
 </div>
 
@@ -679,15 +678,15 @@ ggplot(pb52ANAE_out, aes(x = F2, y = F1, color = Vowel)) + geom_point(alpha = 0.
           </div>
       </div>
   </div>
-  <script src="/js/jquery.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/jquery.cookie.js"> </script>
-<script src="/js/ekko-lightbox.js"></script>
-<script src="/js/jquery.scrollTo.min.js"></script>
-<script src="/js/masonry.pkgd.min.js"></script>
-<script src="/js/imagesloaded.pkgd.min.js"></script>
-<script src="/js/owl.carousel.min.js"></script>
-<script src="/js/front.js"></script>
+  <script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.cookie.js"> </script>
+<script src="js/ekko-lightbox.js"></script>
+<script src="js/jquery.scrollTo.min.js"></script>
+<script src="js/masonry.pkgd.min.js"></script>
+<script src="js/imagesloaded.pkgd.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/front.js"></script>
 
 
 

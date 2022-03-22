@@ -5,11 +5,7 @@
     <link>/portfolio/</link>
     <description>Recent content in Portfolios on Marissa Barlaz, PhD</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    
-	<atom:link href="/portfolio/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <language>en-us</language><atom:link href="/portfolio/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Bayesian Analysis in R</title>
       <link>/portfolio/bayesian/</link>

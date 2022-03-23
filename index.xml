@@ -2,44 +2,44 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Marissa Barlaz, PhD</title>
-    <link>/</link>
+    <link>https://marissabarlaz.github.io/</link>
     <description>Recent content on Marissa Barlaz, PhD</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language><atom:link href="https://marissabarlaz.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Bayesian Analysis in R</title>
-      <link>/portfolio/bayesian/</link>
+      <link>https://marissabarlaz.github.io/portfolio/bayesian/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/bayesian/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/bayesian/</guid>
       <description>What is Bayesian analysis? A simple Bayesian analysis Why use Bayesian analysis?  How to run a Bayesian analysis in R Step 1: Data exploration Step 2: Define the model and priors Determining priors  How to set priors in brms Step 3: Fit models to data Step 4: Check model convergence Step 5: Carry out inference Evaluate predictive performance of competing models Summarize and display posterior distributions Hypothesis testing  Hypothesis testing using CrIs    The packages I will be using for this workshop include:</description>
     </item>
     
     <item>
       <title>Praat Functions in R</title>
-      <link>/portfolio/praatfns/</link>
+      <link>https://marissabarlaz.github.io/portfolio/praatfns/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/praatfns/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/praatfns/</guid>
       <description>Function setup Check for packages Create files on computer Get data from files  Utilizing the functions   The aim of this document is to automate acoustic data acquisition in R without having to directly use Praat scripting. Rather, these functions will interact with Praat for you. You will need to segment files in Praat manually. Given the absolute directory to a folder, the functions will loop through a folder that has a set of .</description>
     </item>
     
     <item>
       <title>Text Mining with R</title>
-      <link>/portfolio/textminingr/</link>
+      <link>https://marissabarlaz.github.io/portfolio/textminingr/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/textminingr/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/textminingr/</guid>
       <description>#Setting up an API The first thing to do with R when getting ready to do Twitter mining is to set up your credentials. I won’t go through this process right now, but it is outlined here. You need to first become a Twitter developer and create an app. It only takes a few moments.
 There are a couple of different types of flows you can work with, depending on what your question is.</description>
     </item>
     
     <item>
       <title>R Graphing Workshop</title>
-      <link>/portfolio/rgraphingworkshop/</link>
+      <link>https://marissabarlaz.github.io/portfolio/rgraphingworkshop/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/rgraphingworkshop/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/rgraphingworkshop/</guid>
       <description>Data Introduction to ggplot Aesthetics Faceting Statistical Transformations Other Aspects of the graph Colors  Wrapping up   The aim of this workshop is to teach you the ins and outs of using the ggplot2 package in R.
 The materials for this workshop can be found here.
 A lot of the information in this workshop is based on workshops given at Harvard: https://dss.iq.harvard.edu/workshop-materials
@@ -48,38 +48,38 @@ Please make good use of the following cheat sheet!</description>
     
     <item>
       <title>Data Processing with the Tidyverse</title>
-      <link>/portfolio/dataprocessing/</link>
+      <link>https://marissabarlaz.github.io/portfolio/dataprocessing/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/dataprocessing/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/dataprocessing/</guid>
       <description>Data Manipulation with dplyr Filter Arrange Select Mutate group_by Summarise Separate Unite    #Why the tidyverse?
 There are a few reasons to use R and the Tidyverse for data processing. Excel is opaque – if you make a change to a cell/row/column, unless you write down exactly what you did, you have no way of knowing how you processed your data. Using R and documenting your work in Rmarkdown will allow you to understand exactly what you are doing, which is helpful in future iterations of using the data.</description>
     </item>
     
     <item>
       <title>ERP Data Analysis in R</title>
-      <link>/portfolio/erp/</link>
+      <link>https://marissabarlaz.github.io/portfolio/erp/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/erp/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/erp/</guid>
       <description>Preprocessing Required packages Read in data Convert to long format, combine data frames  Plotting time courses P600 and N400 calculations ANOVA k means clustering Plotting S125 - S115 S135 - S115   GAM topo plotting Difference plotting Making a movie    Preprocessing Required packages library(tidyverse) ## ── Attaching packages ───────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ── ## ✓ ggplot2 3.3.2 ✓ purrr 0.3.4 ## ✓ tibble 3.0.3 ✓ dplyr 1.</description>
     </item>
     
     <item>
       <title>Introduction to R and RMarkdown</title>
-      <link>/portfolio/intror/</link>
+      <link>https://marissabarlaz.github.io/portfolio/intror/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/intror/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/intror/</guid>
       <description>R as a calculator Variables Functions Data Frames Subsetting RMarkdown Formatting Bullet Points   #Welcome to R! You might be asking, why should I use R instead of another type of software? In addition to being able to do statistics (like in Minitab, SPSS, Stata, etc.), you can do high-level scripting, statistical programming, and exploratory data analysis in R. It is free and open-source, meaning there is a large community of contributors and users.</description>
     </item>
     
     <item>
       <title>R Modeling Workshop</title>
-      <link>/portfolio/rmodelingworkshop/</link>
+      <link>https://marissabarlaz.github.io/portfolio/rmodelingworkshop/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/rmodelingworkshop/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/rmodelingworkshop/</guid>
       <description>What is the point? Data Simple linear regression Moving beyond simple linear regression Interactions Categorical Predictors Predicting Values Binary Outcomes  Polynomial Regression Mixed Effects Models   The aim of this workshop is to teach you the basics of statistical models in R.
 The materials for this workshop can be found here.
 What is the point? When looking at data, we want to determine if there is a relationship between our independent and dependent variables.</description>
@@ -87,83 +87,83 @@ What is the point? When looking at data, we want to determine if there is a rela
     
     <item>
       <title>Contrast coding in R</title>
-      <link>/portfolio/contrastcoding/</link>
+      <link>https://marissabarlaz.github.io/portfolio/contrastcoding/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/contrastcoding/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/contrastcoding/</guid>
       <description>Data processing What is a contrast? Coding schemes Dummy coding Effects coding Contrast coding Sum coding  Helmert coding Regular Helmert coding Reverse Helmert coding  User-defined contrasts  Post-hoc tests Dummy coding Sum coding    Data processing For this tutorial, I am using my dissertation data. I am using one speaker’s data so we don’t have to account for individual differences, and I am only using the midpoint of the vowel.</description>
     </item>
     
     <item>
       <title>GAM in R</title>
-      <link>/portfolio/gam/</link>
+      <link>https://marissabarlaz.github.io/portfolio/gam/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/gam/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/gam/</guid>
       <description>Packages Data What is a generalized additive model? Running a GAM in R Fitting a basic GAM Visualizing GAM results Random effects Random intercepts Random slopes Random factor smooths   Other topics to consider   Packages The packages you will need for this workshop are as follows. I am also including the hex codes for a colorblind-friendly palette, which I use for my plots. I used the gganimate package to show my dissertation data (below), but this is not crucial for data processing/analysis.</description>
     </item>
     
     <item>
       <title>Ordinal logistic regression in R</title>
-      <link>/portfolio/ols/</link>
+      <link>https://marissabarlaz.github.io/portfolio/ols/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/ols/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/ols/</guid>
       <description>Packages What is ordinal logistic regression? Probabilities, odds, and odds ratios Set-up of the model  Running an ordinal logistic regression in R Data Initial model Adding another term Including a continuous predictor Interactions Random effects The full model    Packages The packages you will need for this workshop are as follows. I am also including the hex codes for a colorblind-friendly palette, which I use for my plots.</description>
     </item>
     
     <item>
       <title>Eye Tracking Analysis</title>
-      <link>/portfolio/eyetracking/</link>
+      <link>https://marissabarlaz.github.io/portfolio/eyetracking/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/eyetracking/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/eyetracking/</guid>
       <description>What is the visual world paradigm? How to process eye tracking data in R Data preparation VWPre method eyetrackingR method  Data plotting VWPre eyetrackingR  Data analysis Linear mixed effects regression Growth curve analysis Generalized additive modeling  Conclusions and references   What is the visual world paradigm?  The basic set-up in a comprehension visual world experiment is simple: On each trial the participants hear an utterance while looking at an experimental display.</description>
     </item>
     
     <item>
       <title>Regular Expressions in R</title>
-      <link>/portfolio/regex/</link>
+      <link>https://marissabarlaz.github.io/portfolio/regex/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/regex/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/regex/</guid>
       <description>A brief introduction to the tidyverse Filter Arrange Select Mutate summarise and group_by  A brief introduction to strings Regular expressions Practice   The dataset I will use for this workshop is the set of lyrics to songs from the Broadway musical Les Mise&#39;rables. The data looks like this:
 head(lesmis, 30) ## # A tibble: 30 x 7 ## track_title track_n line lyric element element_artist title ## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; ## 1 Prologue (Ft.</description>
     </item>
     
     <item>
       <title>Vowel Normalization in R</title>
-      <link>/portfolio/vowelnormalization/</link>
+      <link>https://marissabarlaz.github.io/portfolio/vowelnormalization/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/vowelnormalization/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/vowelnormalization/</guid>
       <description>What is vowel normalization? Types of vowel normalization  Speaker intrinsic/vowel intrinsic/formant intrinsic  Log transformations ERB Bark Mel  Speaker intrinsic/vowel intrinsic/formant extrinsic  Bark distance model  Speaker intrinsic/vowel extrinsic/formant intrinsic  Z-score/Lobanov normalization Individual log means (Nearey1) Centroids (Watt-Fabricius)  Speaker intrinsic/vowel extrinsic/formant extrinsic  Shared log-mean (Nearey2)  Speaker extrinsic/vowel extrinsic/formant extrinsic  ANAE method   Which method is best?   I will be using the following packages in this workshop.</description>
     </item>
     
     <item>
       <title>Introduction to LaTeX</title>
-      <link>/portfolio/latex/</link>
+      <link>https://marissabarlaz.github.io/portfolio/latex/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/latex/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/latex/</guid>
       <description>Introduction to LaTeX What is LaTeX? What’s so great about LaTeX? What’s not so great about LaTeX? Editors  Basics of LaTeX Important symbols and commands  The preamble Document classes Page formatting Packages  Body Title page Sections Font styles Figures Tables  Bibliographies Other possibilities with LaTeX   Introduction to LaTeX What is LaTeX? LaTeX is a document preparation system, that is becoming the de-facto method in STEM fields, such as math, physics and computer science.</description>
     </item>
     
     <item>
       <title>Phonetics Tools in R</title>
-      <link>/portfolio/phoneticstools/</link>
+      <link>https://marissabarlaz.github.io/portfolio/phoneticstools/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/phoneticstools/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/phoneticstools/</guid>
       <description>PraatR Pitch analysis  rPraat Using apply to create .Pitch files  PhonTools Pitch tracking Formant Tracking  Comparison and plotting F0 Plotting Formants - PhonR and ggplot PhonR ggplot2 Spectrograms with PhonTools    library(tidyverse) ## ── Attaching packages ────────────────────────────────────────────────────────────── tidyverse 1.3.0 ── ## ✓ ggplot2 3.3.2 ✓ purrr 0.3.4 ## ✓ tibble 3.0.3 ✓ dplyr 1.0.2 ## ✓ tidyr 1.1.2 ✓ stringr 1.4.0 ## ✓ readr 1.</description>
     </item>
     
     <item>
       <title>Phonetics Tools in R - Supplementary code</title>
-      <link>/portfolio/phontools2/</link>
+      <link>https://marissabarlaz.github.io/portfolio/phontools2/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/portfolio/phontools2/</guid>
+      <guid>https://marissabarlaz.github.io/portfolio/phontools2/</guid>
       <description>Data processing PraatR  Dygraphs Create shorter examples from long audio Create dygraphs  Getting information from two tiers   Data processing library(tidyverse) ## ── Attaching packages ────────────────────────────────────────────────────────────── tidyverse 1.3.0 ── ## ✓ ggplot2 3.3.2 ✓ purrr 0.3.4 ## ✓ tibble 3.0.3 ✓ dplyr 1.0.2 ## ✓ tidyr 1.1.2 ✓ stringr 1.4.0 ## ✓ readr 1.3.1 ✓ forcats 0.5.0 ## ── Conflicts ───────────────────────────────────────────────────────────────── tidyverse_conflicts() ── ## x dplyr::filter() masks stats::filter() ## x dplyr::lag() masks stats::lag() library(PraatR) library(rPraat) library(phonR) library(dygraphs) library(phonTools) ## ## Attaching package: &amp;#39;phonTools&amp;#39; ## The following object is masked from &amp;#39;package:dplyr&amp;#39;: ## ## slice library(audio) ## ## Attaching package: &amp;#39;audio&amp;#39; ## The following object is masked from &amp;#39;package:phonTools&amp;#39;: ## ## play library(tuneR) ## ## Attaching package: &amp;#39;tuneR&amp;#39; ## The following object is masked from &amp;#39;package:audio&amp;#39;: ## ## play ## The following objects are masked from &amp;#39;package:phonTools&amp;#39;: ## ## normalize, play library(gss) absdir = &amp;quot;/Users/marissabarlaz/Desktop/FemaleBP/&amp;quot; mydir = list.</description>
     </item>
     

@@ -5,7 +5,11 @@
     <link>https://marissabarlaz.github.io/</link>
     <description>Recent content on Marissa Barlaz, PhD</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://marissabarlaz.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    
+	<atom:link href="https://marissabarlaz.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
     <item>
       <title>Bayesian Analysis in R</title>
       <link>https://marissabarlaz.github.io/portfolio/bayesian/</link>

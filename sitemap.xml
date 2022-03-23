@@ -1,97 +1,51 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
-    <loc>https://marissabarlaz.github.io/portfolio/bayesian/</loc>
+    <loc>/portfolio/bayesian/</loc>
+  </url><url>
+    <loc>/portfolio/praatfns/</loc>
+  </url><url>
+    <loc>/portfolio/textminingr/</loc>
+  </url><url>
+    <loc>/portfolio/rgraphingworkshop/</loc>
+  </url><url>
+    <loc>/portfolio/dataprocessing/</loc>
+  </url><url>
+    <loc>/portfolio/erp/</loc>
+  </url><url>
+    <loc>/portfolio/intror/</loc>
+  </url><url>
+    <loc>/portfolio/rmodelingworkshop/</loc>
+  </url><url>
+    <loc>/portfolio/contrastcoding/</loc>
+  </url><url>
+    <loc>/portfolio/gam/</loc>
+  </url><url>
+    <loc>/portfolio/ols/</loc>
+  </url><url>
+    <loc>/portfolio/eyetracking/</loc>
+  </url><url>
+    <loc>/portfolio/regex/</loc>
+  </url><url>
+    <loc>/portfolio/vowelnormalization/</loc>
+  </url><url>
+    <loc>/portfolio/latex/</loc>
+  </url><url>
+    <loc>/about/</loc>
+  </url><url>
+    <loc>/categories/</loc>
+  </url><url>
+    <loc>/contact/</loc>
+  </url><url>
+    <loc>/</loc>
+  </url><url>
+    <loc>/portfolio/phoneticstools/</loc>
+  </url><url>
+    <loc>/portfolio/phontools2/</loc>
+  </url><url>
+    <loc>/portfolio/</loc>
+  </url><url>
+    <loc>/tags/</loc>
   </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/praatfns/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/textminingr/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/rgraphingworkshop/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/dataprocessing/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/erp/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/intror/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/rmodelingworkshop/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/contrastcoding/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/gam/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/ols/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/eyetracking/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/regex/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/vowelnormalization/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/latex/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/about/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/categories/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/contact/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/phoneticstools/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/phontools2/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/portfolio/</loc>
-  </url>
-  
-  <url>
-    <loc>https://marissabarlaz.github.io/tags/</loc>
-  </url>
-  
 </urlset>
